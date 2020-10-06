@@ -20,9 +20,10 @@ struct NetworkClient {
 
     init() {
         guard let baseURLString = Bundle.main.object(forInfoDictionaryKey: "SRG_BASE_URL") as? String,
-              !baseURLString.isEmpty else
+              !baseURLString.isEmpty
+        else
         {
-            preconditionFailure("SRG_BASE_URL not properly condifgured: \(Bundle.main.object(forInfoDictionaryKey: "SRG_BASE_URL") as? String ?? "(none set)")")
+            preconditionFailure("SRG_BASE_URL not properly configured: \(Bundle.main.object(forInfoDictionaryKey: "SRG_BASE_URL") as? String ?? "(none set)")")
         }
         config = OAuthConfiguration(fromBundle: .main, prefix: "SRG_", urlSession: urlSession)
         authenticator = OAuthenticator(configuration: config)
@@ -31,7 +32,7 @@ struct NetworkClient {
     }
 
     private func requestData(for url: URL) -> AnyPublisher<Data, URLError> {
-        let tokenSubject = authenticator.tokenSubject
+        var tokenSubject = authenticator.tokenSubject()
         let maxFailureCount = 5
         var refreshFailureCount = 0
 
@@ -50,6 +51,7 @@ struct NetworkClient {
                     // Maximum retry "logic" with exponential delay increase
                     if refreshFailureCount <= maxFailureCount {
                         authenticator.refreshToken(
+                            tokenSubject: &tokenSubject,
                             delay: refreshFailureCount > 1 ? TimeInterval(min(1<<refreshFailureCount - 1, 5 * 60)) : 0.0
                         )
                     }
@@ -69,6 +71,7 @@ struct NetworkClient {
                             refreshFailureCount += 1
                             if refreshFailureCount <= maxFailureCount {
                                 authenticator.refreshToken(
+                                    tokenSubject: &tokenSubject,
                                     delay: TimeInterval(min(1<<refreshFailureCount - 1, 5 * 60))
                                 )
                             }

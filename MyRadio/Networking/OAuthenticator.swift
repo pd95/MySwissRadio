@@ -137,11 +137,11 @@ class OAuthenticator {
 
     private var refreshCancellable: AnyCancellable?
 
-    /// A `CurrentValueSubject` which can be used to subscribe to the current access token
-    var tokenSubject = CurrentValueSubject<TokenState, Never>(.invalid)
+    private var currentToken: TokenState = .invalid
 
-    var currentToken: TokenState {
-        tokenSubject.value
+    /// `CurrentValueSubject` which can be used to subscribe to the current access token
+    func tokenSubject() -> CurrentValueSubject<TokenState, Never> {
+        .init(currentToken)
     }
 
     public enum TokenState: CustomStringConvertible {
@@ -186,7 +186,7 @@ class OAuthenticator {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             if let loadedToken = try? decoder.decode(AccessTokenResponse.self, from: lastResponseData) {
-                tokenSubject.send(.valid(value: loadedToken.accessToken, lastResponse: loadedToken))
+                currentToken = .valid(value: loadedToken.accessToken, lastResponse: loadedToken)
                 logger.debug("Successfully restored token: \(self.currentToken)")
             }
         }
@@ -196,18 +196,21 @@ class OAuthenticator {
     func invalidateToken() {
         logger.debug("invalidateToken (\(self.currentToken))")
         configuration.persist(data: nil)
-        tokenSubject.send(TokenState.invalid)
+        currentToken = .invalid
     }
 
     /// Refreshes the access token by calling the configured OAuth endpoint with the client credentials
     /// - Parameters:
+    ///   - tokenSubject: `CurrentValueSubject` which is triggered when the refresh is done
     ///   - delay: optional delay, before the token refresh call starts
     ///
+    /// `tokenSubject` is triggered.
     /// Even though `refreshToken` can be called in parallel by multiple sessions, only a single refresh process is running.
     /// All other calls are going to return without doing anything.
-    func refreshToken(delay: TimeInterval = 0.0) {
+    func refreshToken(tokenSubject: inout CurrentValueSubject<TokenState, Never>, delay: TimeInterval = 0.0) {
         logger.debug("refreshToken (\(self.currentToken))")
 
+        var sendNewToken = false
         serialQueue.sync {
             logger.debug("refreshToken: entered critical section")
 
@@ -232,7 +235,8 @@ class OAuthenticator {
 
                         // Store current token and trigger the given subject
                         self.logger.debug("performRefresh: sending new token")
-                        self.tokenSubject.send(token)
+                        self.currentToken = token
+                        sendNewToken = true
                     })
             }
             else {
@@ -241,7 +245,23 @@ class OAuthenticator {
 
             logger.debug("refreshToken: leaving critical section")
         }
+
+        if sendNewToken {
+            tokenSubject.send(currentToken)
+        }
     }
+
+    /// Refreshes the access token by calling the configured OAuth endpoint with the client credentials
+    /// - Parameters:
+    ///   - delay: optional delay, before the token refresh call starts
+    ///
+    /// Even though `refreshToken` can be called in parallel by multiple sessions, only a single refresh process is running.
+    /// All other calls are going to return without doing anything.
+    func refreshToken(delay: TimeInterval = 0.0) {
+        var subject = tokenSubject()
+        refreshToken(tokenSubject: &subject, delay: delay)
+    }
+
 
     private func performRefresh(delay: TimeInterval) -> AnyPublisher<TokenState, Never> {
 
