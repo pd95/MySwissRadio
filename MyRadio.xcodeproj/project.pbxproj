@@ -7,19 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1750E222252C5FBD00CB2D4B /* NetworkClient.swift */; };
+		1750E226252C605D00CB2D4B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E225252C605D00CB2D4B /* Config.xcconfig */; };
+		1750E22B252C6DEB00CB2D4B /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1750E22A252C6DEB00CB2D4B /* Channel.swift */; };
+		1750E234252C723500CB2D4B /* LocalConfig.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E233252C723500CB2D4B /* LocalConfig.xcconfig */; };
 		17DA93D4252C56500076EBB2 /* MyRadioApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA93D3252C56500076EBB2 /* MyRadioApp.swift */; };
 		17DA93D6252C56500076EBB2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA93D5252C56500076EBB2 /* ContentView.swift */; };
 		17DA93D8252C56510076EBB2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17DA93D7252C56510076EBB2 /* Assets.xcassets */; };
 		17DA93DB252C56510076EBB2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17DA93DA252C56510076EBB2 /* Preview Assets.xcassets */; };
+		17DA93EC252C58F50076EBB2 /* OAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA93EB252C58F50076EBB2 /* OAuthenticator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1750E222252C5FBD00CB2D4B /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
+		1750E225252C605D00CB2D4B /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		1750E22A252C6DEB00CB2D4B /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
+		1750E233252C723500CB2D4B /* LocalConfig.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = LocalConfig.xcconfig; sourceTree = "<group>"; };
 		17DA93D0252C56500076EBB2 /* MyRadio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyRadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17DA93D3252C56500076EBB2 /* MyRadioApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRadioApp.swift; sourceTree = "<group>"; };
 		17DA93D5252C56500076EBB2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		17DA93D7252C56510076EBB2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		17DA93DA252C56510076EBB2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		17DA93DC252C56510076EBB2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		17DA93EB252C58F50076EBB2 /* OAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthenticator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,9 +43,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1750E230252C716A00CB2D4B /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				17DA93EB252C58F50076EBB2 /* OAuthenticator.swift */,
+				1750E222252C5FBD00CB2D4B /* NetworkClient.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		1750E231252C717500CB2D4B /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				1750E22A252C6DEB00CB2D4B /* Channel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		17DA93C7252C56500076EBB2 = {
 			isa = PBXGroup;
 			children = (
+				1750E225252C605D00CB2D4B /* Config.xcconfig */,
+				1750E233252C723500CB2D4B /* LocalConfig.xcconfig */,
 				17DA93D2252C56500076EBB2 /* MyRadio */,
 				17DA93D1252C56500076EBB2 /* Products */,
 			);
@@ -54,6 +83,8 @@
 			children = (
 				17DA93D3252C56500076EBB2 /* MyRadioApp.swift */,
 				17DA93D5252C56500076EBB2 /* ContentView.swift */,
+				1750E230252C716A00CB2D4B /* Networking */,
+				1750E231252C717500CB2D4B /* Model */,
 				17DA93D7252C56510076EBB2 /* Assets.xcassets */,
 				17DA93DC252C56510076EBB2 /* Info.plist */,
 				17DA93D9252C56510076EBB2 /* Preview Content */,
@@ -126,6 +157,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1750E226252C605D00CB2D4B /* Config.xcconfig in Resources */,
+				1750E234252C723500CB2D4B /* LocalConfig.xcconfig in Resources */,
 				17DA93DB252C56510076EBB2 /* Preview Assets.xcassets in Resources */,
 				17DA93D8252C56510076EBB2 /* Assets.xcassets in Resources */,
 			);
@@ -139,7 +172,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				17DA93D6252C56500076EBB2 /* ContentView.swift in Sources */,
+				17DA93EC252C58F50076EBB2 /* OAuthenticator.swift in Sources */,
 				17DA93D4252C56500076EBB2 /* MyRadioApp.swift in Sources */,
+				1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */,
+				1750E22B252C6DEB00CB2D4B /* Channel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,6 +184,7 @@
 /* Begin XCBuildConfiguration section */
 		17DA93DD252C56510076EBB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1750E225252C605D00CB2D4B /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -209,6 +246,7 @@
 		};
 		17DA93DE252C56510076EBB2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1750E225252C605D00CB2D4B /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;

@@ -1,0 +1,14 @@
+// Overridable settings with some defaults
+//   the variables are used in the Info.plist file for this target
+
+//PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.myradio
+//DEVELOPMENT_TEAM =
+//CODE_SIGN_STYLE =
+
+SRG_BASE_URL = api.srgssr.ch
+SRG_AUTH_URL = api.srgssr.ch/oauth/v1/accesstoken?grant_type=client_credentials
+SRG_AUTH_KEY =
+SRG_AUTH_SECRET =
+SRG_AUTH_DEFAULTS_KEY = AuthData
+SRG_AUTH_DEFAULTS_SUITE = 
+

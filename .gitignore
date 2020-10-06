@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+## Xcode User settings
+*xcuserdata*
+
+# Xcode test execution reports
+*.xcresult
+
+# Overriden config files
+Local*.xcconfig
