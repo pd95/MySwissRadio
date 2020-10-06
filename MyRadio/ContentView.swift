@@ -8,28 +8,24 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var channels: [Channel] = []
+    @StateObject private var model = MyRadioModel()
 
     var body: some View {
         NavigationView {
             List {
-                ForEach(channels) { channel in
-                    HStack {
-                        Image(systemName: "photo")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(height: 40)
-                        Text(channel.name)
-                            .padding()
-                        Spacer()
+                ForEach(model.buSortOrder, id: \.self) { bu in
+                    if let streams = model.streams(for: bu) {
+                        Section(header: Text(bu.description)) {
+                            ForEach(streams, id: \.self) { stream in
+                                LivestreamRow(stream: stream)
+                            }
+                        }
                     }
                 }
             }
-            .navigationTitle("My Radio")
-            .onReceive(NetworkClient.shared.getChannels(), perform: { data in
-                print("received: \(data)")
-                self.channels = data
-            })
+            .environmentObject(model)
+            .navigationTitle("My Swiss Radio")
+            .onAppear(perform: { model.refreshContent() })
         }
     }
 }
