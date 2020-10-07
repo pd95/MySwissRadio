@@ -33,7 +33,7 @@ struct NetworkClient {
         }
         config = OAuthConfiguration(fromBundle: .main, prefix: "SRG_", urlSession: urlSession)
         authenticator = OAuthenticator(configuration: config)
-        authenticator.invalidateToken()
+        //authenticator.invalidateToken()
         //authenticator.refreshToken(delay: 0)
         baseURL = URL(string: baseURLString.hasPrefix("https://") ? baseURLString : "https://\(baseURLString)")!
 
