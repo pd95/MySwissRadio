@@ -14,18 +14,22 @@ struct ContentView: View {
         NavigationView {
             List {
                 ForEach(model.buSortOrder, id: \.self) { bu in
-                    if let streams = model.streams(for: bu) {
                     Section(header: Text(bu.description)) {
+                        if let streams = model.streams(for: bu), !streams.isEmpty {
                             ForEach(streams, id: \.self) { stream in
                                 LivestreamRow(stream: stream)
                             }
+                        }
+                        else {
+                            ProgressView()
+                                .onAppear(perform: { model.refreshContent() })
+                                .frame(maxWidth: .infinity)
                         }
                     }
                 }
             }
             .environmentObject(model)
             .navigationTitle("My Swiss Radio")
-            .onAppear(perform: { model.refreshContent() })
         }
     }
 }

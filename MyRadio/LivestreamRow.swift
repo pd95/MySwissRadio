@@ -14,27 +14,29 @@ struct LivestreamRow: View {
     let stream: Livestream
 
     var body: some View {
-        HStack {
+        HStack(spacing: 0) {
             Image(systemName: "photo")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(height: 40)
             Text(stream.name)
-                .padding()
+                .padding(.horizontal)
+
             Spacer()
-            Group {
+
             if stream.isReady {
                 Button(action: { model.togglePlay(stream) }) {
                     Image(systemName: model.isPlaying(stream: stream) ? "stop.circle" : "play.circle")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
+                        .foregroundColor(model.isPlaying(stream: stream) ? .red : .accentColor)
                 }
+                .frame(maxHeight: 40)
+                .buttonStyle(BorderlessButtonStyle())
             }
             else {
                 ProgressView()
             }
-        }
-            .frame(maxHeight: 40)
         }
     }
 }
