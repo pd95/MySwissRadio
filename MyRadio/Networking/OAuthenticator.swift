@@ -189,6 +189,7 @@ class OAuthenticator {
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             if let loadedToken = try? decoder.decode(AccessTokenResponse.self, from: lastResponseData) {
                 currentToken = .valid(value: loadedToken.accessToken, lastResponse: loadedToken)
+                tokenSubject.send(currentToken)
                 logger.debug("Successfully restored token: \(self.currentToken)")
             }
         }
