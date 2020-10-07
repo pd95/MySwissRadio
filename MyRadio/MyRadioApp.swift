@@ -13,7 +13,8 @@ struct MyRadioApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(model: model)
+            ContentView()
+                .environmentObject(model)
         }
     }
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    let model: MyRadioModel
+    @EnvironmentObject var model: MyRadioModel
 
     var body: some View {
         NavigationView {
@@ -22,13 +22,16 @@ struct ContentView: View {
                         }
                         else {
                             ProgressView()
-                                .onAppear(perform: { model.refreshContent() })
                                 .frame(maxWidth: .infinity)
                         }
                     }
                 }
             }
-            .environmentObject(model)
+            .onAppear(perform: {
+                if model.streams.isEmpty {
+                    model.refreshContent()
+                }
+            })
             .navigationTitle("My Swiss Radio")
         }
     }
@@ -36,6 +39,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(model: MyRadioModel.example)
+        ContentView()
+            .environmentObject(MyRadioModel.example)
     }
 }
