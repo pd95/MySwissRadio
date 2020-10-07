@@ -208,17 +208,18 @@ class OAuthenticator {
     /// Even though `refreshToken` can be called in parallel by multiple sessions, only a single refresh process is running.
     /// All other calls are going to return without doing anything.
     func refreshToken(tokenSubject: inout CurrentValueSubject<TokenState, Never>, delay: TimeInterval = 0.0) {
-        logger.debug("refreshToken (\(self.currentToken))")
+        logger.debug("refreshToken (\(self.currentToken)) 🔸")
 
-        var sendNewToken = false
+        logger.debug("refreshToken: right before entering critical section")
         serialQueue.sync {
             logger.debug("refreshToken: entered critical section")
-
             if case TokenState.valid(_, _) = self.currentToken {
-                logger.debug("refreshToken: skipping, token already valid")
+                logger.debug("refreshToken: skipping, token already valid. Sending new token \(self.currentToken)")
+                tokenSubject.send(currentToken)
             }
             else if refreshCancellable == nil {
                 refreshCancellable = performRefresh(delay: delay)
+                    .receive(on: serialQueue)
                     .sink(receiveCompletion: { [weak self] (completion) in
                         self?.refreshCancellable = nil
                         switch completion {
@@ -234,20 +235,15 @@ class OAuthenticator {
                         guard let self = self else { return }
 
                         // Store current token and trigger the given subject
-                        self.logger.debug("performRefresh: sending new token")
+                        self.logger.debug("performRefresh: sending new token \(token)")
                         self.currentToken = token
-                        sendNewToken = true
                     })
             }
             else {
                 logger.debug("refreshToken: skipping refresh as there is already one ongoing")
             }
 
-            logger.debug("refreshToken: leaving critical section")
-        }
-
-        if sendNewToken {
-            tokenSubject.send(currentToken)
+            logger.debug("refreshToken: leaving critical section 🔹")
         }
     }
 
@@ -265,7 +261,7 @@ class OAuthenticator {
 
     private func performRefresh(delay: TimeInterval) -> AnyPublisher<TokenState, Never> {
 
-        logger.debug("performRefresh: performing network request")
+        logger.debug("performRefresh: performing network request 🟡")
 
         // Prepare the authorization request with the client credentials in the header
         var request = URLRequest(url: configuration.authorizationURL,
@@ -289,7 +285,6 @@ class OAuthenticator {
             .flatMap { _ -> URLSession.DataTaskPublisher in
                 URLSession.shared.dataTaskPublisher(for: request)
             }
-            .receive(on: serialQueue)
             .tryMap { [weak self] data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse else {
                     self?.logger.error("performRefresh: invalidHttpResponse")
@@ -300,7 +295,7 @@ class OAuthenticator {
 
                     // Try to extract the error code from the response body
                     let errorResponseArray = try? jsonDecoder.decode([String:String].self, from: data)
-                    self?.logger.debug("performRefresh: responseArray: \(errorResponseArray?.description ?? "-")")
+                    self?.logger.error("performRefresh: responseArray: \(errorResponseArray?.description ?? "-")")
 
                     let errorCode = errorResponseArray?["ErrorCode"] ??
                         errorResponseArray?["errorCode"] ??
@@ -308,7 +303,7 @@ class OAuthenticator {
 
                     let errorDescription = errorResponseArray?["ErrorDescription"] ?? errorResponseArray?["errorDescription"] ?? errorResponseArray?["error_description"] ?? errorResponseArray?["Error"] ?? errorResponseArray?["error"]
 
-                    self?.logger.debug("performRefresh: errorCode = \(errorCode ?? "-") errorDescription = \(errorDescription ?? "-")")
+                    self?.logger.error("performRefresh: errorCode = \(errorCode ?? "-") errorDescription = \(errorDescription ?? "-")")
 
                     throw AuthError.unexpectedHttpStatus(httpStatus: httpResponse.statusCode,
                                                          error: errorDescription ?? errorCode ?? "n/a")
@@ -316,7 +311,7 @@ class OAuthenticator {
 
                 // Store response if requested
                 if data.count > 0 {
-                    self?.logger.debug("performRefresh: storing raw accessTokenResponse \(String(data: data, encoding: .utf8) ?? "-")")
+                    self?.logger.debug("performRefresh: storing raw accessTokenResponse 🟢 \(String(data: data, encoding: .utf8) ?? "-")")
                     self?.configuration.persist(data: data)
                 }
                 return data

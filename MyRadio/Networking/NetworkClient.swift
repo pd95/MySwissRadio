@@ -7,8 +7,10 @@
 
 import Foundation
 import Combine
+import os.log
 
 struct NetworkClient {
+    private let logger = Logger(subsystem: "NetworkClient", category: "NetworkClient")
 
     static let shared = NetworkClient()
 
@@ -22,6 +24,7 @@ struct NetworkClient {
     private let jsonDecoder : JSONDecoder
 
     init() {
+        logger.log("init")
         guard let baseURLString = Bundle.main.object(forInfoDictionaryKey: "SRG_BASE_URL") as? String,
               !baseURLString.isEmpty
         else
@@ -30,7 +33,8 @@ struct NetworkClient {
         }
         config = OAuthConfiguration(fromBundle: .main, prefix: "SRG_", urlSession: urlSession)
         authenticator = OAuthenticator(configuration: config)
-        authenticator.refreshToken(delay: 0)
+        authenticator.invalidateToken()
+        //authenticator.refreshToken(delay: 0)
         baseURL = URL(string: baseURLString.hasPrefix("https://") ? baseURLString : "https://\(baseURLString)")!
 
         // We cannot use the dateDecodingStrategy iso8601 as we have sometimes fractional seconds
@@ -49,9 +53,11 @@ struct NetworkClient {
         })
 
         jsonDecoder = decoder
+        logger.log("done initializing")
     }
 
     private func requestData(for url: URL) -> AnyPublisher<Data, API.APIError> {
+        logger.log("requesting data for \(url)")
         var tokenSubject = authenticator.tokenSubject()
         let maxFailureCount = 5
         var refreshFailureCount = 0
@@ -68,6 +74,7 @@ struct NetworkClient {
                 // Valid access token? Otherwise trigger a token refresh
                 guard case .valid(let bearerToken, _) = token else {
                     refreshFailureCount += 1
+                    logger.log("no valid bearer token refreshing token (count \(refreshFailureCount))")
                     // Maximum retry "logic" with exponential delay increase
                     if refreshFailureCount <= maxFailureCount {
                         authenticator.refreshToken(
@@ -75,6 +82,7 @@ struct NetworkClient {
                             delay: refreshFailureCount > 1 ? TimeInterval(min(1<<refreshFailureCount - 1, 5 * 60)) : 0.0
                         )
                     }
+                    logger.log("refreshing token done, sending Empty()")
                     return Empty()
                         .eraseToAnyPublisher()
                 }
@@ -82,6 +90,7 @@ struct NetworkClient {
                 urlRequest.addValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
 
                 // Execute request
+                logger.log("running data task")
                 return urlSession.dataTaskPublisher(for: urlRequest)
                     .mapError({ API.APIError.urlError($0) })
                     .flatMap({ result -> AnyPublisher<Data, API.APIError> in
@@ -89,6 +98,7 @@ struct NetworkClient {
                         guard let httpResponse = result.response as? HTTPURLResponse,
                               httpResponse.statusCode != 401 && httpResponse.statusCode != 403
                         else {
+                            logger.log("received HTTP 401/403: refreshing access token")
                             refreshFailureCount += 1
                             if refreshFailureCount <= maxFailureCount {
                                 authenticator.refreshToken(
@@ -96,6 +106,7 @@ struct NetworkClient {
                                     delay: TimeInterval(min(1<<refreshFailureCount - 1, 5 * 60))
                                 )
                             }
+                            logger.log("refreshing token done, sending Empty()")
                             return Empty()
                                 .setFailureType(to: API.APIError.self)
                                 .eraseToAnyPublisher()
@@ -104,10 +115,12 @@ struct NetworkClient {
                         // Handle request and server errors
                         if !(200...399 ~= httpResponse.statusCode) {
                             let errorResponse = try? JSONDecoder().decode(API.ErrorResponse.self, from: result.data)
+                            logger.log("received \(httpResponse.statusCode): error \(errorResponse?.status.msg ?? "-")")
                             return Fail<Data, API.APIError>(error: .httpError(httpResponse.statusCode, errorResponse?.status))
                                 .eraseToAnyPublisher()
                         }
 
+                        logger.log("successful data task, propagating data \(result.data)")
                         return Just(result.data)
                             .setFailureType(to: API.APIError.self)
                             .eraseToAnyPublisher()
