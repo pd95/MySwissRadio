@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var model = MyRadioModel()
+    let model: MyRadioModel
 
     var body: some View {
         NavigationView {
             List {
                 ForEach(model.buSortOrder, id: \.self) { bu in
                     if let streams = model.streams(for: bu) {
-                        Section(header: Text(bu.description)) {
+                    Section(header: Text(bu.description)) {
                             ForEach(streams, id: \.self) { stream in
                                 LivestreamRow(stream: stream)
                             }
@@ -32,6 +32,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(model: MyRadioModel.example)
     }
 }

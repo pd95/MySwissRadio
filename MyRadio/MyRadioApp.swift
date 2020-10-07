@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct MyRadioApp: App {
+    @StateObject private var model = MyRadioModel()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(model: model)
         }
     }
 }

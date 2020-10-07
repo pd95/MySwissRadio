@@ -97,4 +97,10 @@ class MyRadioModel: ObservableObject {
             currentlyPlaying = stream
         }
     }
+
+    static let example: MyRadioModel = {
+        let model = MyRadioModel()
+        model.streams = [.example]
+        return model
+    }()
 }

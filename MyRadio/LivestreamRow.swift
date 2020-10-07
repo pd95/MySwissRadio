@@ -23,24 +23,24 @@ struct LivestreamRow: View {
                 .padding()
             Spacer()
             Group {
-                if stream.isReady {
-                    Button(action: { model.togglePlay(stream) }) {
-                        Image(systemName: model.isPlaying(stream: stream) ? "stop.circle" : "play.circle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                    }
-                }
-                else {
-                    ProgressView()
+            if stream.isReady {
+                Button(action: { model.togglePlay(stream) }) {
+                    Image(systemName: model.isPlaying(stream: stream) ? "stop.circle" : "play.circle")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
                 }
             }
+            else {
+                ProgressView()
+            }
+        }
             .frame(maxHeight: 40)
         }
     }
 }
 
 struct LivestreamRow_Previews: PreviewProvider {
-    @StateObject static private var model = MyRadioModel()
+    @StateObject static private var model = MyRadioModel.example
     static var previews: some View {
         LivestreamRow(stream: model.streams.first!)
             .environmentObject(model)
