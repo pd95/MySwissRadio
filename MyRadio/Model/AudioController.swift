@@ -23,6 +23,21 @@ class AudioController: NSObject, ObservableObject {
         } catch {
             print("Setting category to AVAudioSessionCategoryPlayback failed.")
         }
+
+        setupMediaPlayerCommands()
+    }
+
+    func setupMediaPlayerCommands() {
+        let commandCenter = MPRemoteCommandCenter.shared()
+
+        commandCenter.playCommand.addTarget { [unowned self] _ in
+            self.player.play()
+            return .success
+        }
+        commandCenter.pauseCommand.addTarget { [unowned self] _ in
+            self.player.pause()
+            return .success
+        }
     }
 
     func enterBackground() {
@@ -50,7 +65,7 @@ class AudioController: NSObject, ObservableObject {
         player.replaceCurrentItem(with: nil)
     }
 
-    func start(url: URL) {
+    func start(id: String, url: URL, title: String) {
         playerItem = AVPlayerItem(url: url)
         playerItem.addObserver(self,
                                forKeyPath: #keyPath(AVPlayerItem.status),
@@ -59,6 +74,14 @@ class AudioController: NSObject, ObservableObject {
 
         player.replaceCurrentItem(with: playerItem)
         player.play()
+
+        // Update "now playing" information
+        var nowPlayingInfo = [String: Any]()
+        nowPlayingInfo[MPMediaItemPropertyTitle] = title
+        nowPlayingInfo[MPMediaItemPropertyArtist] = "My radio"
+        //nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork()
+
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
 
     // KVO callback

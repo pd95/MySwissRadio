@@ -119,7 +119,7 @@ class MyRadioModel: ObservableObject {
         else {
             if let url = stream.streams.first {
                 currentlyPlaying = stream
-                controller.start(url: url)
+                controller.start(id: stream.id, url: url, title: stream.name)
                 print("togglePlay: start playing \(url)")
                 controllerObserver = controller.objectWillChange.sink(receiveValue: {
                     _ in
