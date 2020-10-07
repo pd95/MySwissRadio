@@ -11,6 +11,18 @@ import AVKit
 
 class MyRadioModel: ObservableObject {
 
+    init() {
+        // Configure audio session
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(.playback)
+        } catch {
+            print("Setting category to AVAudioSessionCategoryPlayback failed.")
+        }
+    }
+
+    //MARK: - Access to model data and UI helpers
+
     @Published var streams: [Livestream] = UserDefaults.myDefaults.getEncoded(forKey: "streams") ?? [] {
         didSet {
             try! UserDefaults.myDefaults.setEncoded(streams, forKey: "streams")
@@ -19,11 +31,14 @@ class MyRadioModel: ObservableObject {
 
     @Published var buSortOrder: [BusinessUnit] = BusinessUnit.allCases
 
-    private let networkClient = NetworkClient.shared
+    func streams(for bu: BusinessUnit) -> [Livestream] {
+        streams.filter({ $0.bu == bu})
+    }
+
+
+    //MARK: - Fetching data from NetworkClient
 
     private var cancellables = Set<AnyCancellable>()
-
-    @Published private var currentlyPlaying: Livestream?
 
     func refreshContent() {
         buSortOrder.publisher
@@ -79,16 +94,15 @@ class MyRadioModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func streams(for bu: BusinessUnit) -> [Livestream] {
-        streams.filter({ $0.bu == bu})
-    }
+    // MARK: - Playback control
+    @Published private var currentlyPlaying: Livestream?
+
+    private var player = AVPlayer()
+    private var currentItem: AVPlayerItem?
 
     func isPlaying(stream: Livestream) -> Bool {
         currentlyPlaying == stream
     }
-
-    private var player = AVPlayer()
-    private var currentItem: AVPlayerItem?
 
     func togglePlay(_ stream: Livestream) {
         guard stream.isReady else {
