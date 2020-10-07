@@ -10,7 +10,7 @@ import Combine
 import os.log
 
 struct NetworkClient {
-    private let logger = Logger(subsystem: "NetworkClient", category: "NetworkClient")
+    private let logger = Logger(subsystem: "MyRadio", category: "NetworkClient")
 
     static let shared = NetworkClient()
 
@@ -24,7 +24,7 @@ struct NetworkClient {
     private let jsonDecoder : JSONDecoder
 
     init() {
-        logger.log("init")
+        logger.debug("init()")
         guard let baseURLString = Bundle.main.object(forInfoDictionaryKey: "SRG_BASE_URL") as? String,
               !baseURLString.isEmpty
         else
@@ -53,12 +53,11 @@ struct NetworkClient {
         })
 
         jsonDecoder = decoder
-        logger.log("done initializing")
+        logger.debug("init() done")
     }
 
     private func requestData(for url: URL) -> AnyPublisher<Data, API.APIError> {
-        logger.log("requesting data for \(url)")
-        var tokenSubject = authenticator.tokenSubject()
+        logger.log("requestData(for: \(url))")
         let maxFailureCount = 5
         var refreshFailureCount = 0
 
@@ -68,21 +67,20 @@ struct NetworkClient {
         urlRequest.addValue("application/json", forHTTPHeaderField: "Accept")
         urlRequest.addValue("utf-8", forHTTPHeaderField: "Accept-Charset")
 
-        return tokenSubject
+        return authenticator.tokenSubject
             .flatMap({ (token: OAuthenticator.TokenState) -> AnyPublisher<Data, API.APIError> in
 
                 // Valid access token? Otherwise trigger a token refresh
                 guard case .valid(let bearerToken, _) = token else {
                     refreshFailureCount += 1
-                    logger.log("no valid bearer token refreshing token (count \(refreshFailureCount))")
+                    logger.debug("no valid bearer token refreshing token (count \(refreshFailureCount))")
                     // Maximum retry "logic" with exponential delay increase
                     if refreshFailureCount <= maxFailureCount {
                         authenticator.refreshToken(
-                            tokenSubject: &tokenSubject,
                             delay: refreshFailureCount > 1 ? TimeInterval(min(1<<refreshFailureCount - 1, 5 * 60)) : 0.0
                         )
                     }
-                    logger.log("refreshing token done, sending Empty()")
+                    logger.debug("refreshing token triggered, sending Empty()")
                     return Empty()
                         .eraseToAnyPublisher()
                 }
@@ -90,7 +88,7 @@ struct NetworkClient {
                 urlRequest.addValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
 
                 // Execute request
-                logger.log("running data task")
+                logger.debug("running data task")
                 return urlSession.dataTaskPublisher(for: urlRequest)
                     .mapError({ API.APIError.urlError($0) })
                     .flatMap({ result -> AnyPublisher<Data, API.APIError> in
@@ -98,15 +96,14 @@ struct NetworkClient {
                         guard let httpResponse = result.response as? HTTPURLResponse,
                               httpResponse.statusCode != 401 && httpResponse.statusCode != 403
                         else {
-                            logger.log("received HTTP 401/403: refreshing access token")
+                            logger.debug("received HTTP 401/403: refreshing access token")
                             refreshFailureCount += 1
                             if refreshFailureCount <= maxFailureCount {
                                 authenticator.refreshToken(
-                                    tokenSubject: &tokenSubject,
                                     delay: TimeInterval(min(1<<refreshFailureCount - 1, 5 * 60))
                                 )
                             }
-                            logger.log("refreshing token done, sending Empty()")
+                            logger.debug("refreshing token triggered, sending Empty()")
                             return Empty()
                                 .setFailureType(to: API.APIError.self)
                                 .eraseToAnyPublisher()
@@ -115,21 +112,19 @@ struct NetworkClient {
                         // Handle request and server errors
                         if !(200...399 ~= httpResponse.statusCode) {
                             let errorResponse = try? JSONDecoder().decode(API.ErrorResponse.self, from: result.data)
-                            logger.log("received \(httpResponse.statusCode): error \(errorResponse?.status.msg ?? "-")")
+                            logger.error("received \(httpResponse.statusCode): error \(errorResponse?.status.msg ?? "-")")
                             return Fail<Data, API.APIError>(error: .httpError(httpResponse.statusCode, errorResponse?.status))
                                 .eraseToAnyPublisher()
                         }
 
-                        logger.log("successful data task, propagating data \(result.data)")
+                        logger.debug("successful data task, propagating data \(result.data)")
                         return Just(result.data)
                             .setFailureType(to: API.APIError.self)
                             .eraseToAnyPublisher()
                     })
                     .eraseToAnyPublisher()
             })
-            .handleEvents(receiveOutput: { data in
-                tokenSubject.send(completion: .finished)
-            })
+            .first()
             .eraseToAnyPublisher()
     }
 
