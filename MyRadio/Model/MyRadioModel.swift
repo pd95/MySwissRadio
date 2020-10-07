@@ -9,7 +9,12 @@ import Foundation
 import Combine
 
 class MyRadioModel: ObservableObject {
-    @Published var streams: [Livestream] = []
+
+    @Published var streams: [Livestream] = UserDefaults.myDefaults.getEncoded(forKey: "streams") ?? [] {
+        didSet {
+            try! UserDefaults.myDefaults.setEncoded(streams, forKey: "streams")
+        }
+    }
 
     @Published var buSortOrder: [BusinessUnit] = BusinessUnit.allCases
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		171F5245252E0C80005B3472 /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F5244252E0C80005B3472 /* UserDefaults+Extension.swift */; };
 		1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1750E222252C5FBD00CB2D4B /* NetworkClient.swift */; };
 		1750E226252C605D00CB2D4B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E225252C605D00CB2D4B /* Config.xcconfig */; };
 		1750E234252C723500CB2D4B /* LocalConfig.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E233252C723500CB2D4B /* LocalConfig.xcconfig */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		171F5244252E0C80005B3472 /* UserDefaults+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extension.swift"; sourceTree = "<group>"; };
 		1750E222252C5FBD00CB2D4B /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
 		1750E225252C605D00CB2D4B /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		1750E233252C723500CB2D4B /* LocalConfig.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = LocalConfig.xcconfig; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 			isa = PBXGroup;
 			children = (
 				17DA93D3252C56500076EBB2 /* MyRadioApp.swift */,
+				171F5244252E0C80005B3472 /* UserDefaults+Extension.swift */,
 				17DA93D5252C56500076EBB2 /* ContentView.swift */,
 				17DB7BDB252CC6FA004C4BF8 /* LivestreamRow.swift */,
 				1750E230252C716A00CB2D4B /* Networking */,
@@ -191,6 +194,7 @@
 				17DB7BDC252CC6FA004C4BF8 /* LivestreamRow.swift in Sources */,
 				17883587252CB9C3000279A1 /* BusinessUnit.swift in Sources */,
 				1788358B252CBE50000279A1 /* API.swift in Sources */,
+				171F5245252E0C80005B3472 /* UserDefaults+Extension.swift in Sources */,
 				1788357D252CA6AA000279A1 /* MyRadioModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
