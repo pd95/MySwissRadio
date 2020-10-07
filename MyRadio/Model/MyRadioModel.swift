@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import AVKit
 
 class MyRadioModel: ObservableObject {
 
@@ -45,7 +46,7 @@ class MyRadioModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func fetchMediaURL(for streams: [Livestream]) {
+    private func fetchMediaURL(for streams: [Livestream]) {
         streams.publisher
             .flatMap({ stream -> AnyPublisher<Livestream?, Never> in
                 return NetworkClient.shared.getMediaResource(for: stream.id, bu: stream.bu.apiBusinessUnit)
@@ -86,18 +87,32 @@ class MyRadioModel: ObservableObject {
         currentlyPlaying == stream
     }
 
+    private var player = AVPlayer()
+    private var currentItem: AVPlayerItem?
+
     func togglePlay(_ stream: Livestream) {
         guard stream.isReady else {
             fatalError("Cannot play stream in unready state: \(stream)")
         }
         if currentlyPlaying == stream {
             currentlyPlaying = nil
+            player.pause()
+            player.replaceCurrentItem(with: nil)
+            print("togglePlay: stopped")
         }
         else {
-            currentlyPlaying = stream
+            if let url = stream.streams.first {
+                currentlyPlaying = stream
+                currentItem = AVPlayerItem(url: url)
+                player.replaceCurrentItem(with: currentItem)
+                player.play()
+                print("togglePlay: start playing \(url)")
+            }
         }
     }
+}
 
+extension MyRadioModel {
     static let example: MyRadioModel = {
         let model = MyRadioModel()
         model.streams = [.example]
