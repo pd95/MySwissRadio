@@ -11,16 +11,6 @@ import AVKit
 
 class MyRadioModel: ObservableObject {
 
-    init() {
-        // Configure audio session
-        let audioSession = AVAudioSession.sharedInstance()
-        do {
-            try audioSession.setCategory(.playback)
-        } catch {
-            print("Setting category to AVAudioSessionCategoryPlayback failed.")
-        }
-    }
-
     //MARK: - Access to model data and UI helpers
 
     @Published var streams: [Livestream] = UserDefaults.myDefaults.getEncoded(forKey: "streams") ?? [] {
@@ -94,14 +84,27 @@ class MyRadioModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    // MARK: - Playback control
-    @Published private var currentlyPlaying: Livestream?
+    func enterBackground() {
+        print("MyRadioModel.enterBackground")
+        controller.enterBackground()
+    }
 
-    private var player = AVPlayer()
-    private var currentItem: AVPlayerItem?
+    func enterForeground() {
+        print("MyRadioModel.enterForeground")
+        controller.enterForeground()
+    }
+
+    // MARK: - Playback control
+    private var controller = AudioController()
+    private var controllerObserver: AnyCancellable?
+    @Published private var currentlyPlaying: Livestream?
 
     func isPlaying(stream: Livestream) -> Bool {
         currentlyPlaying == stream
+    }
+
+    func isLoading(stream: Livestream) -> Bool {
+        currentlyPlaying == stream && controller.playerStatus == .unknown
     }
 
     func togglePlay(_ stream: Livestream) {
@@ -110,17 +113,19 @@ class MyRadioModel: ObservableObject {
         }
         if currentlyPlaying == stream {
             currentlyPlaying = nil
-            player.pause()
-            player.replaceCurrentItem(with: nil)
+            controller.stop()
             print("togglePlay: stopped")
         }
         else {
             if let url = stream.streams.first {
                 currentlyPlaying = stream
-                currentItem = AVPlayerItem(url: url)
-                player.replaceCurrentItem(with: currentItem)
-                player.play()
+                controller.start(url: url)
                 print("togglePlay: start playing \(url)")
+                controllerObserver = controller.objectWillChange.sink(receiveValue: {
+                    _ in
+                    print("controller state changed: \(self.controller.playerStatus.rawValue)")
+                    self.objectWillChange.send()
+                })
             }
         }
     }

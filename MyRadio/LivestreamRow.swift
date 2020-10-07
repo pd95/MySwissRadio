@@ -24,7 +24,7 @@ struct LivestreamRow: View {
 
             Spacer()
 
-            if stream.isReady {
+            if stream.isReady && !model.isLoading(stream: stream) {
                 Button(action: { model.togglePlay(stream) }) {
                     Image(systemName: model.isPlaying(stream: stream) ? "stop.circle" : "play.circle")
                         .resizable()
@@ -36,6 +36,7 @@ struct LivestreamRow: View {
             }
             else {
                 ProgressView()
+                    .frame(width: 40, height: 40)
             }
         }
     }
