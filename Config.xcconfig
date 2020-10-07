@@ -1,7 +1,7 @@
 // Overridable settings with some defaults
 //   the variables are used in the Info.plist file for this target
 
-//PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.myradio
+PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.MyRadio
 //DEVELOPMENT_TEAM =
 //CODE_SIGN_STYLE =
 
@@ -12,3 +12,4 @@ SRG_AUTH_SECRET =
 SRG_AUTH_DEFAULTS_KEY = AuthData
 SRG_AUTH_DEFAULTS_SUITE = 
 
+#include? "LocalConfig.xcconfig"
