@@ -26,6 +26,7 @@
 		17DA93DB252C56510076EBB2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17DA93DA252C56510076EBB2 /* Preview Assets.xcassets */; };
 		17DA93EC252C58F50076EBB2 /* OAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA93EB252C58F50076EBB2 /* OAuthenticator.swift */; };
 		17DB7BDC252CC6FA004C4BF8 /* LivestreamRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DB7BDB252CC6FA004C4BF8 /* LivestreamRow.swift */; };
+		17EC1A88252F9A0900F8AFCF /* BusinessUnit+SRGService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EC1A87252F9A0900F8AFCF /* BusinessUnit+SRGService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		17DA93DC252C56510076EBB2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		17DA93EB252C58F50076EBB2 /* OAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthenticator.swift; sourceTree = "<group>"; };
 		17DB7BDB252CC6FA004C4BF8 /* LivestreamRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivestreamRow.swift; sourceTree = "<group>"; };
+		17EC1A87252F9A0900F8AFCF /* BusinessUnit+SRGService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BusinessUnit+SRGService.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,8 +70,6 @@
 			children = (
 				17DA93EB252C58F50076EBB2 /* OAuthenticator.swift */,
 				1750E222252C5FBD00CB2D4B /* NetworkClient.swift */,
-				1788358A252CBE50000279A1 /* SRGService.swift */,
-				171DE89C252F7C0C0099DE8A /* URLReqest+SRGService.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -120,6 +120,7 @@
 				17DB7BDB252CC6FA004C4BF8 /* LivestreamRow.swift */,
 				1703F8EA252F53CC00F01ECD /* URLImage.swift */,
 				1750E230252C716A00CB2D4B /* Networking */,
+				17EC1A8A252F9A7500F8AFCF /* SRGService */,
 				1750E231252C717500CB2D4B /* Model */,
 				177A47BA252F3D6D009A4EDB /* Settings */,
 				17DA93D7252C56510076EBB2 /* Assets.xcassets */,
@@ -136,6 +137,16 @@
 				17DA93DA252C56510076EBB2 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		17EC1A8A252F9A7500F8AFCF /* SRGService */ = {
+			isa = PBXGroup;
+			children = (
+				1788358A252CBE50000279A1 /* SRGService.swift */,
+				171DE89C252F7C0C0099DE8A /* URLReqest+SRGService.swift */,
+				17EC1A87252F9A0900F8AFCF /* BusinessUnit+SRGService.swift */,
+			);
+			path = SRGService;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -213,6 +224,7 @@
 				1788AAF2252E2EE000B89C22 /* AudioController.swift in Sources */,
 				17DA93D6252C56500076EBB2 /* ContentView.swift in Sources */,
 				177A47B8252F3D5B009A4EDB /* UserDefault.swift in Sources */,
+				17EC1A88252F9A0900F8AFCF /* BusinessUnit+SRGService.swift in Sources */,
 				17DA93EC252C58F50076EBB2 /* OAuthenticator.swift in Sources */,
 				17DA93D4252C56500076EBB2 /* MyRadioApp.swift in Sources */,
 				1703F8EB252F53CC00F01ECD /* URLImage.swift in Sources */,
