@@ -12,12 +12,13 @@ import UIKit
 
 struct NetworkClient {
 
-    static let shared = NetworkClient()
+    /// This is the main apps shared instance of the `NetworkClient`: It has OAuth configured and therefore can use `authenticatedDataRequest`
+    /// For extensions which simply need to fetch resources, you can still create a `NetworkClient` without oauthConfig
+    static let shared = NetworkClient(urlSession: .shared, oauthConfig: OAuthConfiguration(fromBundle: .main, prefix: "SRG_"))
 
     private let logger = Logger(subsystem: "MyRadio", category: "NetworkClient")
 
-    private let config: OAuthConfiguration
-    private let authenticator: OAuthenticator
+    private let authenticator: OAuthenticator?
 
     private let urlSession: URLSession = .shared
 
@@ -26,13 +27,17 @@ struct NetworkClient {
         case httpError(Int)
     }
 
-    init() {
+    init(urlSession: URLSession = .shared, oauthConfig: OAuthConfiguration? = nil) {
         logger.debug("init()")
 
-        config = OAuthConfiguration(fromBundle: .main, prefix: "SRG_")
-        authenticator = OAuthenticator(configuration: config, urlSession: urlSession)
-        //authenticator.invalidateToken()
-        //authenticator.refreshToken(delay: 0)
+        if let config = oauthConfig {
+            authenticator = OAuthenticator(configuration: config, urlSession: urlSession)
+            //authenticator.invalidateToken()
+            //authenticator.refreshToken(delay: 0)
+        }
+        else {
+            authenticator = nil
+        }
 
         logger.debug("init() done")
     }
@@ -82,6 +87,11 @@ struct NetworkClient {
     /// - Returns: A publisher of the data received for the given URL
     func authenticatedDataRequest(for request: URLRequest) -> AnyPublisher<Data, NetworkClientError> {
         logger.log("requestData(for: \(request))")
+
+        guard let authenticator = authenticator else {
+            fatalError("Authenticator not configured")
+        }
+
         let maxFailureCount = 5
         var refreshFailureCount = 0
 
