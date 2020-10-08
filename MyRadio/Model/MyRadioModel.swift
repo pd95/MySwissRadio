@@ -33,53 +33,25 @@ class MyRadioModel: ObservableObject {
     func refreshContent() {
         buSortOrder.publisher
             .flatMap({ SRGService.getLivestreams(client: NetworkClient.shared, bu: $0.apiBusinessUnit) })
+            .handleEvents(receiveOutput: { [weak self] newStreams in
+                DispatchQueue.main.async {
+                    self?.streams.append(contentsOf: newStreams)
+                }
+            })
+            .flatMap({ streams -> AnyPublisher<Livestream, Never> in
+                Publishers.Sequence(sequence: streams)
+                    .eraseToAnyPublisher()
+            })
+            .flatMap({ (stream: Livestream) -> AnyPublisher<Livestream?, Never> in
+                SRGService.getMediaResource(client: NetworkClient.shared, for: stream.id, bu: stream.bu.apiBusinessUnit)
+            })
+            .compactMap({ $0 })
             .collect()
-            .map { Array($0.joined().sorted()) }
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 print("refreshContent: \(completion)")
-                switch completion {
-                    case .failure(let error):
-                        print("refreshContent: error \(error)")
-                    case .finished:
-                        break
-                }
             }, receiveValue: { [weak self] newStreams in
                 self?.streams = newStreams
-                self?.fetchMediaURL(for: newStreams)
-            })
-            .store(in: &cancellables)
-    }
-
-    private func fetchMediaURL(for streams: [Livestream]) {
-        streams.publisher
-            .flatMap({ stream -> AnyPublisher<Livestream?, Never> in
-                return SRGService.getMediaResource(client: NetworkClient.shared, for: stream.id, bu: stream.bu.apiBusinessUnit)
-            })
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-                print("fetchMediaURL: \(completion)")
-                if case .failure(let error) = completion {
-                    print("fetchMediaURL: \(error)")
-                }
-
-            }, receiveValue: { [weak self] newStream in
-                guard let self = self,
-                      let newStream = newStream
-                else {
-                    return
-                }
-
-                var newStreams = self.streams
-                if let index = newStreams.firstIndex(where: {
-                    $0.id == newStream.id && $0.bu == newStream.bu
-                }) {
-                    newStreams[index] = newStream
-                }
-                else {
-                    newStreams.append(newStream)
-                }
-                self.streams = newStreams
             })
             .store(in: &cancellables)
     }
