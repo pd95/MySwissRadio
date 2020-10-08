@@ -31,11 +31,6 @@ struct OAuthConfiguration: Codable {
 
     fileprivate let userDefaultsKey: String?
     fileprivate let userDefaultsSuiteName: String?
-    fileprivate var urlSession: URLSession = .shared
-
-    enum CodingKeys: CodingKey {
-        case authorizationURL, clientKey, clientSecret, userDefaultsKey, userDefaultsSuiteName
-    }
 
     /// Creates a configuration object using the given parameters
     /// - Parameters:
@@ -43,7 +38,7 @@ struct OAuthConfiguration: Codable {
     ///   - clientKey: The client key, known to the authorization end point
     ///   - clientSecret: The client secret known to the authorization end point
     ///   - userDefaultsKey: a key used to store (and fetch upon reinitialisation) the last authorization response from `UserDefaults`
-    public init(authorizationURL: URL, clientKey: String, clientSecret: String, userDefaultsKey: String? = nil, userDefaultsSuiteName: String? = nil, urlSession: URLSession = .shared) {
+    public init(authorizationURL: URL, clientKey: String, clientSecret: String, userDefaultsKey: String? = nil, userDefaultsSuiteName: String? = nil) {
         self.authorizationURL = authorizationURL
         self.clientKey = clientKey
         self.clientSecret = clientSecret
@@ -68,13 +63,11 @@ struct OAuthConfiguration: Codable {
     ///}
     /// ```
     ///
-    public init(fromJSONResource resourceName: String, in bundle: Bundle = .main, urlSession: URLSession = .shared) {
+    public init(fromJSONResource resourceName: String, in bundle: Bundle = .main) {
         let fileUrl = bundle.url(forResource: resourceName, withExtension: nil, subdirectory: nil)!
         do {
             let data = try Data(contentsOf: fileUrl)
-            var instance = try JSONDecoder().decode(OAuthConfiguration.self, from: data)
-            instance.urlSession = urlSession
-            self = instance
+            self = try JSONDecoder().decode(OAuthConfiguration.self, from: data)
         } catch {
             fatalError("Error loading \(resourceName): \(error.localizedDescription)")
         }
@@ -94,7 +87,7 @@ struct OAuthConfiguration: Codable {
     ///
     /// The optional prefix parameter is used to modify above keys, for example to `MY_API_AUTH_URL`.
     ///
-    public init(fromBundle bundle: Bundle = .main, prefix: String = "", urlSession: URLSession = .shared) {
+    public init(fromBundle bundle: Bundle = .main, prefix: String = "") {
         let clientKey = bundle.object(forInfoDictionaryKey: "\(prefix)AUTH_KEY") as! String
         let clientSecret = bundle.object(forInfoDictionaryKey: "\(prefix)AUTH_SECRET") as! String
         let userDefaultsKey = bundle.object(forInfoDictionaryKey: "\(prefix)AUTH_DEFAULTS_KEY") as? String
@@ -109,7 +102,7 @@ struct OAuthConfiguration: Codable {
             fatalError("\(prefix)AUTH_URL configuration missing in bundle \(bundle.bundlePath)")
         }
 
-        self.init(authorizationURL: authorizationURL, clientKey: clientKey, clientSecret: clientSecret, userDefaultsKey: userDefaultsKey, userDefaultsSuiteName: userDefaultsSuiteName, urlSession: urlSession)
+        self.init(authorizationURL: authorizationURL, clientKey: clientKey, clientSecret: clientSecret, userDefaultsKey: userDefaultsKey, userDefaultsSuiteName: userDefaultsSuiteName)
     }
 
 
@@ -128,12 +121,13 @@ struct OAuthConfiguration: Codable {
 }
 
 
-class OAuthenticator {
+final class OAuthenticator {
     private let logger = Logger(subsystem: "MyRadio", category: "OAuthenticator")
 
     private let serialQueue = DispatchQueue.init(label: "OAuthenticator.serial")
 
     private let configuration: OAuthConfiguration
+    private var urlSession: URLSession
 
     private var refreshCancellable: AnyCancellable?
 
@@ -180,8 +174,9 @@ class OAuthenticator {
     /// - Parameter configuration: relevant configuration
     ///
     /// If the configuration specifies a `userDefaultsKey` the previous access token is restored. Otherwise the token starts out as invalid and must be refreshed upon first use.
-    init(configuration: OAuthConfiguration) {
+    init(configuration: OAuthConfiguration, urlSession: URLSession = .shared) {
         self.configuration = configuration
+        self.urlSession = urlSession
 
         // Try to restore last access token response from UserDefaults
         if let lastResponseData = configuration.persistedData {
@@ -270,8 +265,8 @@ class OAuthenticator {
         // Here starts the refresh request handling...
         return Just(1)
             .delay(for: .seconds(delay), scheduler: serialQueue)
-            .flatMap { _ -> URLSession.DataTaskPublisher in
-                URLSession.shared.dataTaskPublisher(for: request)
+            .flatMap { [unowned self] _ -> URLSession.DataTaskPublisher in
+                self.urlSession.dataTaskPublisher(for: request)
             }
             .tryMap { [weak self] data, response -> Data in
                 guard let httpResponse = response as? HTTPURLResponse else {

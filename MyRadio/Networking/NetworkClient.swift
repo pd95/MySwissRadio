@@ -32,11 +32,12 @@ struct NetworkClient {
         {
             preconditionFailure("SRG_BASE_URL not properly configured: \(Bundle.main.object(forInfoDictionaryKey: "SRG_BASE_URL") as? String ?? "(none set)")")
         }
-        config = OAuthConfiguration(fromBundle: .main, prefix: "SRG_", urlSession: urlSession)
-        authenticator = OAuthenticator(configuration: config)
+        baseURL = URL(string: baseURLString.hasPrefix("https://") ? baseURLString : "https://\(baseURLString)")!
+
+        config = OAuthConfiguration(fromBundle: .main, prefix: "SRG_")
+        authenticator = OAuthenticator(configuration: config, urlSession: urlSession)
         //authenticator.invalidateToken()
         //authenticator.refreshToken(delay: 0)
-        baseURL = URL(string: baseURLString.hasPrefix("https://") ? baseURLString : "https://\(baseURLString)")!
 
         // We cannot use the dateDecodingStrategy iso8601 as we have sometimes fractional seconds
         // So we use our own JSONDecoder date formatter configuration
