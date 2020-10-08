@@ -193,7 +193,7 @@ struct NetworkClient {
             })
             .map({ (response: API.GetLivestreamsResponse) -> [Livestream] in
                 response.mediaList.map({ (media: API.Media) -> Livestream in
-                    Livestream(id: media.id, name: media.title, imageURL: media.imageUrl, bu: .init(from: media.vendor), streams: [])
+                    Livestream(id: media.id, name: media.title, imageURL: media.imageUrl, bu: .init(from: media.vendor), streams: []).fixup()
                 })
             })
             .replaceError(with: [])
@@ -219,7 +219,7 @@ struct NetworkClient {
                                     lhs.quality != .sd
                             })
                             .map(\.url)
-                        return Livestream(id: chapter.id, name: chapter.title, imageURL: chapter.imageUrl, bu: .init(from: chapter.vendor), streams: urls)
+                        return Livestream(id: chapter.id, name: chapter.title, imageURL: chapter.imageUrl, bu: .init(from: chapter.vendor), streams: urls).fixup()
                     })
             })
             .replaceError(with: nil)

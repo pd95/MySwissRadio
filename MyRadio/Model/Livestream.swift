@@ -32,3 +32,19 @@ extension Livestream: Comparable {
         lhs.bu < rhs.bu && lhs.name < rhs.name
     }
 }
+
+extension Livestream {
+    // HACK: The data received from the API is sometimes "broken", so we do some "fixups"
+    func fixup() -> Livestream {
+        // Hack for RTS image URLs
+        let fixedImageURL: URL
+        if bu == .rts && self.imageURL.lastPathComponent == "16x9"{
+            fixedImageURL = URL(string: String(self.imageURL.absoluteString.dropLast(5)))!
+        }
+        else {
+            fixedImageURL = self.imageURL
+        }
+
+        return Livestream(id: id, name: name, imageURL: fixedImageURL, bu: bu, streams: streams)
+    }
+}
