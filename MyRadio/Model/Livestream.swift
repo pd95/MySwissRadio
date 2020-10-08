@@ -34,7 +34,7 @@ extension Livestream: Comparable {
 }
 
 extension Livestream {
-    // HACK: The data received from the API is sometimes "broken", so we do some "fixups"
+    // HACK: The data received from the SRGService is sometimes "broken", so we do some "fixups"
     func fixup() -> Livestream {
         // Hack for RTS image URLs
         let fixedImageURL: URL

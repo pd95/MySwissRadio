@@ -21,7 +21,7 @@ struct URLImage: View {
             else {
                 ProgressView()
                     .onReceive(
-                        NetworkClient.shared.getImageResource(for: url)
+                        SRGService.getImageResource(client: NetworkClient.shared, for: url)
                             .receive(on: DispatchQueue.main),
                         perform: { uiImage = $0 }
                     )

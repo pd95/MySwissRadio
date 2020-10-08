@@ -1,13 +1,96 @@
 //
-//  API.swift
+//  SRGService.swift
 //  MyRadio
 //
 //  Created by Philipp on 06.10.20.
 //
 
 import Foundation
+import Combine
+import UIKit
 
-enum API {
+enum SRGService {
+
+    static let jsonDecoder : JSONDecoder = initJSONDecoder()
+
+    // JSON Decoder initialisation
+    private static func initJSONDecoder() -> JSONDecoder {
+        // We cannot use the dateDecodingStrategy iso8601 as we have sometimes fractional seconds
+        // So we use our own JSONDecoder date formatter configuration
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .custom({ (decoder) -> Date in
+            let container = try decoder.singleValueContainer()
+            let dateStr = try container.decode(String.self)
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+            if let date = dateFormatter.date(from: dateStr) {
+                return date
+            }
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+            return dateFormatter.date(from: dateStr)!
+        })
+        return decoder
+    }
+
+
+    //MARK: - Main API calls to fetch specific content
+
+    static func getLivestreams(client: NetworkClient, bu: SRGService.BusinessUnits = .srf) -> AnyPublisher<[Livestream], Never> {
+        return client.authenticatedDataRequest(for: .livestreams(bu: bu))
+            .decode(type: SRGService.GetLivestreamsResponse.self, decoder: SRGService.jsonDecoder)
+            .handleEvents(receiveCompletion: { (completion) in
+                switch completion {
+                    case .failure(let error):
+                        print("getLivestreams(\(bu)) Error: \(error)")
+                    default:  break
+                }
+            })
+            .map({ (response: SRGService.GetLivestreamsResponse) -> [Livestream] in
+                response.mediaList.map({ (media: SRGService.Media) -> Livestream in
+                    Livestream(id: media.id, name: media.title, imageURL: media.imageUrl, bu: .init(from: media.vendor), streams: []).fixup()
+                })
+            })
+            .replaceError(with: [])
+            .eraseToAnyPublisher()
+    }
+
+    static func getMediaResource(client: NetworkClient, for mediaID: String, bu: SRGService.BusinessUnits = .srf) -> AnyPublisher<Livestream?, Never> {
+        return client.authenticatedDataRequest(for: .mediaComposition(for: mediaID, bu: bu))
+            .decode(type: SRGService.GetMediaCompositionResponse.self, decoder: SRGService.jsonDecoder)
+            .handleEvents(receiveCompletion: { (completion) in
+                switch completion {
+                    case .failure(let error):
+                        print("getMediaResource(\(mediaID), \(bu)) Error: \(error)")
+                    default:  break
+                }
+            })
+            .map({ (response: SRGService.GetMediaCompositionResponse) -> Livestream? in
+                return response.chapterList.first
+                    .map({ (chapter: SRGService.Chapter) -> Livestream in
+                        let urls = chapter.resourceList.filter{ $0.streaming == .hls }
+                            .sorted(by: { (lhs: SRGService.Resource, rhs: SRGService.Resource) -> Bool in
+                                lhs.quality != rhs.quality &&
+                                    lhs.quality != .sd
+                            })
+                            .map(\.url)
+                        return Livestream(id: chapter.id, name: chapter.title, imageURL: chapter.imageUrl, bu: .init(from: chapter.vendor), streams: urls).fixup()
+                    })
+            })
+            .replaceError(with: nil)
+            .eraseToAnyPublisher()
+    }
+
+    static func getImageResource(client: NetworkClient, for url: URL) -> AnyPublisher<UIImage?, Never> {
+        return client.dataRequest(for: url)
+            .map({ UIImage(data: $0) })
+            .replaceError(with: nil)
+            .eraseToAnyPublisher()
+    }
+}
+
+
+//MARK: - Data structures used in the API
+extension SRGService {
 
     enum BusinessUnits: String, Decodable, CaseIterable {
         case srf = "SRF", rsi = "RSI", rtr = "RTR", rts = "RTS", swi = "SWI"
@@ -182,11 +265,5 @@ enum API {
 
     struct ErrorResponse: Decodable {
         let status: Status
-    }
-
-    enum APIError: Error {
-        case unknown
-        case httpError(Int, Status?)
-        case urlError(URLError)
     }
 }

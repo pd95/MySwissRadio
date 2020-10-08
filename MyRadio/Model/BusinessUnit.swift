@@ -10,7 +10,7 @@ import Foundation
 enum BusinessUnit: String, CustomStringConvertible, CaseIterable, Codable {
     case srf = "SRF", rts = "RTS", rsi = "RSI", rtr = "RTR"
 
-    init(from: API.BusinessUnits) {
+    init(from: SRGService.BusinessUnits) {
         self.init(rawValue: from.rawValue)!
     }
 
@@ -18,8 +18,8 @@ enum BusinessUnit: String, CustomStringConvertible, CaseIterable, Codable {
         rawValue
     }
 
-    var apiBusinessUnit: API.BusinessUnits {
-        API.BusinessUnits(rawValue: self.rawValue)!
+    var apiBusinessUnit: SRGService.BusinessUnits {
+        SRGService.BusinessUnits(rawValue: self.rawValue)!
     }
 }
 

@@ -32,7 +32,7 @@ class MyRadioModel: ObservableObject {
 
     func refreshContent() {
         buSortOrder.publisher
-            .flatMap({ NetworkClient.shared.getLivestreams(bu: $0.apiBusinessUnit) })
+            .flatMap({ SRGService.getLivestreams(client: NetworkClient.shared, bu: $0.apiBusinessUnit) })
             .collect()
             .map { Array($0.joined().sorted()) }
             .receive(on: DispatchQueue.main)
@@ -54,7 +54,7 @@ class MyRadioModel: ObservableObject {
     private func fetchMediaURL(for streams: [Livestream]) {
         streams.publisher
             .flatMap({ stream -> AnyPublisher<Livestream?, Never> in
-                return NetworkClient.shared.getMediaResource(for: stream.id, bu: stream.bu.apiBusinessUnit)
+                return SRGService.getMediaResource(client: NetworkClient.shared, for: stream.id, bu: stream.bu.apiBusinessUnit)
             })
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
