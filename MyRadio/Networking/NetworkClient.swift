@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import os.log
+import UIKit
 
 struct NetworkClient {
     private let logger = Logger(subsystem: "MyRadio", category: "NetworkClient")
@@ -56,6 +57,39 @@ struct NetworkClient {
         logger.debug("init() done")
     }
 
+    /// Internal publisher of HTTP data received from the given URL.
+    /// No authorisation is handled - intended for resources only
+    /// - Parameter url: resource URL
+    /// - Returns: A publisher of the data received for the given URL
+    private func requestResource(url: URL) -> AnyPublisher<Data, API.APIError> {
+        logger.log("requestResource(for: \(url))")
+        return urlSession.dataTaskPublisher(for: url)
+            .mapError({ API.APIError.urlError($0) })
+            .flatMap({ result -> AnyPublisher<Data, API.APIError> in
+                guard let httpResponse = result.response as? HTTPURLResponse else {
+                    fatalError("Invalid response for \(url): \(result.response) with data \(result.data)")
+                }
+
+                // Handle request and server errors
+                if !(200...399 ~= httpResponse.statusCode) {
+                    let errorResponse = try? JSONDecoder().decode(API.ErrorResponse.self, from: result.data)
+                    logger.error("received \(httpResponse.statusCode): error \(errorResponse?.status.msg ?? "(N/A)") for \(httpResponse.url?.absoluteString ?? "-")")
+                    return Fail<Data, API.APIError>(error: .httpError(httpResponse.statusCode, errorResponse?.status))
+                        .eraseToAnyPublisher()
+                }
+
+                logger.debug("successful data task, propagating data \(result.data)")
+                return Just(result.data)
+                    .setFailureType(to: API.APIError.self)
+                    .eraseToAnyPublisher()
+            })
+            .eraseToAnyPublisher()
+    }
+
+    /// Internal publisher of HTTP data, to load JSON from a given URL
+    /// Handles authorisation using the configured `authenticator`. If necessary refreshes the access token.
+    /// - Parameter url: target URL
+    /// - Returns: A publisher of the data received for the given URL
     private func requestData(for url: URL) -> AnyPublisher<Data, API.APIError> {
         logger.log("requestData(for: \(url))")
         let maxFailureCount = 5
@@ -188,6 +222,13 @@ struct NetworkClient {
                         return Livestream(id: chapter.id, name: chapter.title, imageURL: chapter.imageUrl, bu: .init(from: chapter.vendor), streams: urls)
                     })
             })
+            .replaceError(with: nil)
+            .eraseToAnyPublisher()
+    }
+
+    func getImageResource(for url: URL) -> AnyPublisher<UIImage?, Never> {
+        return requestResource(url: url)
+            .map({ UIImage(data: $0) })
             .replaceError(with: nil)
             .eraseToAnyPublisher()
     }
