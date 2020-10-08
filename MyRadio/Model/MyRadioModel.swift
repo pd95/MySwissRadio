@@ -51,7 +51,7 @@ class MyRadioModel: ObservableObject {
             .sink(receiveCompletion: { completion in
                 print("refreshContent: \(completion)")
             }, receiveValue: { [weak self] newStreams in
-                self?.streams = newStreams
+                self?.streams = newStreams.sorted()
             })
             .store(in: &cancellables)
     }
