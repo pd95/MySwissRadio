@@ -34,9 +34,16 @@ extension Livestream: Comparable {
 }
 
 extension Livestream {
+
+    func imageURL(for width: Int? = nil) -> URL {
+        if let width = width {
+            return imageURL.appendingPathComponent("/scale/width/\(width)")
+        }
+        return imageURL
+    }
+
     // HACK: The data received from the SRGService is sometimes "broken", so we do some "fixups"
     func fixup() -> Livestream {
-        // Hack for RTS image URLs
         let fixedImageURL: URL
         if bu == .rts && self.imageURL.lastPathComponent == "16x9"{
             fixedImageURL = URL(string: String(self.imageURL.absoluteString.dropLast(5)))!

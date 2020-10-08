@@ -27,6 +27,7 @@
 		17DA93EC252C58F50076EBB2 /* OAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA93EB252C58F50076EBB2 /* OAuthenticator.swift */; };
 		17DB7BDC252CC6FA004C4BF8 /* LivestreamRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DB7BDB252CC6FA004C4BF8 /* LivestreamRow.swift */; };
 		17EC1A88252F9A0900F8AFCF /* BusinessUnit+SRGService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EC1A87252F9A0900F8AFCF /* BusinessUnit+SRGService.swift */; };
+		17EC1A8F252F9EF500F8AFCF /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EC1A8E252F9EF500F8AFCF /* ImageCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		17DA93EB252C58F50076EBB2 /* OAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthenticator.swift; sourceTree = "<group>"; };
 		17DB7BDB252CC6FA004C4BF8 /* LivestreamRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivestreamRow.swift; sourceTree = "<group>"; };
 		17EC1A87252F9A0900F8AFCF /* BusinessUnit+SRGService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BusinessUnit+SRGService.swift"; sourceTree = "<group>"; };
+		17EC1A8E252F9EF500F8AFCF /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 			children = (
 				1788357C252CA6AA000279A1 /* MyRadioModel.swift */,
 				1788AAF1252E2EE000B89C22 /* AudioController.swift */,
+				17EC1A8E252F9EF500F8AFCF /* ImageCache.swift */,
 				1788358D252CBF8C000279A1 /* Livestream.swift */,
 				17883586252CB9C3000279A1 /* BusinessUnit.swift */,
 			);
@@ -223,6 +226,7 @@
 			files = (
 				1788AAF2252E2EE000B89C22 /* AudioController.swift in Sources */,
 				17DA93D6252C56500076EBB2 /* ContentView.swift in Sources */,
+				17EC1A8F252F9EF500F8AFCF /* ImageCache.swift in Sources */,
 				177A47B8252F3D5B009A4EDB /* UserDefault.swift in Sources */,
 				17EC1A88252F9A0900F8AFCF /* BusinessUnit+SRGService.swift in Sources */,
 				17DA93EC252C58F50076EBB2 /* OAuthenticator.swift in Sources */,

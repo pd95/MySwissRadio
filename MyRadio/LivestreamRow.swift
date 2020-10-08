@@ -15,7 +15,7 @@ struct LivestreamRow: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            URLImage(url: stream.imageURL)
+            URLImage(URLImageViewModel(url: stream.imageURL(for: 200)))
                 .aspectRatio(contentMode: .fit)
                 .frame(height: 40)
                 .clipped()
