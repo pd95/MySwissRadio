@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1703F8E6252F48C800F01ECD /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1703F8E5252F48C800F01ECD /* Settings.bundle */; };
+		1703F8EB252F53CC00F01ECD /* URLImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1703F8EA252F53CC00F01ECD /* URLImage.swift */; };
 		1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1750E222252C5FBD00CB2D4B /* NetworkClient.swift */; };
 		1750E226252C605D00CB2D4B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E225252C605D00CB2D4B /* Config.xcconfig */; };
 		1750E234252C723500CB2D4B /* LocalConfig.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E233252C723500CB2D4B /* LocalConfig.xcconfig */; };
@@ -28,6 +29,7 @@
 
 /* Begin PBXFileReference section */
 		1703F8E5252F48C800F01ECD /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		1703F8EA252F53CC00F01ECD /* URLImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLImage.swift; sourceTree = "<group>"; };
 		1750E222252C5FBD00CB2D4B /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
 		1750E225252C605D00CB2D4B /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		1750E233252C723500CB2D4B /* LocalConfig.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = LocalConfig.xcconfig; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 				17DA93D3252C56500076EBB2 /* MyRadioApp.swift */,
 				17DA93D5252C56500076EBB2 /* ContentView.swift */,
 				17DB7BDB252CC6FA004C4BF8 /* LivestreamRow.swift */,
+				1703F8EA252F53CC00F01ECD /* URLImage.swift */,
 				1750E230252C716A00CB2D4B /* Networking */,
 				1750E231252C717500CB2D4B /* Model */,
 				177A47BA252F3D6D009A4EDB /* Settings */,
@@ -209,6 +212,7 @@
 				177A47B8252F3D5B009A4EDB /* UserDefault.swift in Sources */,
 				17DA93EC252C58F50076EBB2 /* OAuthenticator.swift in Sources */,
 				17DA93D4252C56500076EBB2 /* MyRadioApp.swift in Sources */,
+				1703F8EB252F53CC00F01ECD /* URLImage.swift in Sources */,
 				177A47B5252F3D21009A4EDB /* SettingsStore.swift in Sources */,
 				1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */,
 				1788358E252CBF8C000279A1 /* Livestream.swift in Sources */,

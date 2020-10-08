@@ -11,28 +11,14 @@ struct LivestreamRow: View {
 
     @EnvironmentObject var model: MyRadioModel
 
-    @State private var uiImage: UIImage?
-
     let stream: Livestream
 
     var body: some View {
         HStack(spacing: 0) {
-            Group {
-                if let uiImage = self.uiImage {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                }
-                else {
-                    ProgressView()
-                        .onReceive(NetworkClient.shared.getImageResource(for: stream.imageURL)
-                                    .receive(on: DispatchQueue.main)
-                        ) { (image) in
-                            uiImage = image
-                        }
-                }
-            }
-            .aspectRatio(contentMode: .fit)
-            .frame(height: 40)
+            URLImage(url: stream.imageURL)
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 40)
+                .clipped()
 
             Text(stream.name)
                 .padding(.horizontal)
