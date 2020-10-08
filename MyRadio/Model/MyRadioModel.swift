@@ -13,9 +13,9 @@ class MyRadioModel: ObservableObject {
 
     //MARK: - Access to model data and UI helpers
 
-    @Published var streams: [Livestream] = SettingsStore.shared.getEncodedData(forKey: "streams", from: .shared) ?? [] {
+    @Published var streams: [Livestream] = SettingsStore.shared.streams {
         didSet {
-            try! SettingsStore.shared.setEncodedData(streams, forKey: "streams", in: .shared)
+            SettingsStore.shared.streams = streams
         }
     }
 

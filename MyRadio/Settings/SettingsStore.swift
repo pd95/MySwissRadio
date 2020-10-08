@@ -27,24 +27,14 @@ class SettingsStore: ObservableObject {
         checkAndSetVersionAndBuildNumber()
     }
 
-    @UserDefault(key: UserDefaults.Keys.reset, defaultValue: false)
+    @UserDefault(key: .reset, defaultValue: false)
     var reset: Bool
 
-    @UserDefault(key: UserDefaults.Keys.appVersion, defaultValue: "-")
+    @UserDefault(key: .appVersion, defaultValue: "-")
     var appVersion: String
 
-    // Utilities to store and retrieve `Codable` data in UserDefaults
-    func setEncodedData<T>(_ encodable: T, forKey key: String, in storage: UserDefaults = .standard) throws where T: Codable {
-        let data = try JSONEncoder().encode(encodable)
-        storage.setValue(data, forKey: key)
-    }
-
-    func getEncodedData<T>(forKey key: String, from storage: UserDefaults = .standard) -> T? where T: Codable {
-        guard let data = storage.data(forKey: key) else {
-            return nil
-        }
-        return try? JSONDecoder().decode(T.self, from: data)
-    }
+    @CodableUserDefault(key: .streams, defaultValue: [], storage: .shared)
+    var streams: [Livestream]
 
     private func checkAndSetVersionAndBuildNumber() {
         if reset {
@@ -60,6 +50,7 @@ class SettingsStore: ObservableObject {
 
     private func resetAll() {
         logger.log("Resetting all settings for \(UserDefaults.sharedSuiteName) and \(UserDefaults.currentSuiteName)")
+        self.objectWillChange.send()
         UserDefaults.standard.removePersistentDomain(forName: UserDefaults.sharedSuiteName)
         UserDefaults.standard.removePersistentDomain(forName: UserDefaults.currentSuiteName)
     }
@@ -70,8 +61,23 @@ extension UserDefaults {
     static let sharedSuiteName = "MyRadio"
     static let shared = UserDefaults(suiteName: sharedSuiteName)!
 
-    fileprivate struct Keys {
-        static let reset = "reset"
-        static let appVersion = "appVersion"
+    enum SettingsKey: String, CaseIterable {
+        case reset
+        case appVersion
+        case streams
+    }
+
+    func removeObject(forKey settingsKey: SettingsKey) {
+        removeObject(forKey: settingsKey.rawValue)
+    }
+
+    /// Get or set a value for a `SettingsKey`.
+    ///
+    /// `get`: `nil` if a retrieved object cannot be cast to `Value`.
+    ///
+    /// `set`: Equivalent to calling `removeObject`  if `newValue` is `nil`.
+    subscript<Value>(key: SettingsKey) -> Value? {
+        get { object(forKey: key.rawValue) as? Value }
+        set { set(newValue, forKey: key.rawValue) }
     }
 }
