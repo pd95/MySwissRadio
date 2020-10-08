@@ -20,6 +20,18 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>SRG_AUTH_DEFAULTS_KEY</key>
+	<string>$(SRG_AUTH_DEFAULTS_KEY)</string>
+	<key>SRG_AUTH_DEFAULTS_SUITE</key>
+	<string>$(SRG_AUTH_DEFAULTS_SUITE)</string>
+	<key>SRG_AUTH_KEY</key>
+	<string>$(SRG_AUTH_KEY)</string>
+	<key>SRG_AUTH_SECRET</key>
+	<string>$(SRG_AUTH_SECRET)</string>
+	<key>SRG_AUTH_URL</key>
+	<string>$(SRG_AUTH_URL)</string>
+	<key>SRG_BASE_URL</key>
+	<string>$(SRG_BASE_URL)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -50,17 +62,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>SRG_AUTH_KEY</key>
-	<string>$(SRG_AUTH_KEY)</string>
-	<key>SRG_AUTH_SECRET</key>
-	<string>$(SRG_AUTH_SECRET)</string>
-	<key>SRG_AUTH_DEFAULTS_SUITE</key>
-	<string>$(SRG_AUTH_DEFAULTS_SUITE)</string>
-	<key>SRG_AUTH_DEFAULTS_KEY</key>
-	<string>$(SRG_AUTH_DEFAULTS_KEY)</string>
-	<key>SRG_BASE_URL</key>
-	<string>$(SRG_BASE_URL)</string>
-	<key>SRG_AUTH_URL</key>
-	<string>$(SRG_AUTH_URL)</string>
 </dict>
 </plist>

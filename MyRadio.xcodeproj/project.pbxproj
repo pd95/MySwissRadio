@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		171F5245252E0C80005B3472 /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F5244252E0C80005B3472 /* UserDefaults+Extension.swift */; };
+		1703F8E6252F48C800F01ECD /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1703F8E5252F48C800F01ECD /* Settings.bundle */; };
 		1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1750E222252C5FBD00CB2D4B /* NetworkClient.swift */; };
 		1750E226252C605D00CB2D4B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E225252C605D00CB2D4B /* Config.xcconfig */; };
 		1750E234252C723500CB2D4B /* LocalConfig.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E233252C723500CB2D4B /* LocalConfig.xcconfig */; };
+		177A47B5252F3D21009A4EDB /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177A47B4252F3D21009A4EDB /* SettingsStore.swift */; };
+		177A47B8252F3D5B009A4EDB /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177A47B7252F3D5B009A4EDB /* UserDefault.swift */; };
 		1788357D252CA6AA000279A1 /* MyRadioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788357C252CA6AA000279A1 /* MyRadioModel.swift */; };
 		17883587252CB9C3000279A1 /* BusinessUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17883586252CB9C3000279A1 /* BusinessUnit.swift */; };
 		1788358B252CBE50000279A1 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788358A252CBE50000279A1 /* API.swift */; };
@@ -25,10 +27,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		171F5244252E0C80005B3472 /* UserDefaults+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extension.swift"; sourceTree = "<group>"; };
+		1703F8E5252F48C800F01ECD /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		1750E222252C5FBD00CB2D4B /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
 		1750E225252C605D00CB2D4B /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		1750E233252C723500CB2D4B /* LocalConfig.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = LocalConfig.xcconfig; sourceTree = "<group>"; };
+		177A47B4252F3D21009A4EDB /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
+		177A47B7252F3D5B009A4EDB /* UserDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefault.swift; sourceTree = "<group>"; };
 		1788357C252CA6AA000279A1 /* MyRadioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRadioModel.swift; sourceTree = "<group>"; };
 		17883586252CB9C3000279A1 /* BusinessUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessUnit.swift; sourceTree = "<group>"; };
 		1788358A252CBE50000279A1 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
@@ -76,6 +80,15 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		177A47BA252F3D6D009A4EDB /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				177A47B4252F3D21009A4EDB /* SettingsStore.swift */,
+				177A47B7252F3D5B009A4EDB /* UserDefault.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		17DA93C7252C56500076EBB2 = {
 			isa = PBXGroup;
 			children = (
@@ -98,13 +111,14 @@
 			isa = PBXGroup;
 			children = (
 				17DA93D3252C56500076EBB2 /* MyRadioApp.swift */,
-				171F5244252E0C80005B3472 /* UserDefaults+Extension.swift */,
 				17DA93D5252C56500076EBB2 /* ContentView.swift */,
 				17DB7BDB252CC6FA004C4BF8 /* LivestreamRow.swift */,
 				1750E230252C716A00CB2D4B /* Networking */,
 				1750E231252C717500CB2D4B /* Model */,
+				177A47BA252F3D6D009A4EDB /* Settings */,
 				17DA93D7252C56510076EBB2 /* Assets.xcassets */,
 				17DA93DC252C56510076EBB2 /* Info.plist */,
+				1703F8E5252F48C800F01ECD /* Settings.bundle */,
 				17DA93D9252C56510076EBB2 /* Preview Content */,
 			);
 			path = MyRadio;
@@ -178,6 +192,7 @@
 				1750E226252C605D00CB2D4B /* Config.xcconfig in Resources */,
 				1750E234252C723500CB2D4B /* LocalConfig.xcconfig in Resources */,
 				17DA93DB252C56510076EBB2 /* Preview Assets.xcassets in Resources */,
+				1703F8E6252F48C800F01ECD /* Settings.bundle in Resources */,
 				17DA93D8252C56510076EBB2 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -191,14 +206,15 @@
 			files = (
 				1788AAF2252E2EE000B89C22 /* AudioController.swift in Sources */,
 				17DA93D6252C56500076EBB2 /* ContentView.swift in Sources */,
+				177A47B8252F3D5B009A4EDB /* UserDefault.swift in Sources */,
 				17DA93EC252C58F50076EBB2 /* OAuthenticator.swift in Sources */,
 				17DA93D4252C56500076EBB2 /* MyRadioApp.swift in Sources */,
+				177A47B5252F3D21009A4EDB /* SettingsStore.swift in Sources */,
 				1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */,
 				1788358E252CBF8C000279A1 /* Livestream.swift in Sources */,
 				17DB7BDC252CC6FA004C4BF8 /* LivestreamRow.swift in Sources */,
 				17883587252CB9C3000279A1 /* BusinessUnit.swift in Sources */,
 				1788358B252CBE50000279A1 /* API.swift in Sources */,
-				171F5245252E0C80005B3472 /* UserDefaults+Extension.swift in Sources */,
 				1788357D252CA6AA000279A1 /* MyRadioModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
