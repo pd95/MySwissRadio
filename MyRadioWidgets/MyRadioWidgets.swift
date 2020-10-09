@@ -29,12 +29,23 @@ struct Provider: IntentTimelineProvider {
             .store(in: &Self.cancellables)
     }
 
+    private func getStream(for station: Station?) -> Livestream?{
+        guard let selectedStationID = station?.identifier,
+           let stream = Self.streams.first(where: { $0.id == selectedStationID })
+        else  {
+            return nil
+        }
+
+        return stream
+    }
+
     func placeholder(in context: Context) -> SimpleEntry {
         SimpleEntry(date: Date(), configuration: ConfigurationIntent(), livestream: .example, isPlaying: false)
     }
 
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), configuration: configuration, livestream: .example, isPlaying: false)
+        let stream: Livestream = getStream(for: configuration.Station) ?? .example
+        let entry = SimpleEntry(date: Date(), configuration: configuration, livestream: stream, isPlaying: false)
         completion(entry)
     }
 
@@ -43,14 +54,20 @@ struct Provider: IntentTimelineProvider {
 
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
-        for streamOffset in 0 ..< Self.streams.count {
-            let entryDate = Calendar.current.date(byAdding: .second, value: 5*streamOffset, to: currentDate)!
-            let stream = Self.streams[streamOffset]
-            let entry = SimpleEntry(date: entryDate, configuration: configuration, livestream: stream, isPlaying: false)
+        if let stream = getStream(for: configuration.Station) {
+            let entry = SimpleEntry(date: currentDate, configuration: configuration, livestream: stream, isPlaying: false)
             entries.append(entry)
+        }
+        else {
+            for streamOffset in 0 ..< Self.streams.count {
+                let entryDate = Calendar.current.date(byAdding: .second, value: 5*streamOffset, to: currentDate)!
+                let stream = Self.streams[streamOffset]
+                let entry = SimpleEntry(date: entryDate, configuration: configuration, livestream: stream, isPlaying: false)
+                entries.append(entry)
 
-            if stream.thumbnailImage == nil {
-                fetchImage(stream)
+                if stream.thumbnailImage == nil {
+                    fetchImage(stream)
+                }
             }
         }
 
@@ -113,8 +130,8 @@ struct MyRadioWidgets: Widget {
         IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
             MyRadioWidgetsEntryView(entry: entry)
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
+        .configurationDisplayName("My Swiss Radio")
+        .description("Start playing your preferred radio station with a single tap.")
     }
 }
 

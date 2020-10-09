@@ -14,6 +14,15 @@
 		1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1750E222252C5FBD00CB2D4B /* NetworkClient.swift */; };
 		1750E226252C605D00CB2D4B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E225252C605D00CB2D4B /* Config.xcconfig */; };
 		1750E234252C723500CB2D4B /* LocalConfig.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E233252C723500CB2D4B /* LocalConfig.xcconfig */; };
+		177783842530FF0E003D19A3 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177783832530FF0E003D19A3 /* IntentHandler.swift */; };
+		177783882530FF0E003D19A3 /* MyRadioIntentHandler.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 177783812530FF0E003D19A3 /* MyRadioIntentHandler.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1777838F2530FF39003D19A3 /* MyRadioWidgets.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 17C6DD522530CD2A003D603E /* MyRadioWidgets.intentdefinition */; };
+		1777839325310018003D19A3 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177A47B4252F3D21009A4EDB /* SettingsStore.swift */; };
+		1777839425310018003D19A3 /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177A47B7252F3D5B009A4EDB /* UserDefault.swift */; };
+		1777839525310018003D19A3 /* BusinessUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17883586252CB9C3000279A1 /* BusinessUnit.swift */; };
+		1777839625310018003D19A3 /* Livestream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788358D252CBF8C000279A1 /* Livestream.swift */; };
+		1777839A25310185003D19A3 /* Bundle+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F58D825308CF200072EF5 /* Bundle+Sharing.swift */; };
+		1777839B25310185003D19A3 /* FileManager+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F58D42530831200072EF5 /* FileManager+Sharing.swift */; };
 		177A47B5252F3D21009A4EDB /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177A47B4252F3D21009A4EDB /* SettingsStore.swift */; };
 		177A47B8252F3D5B009A4EDB /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177A47B7252F3D5B009A4EDB /* UserDefault.swift */; };
 		1788357D252CA6AA000279A1 /* MyRadioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788357C252CA6AA000279A1 /* MyRadioModel.swift */; };
@@ -50,6 +59,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		177783862530FF0E003D19A3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 17DA93C8252C56500076EBB2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 177783802530FF0E003D19A3;
+			remoteInfo = MyRadioIntentHandler;
+		};
 		17C6DD582530CD2C003D603E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 17DA93C8252C56500076EBB2 /* Project object */;
@@ -67,6 +83,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				17C6DD5A2530CD2C003D603E /* MyRadioWidgetsExtension.appex in Embed App Extensions */,
+				177783882530FF0E003D19A3 /* MyRadioIntentHandler.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -82,6 +99,9 @@
 		1750E222252C5FBD00CB2D4B /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
 		1750E225252C605D00CB2D4B /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		1750E233252C723500CB2D4B /* LocalConfig.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = LocalConfig.xcconfig; sourceTree = "<group>"; };
+		177783812530FF0E003D19A3 /* MyRadioIntentHandler.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MyRadioIntentHandler.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		177783832530FF0E003D19A3 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
+		177783852530FF0E003D19A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		177A47B4252F3D21009A4EDB /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
 		177A47B7252F3D5B009A4EDB /* UserDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefault.swift; sourceTree = "<group>"; };
 		1788357C252CA6AA000279A1 /* MyRadioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRadioModel.swift; sourceTree = "<group>"; };
@@ -97,7 +117,6 @@
 		17C6DD522530CD2A003D603E /* MyRadioWidgets.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = MyRadioWidgets.intentdefinition; sourceTree = "<group>"; };
 		17C6DD532530CD2C003D603E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		17C6DD552530CD2C003D603E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		17C6DD6D2530D362003D603E /* MyRadioWidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyRadioWidgetsExtension.entitlements; sourceTree = "<group>"; };
 		17DA93D0252C56500076EBB2 /* MyRadio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyRadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17DA93D3252C56500076EBB2 /* MyRadioApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRadioApp.swift; sourceTree = "<group>"; };
 		17DA93D5252C56500076EBB2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -111,6 +130,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1777837E2530FF0E003D19A3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		17C6DD462530CD2A003D603E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -152,6 +178,15 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		177783822530FF0E003D19A3 /* MyRadioIntentHandler */ = {
+			isa = PBXGroup;
+			children = (
+				177783832530FF0E003D19A3 /* IntentHandler.swift */,
+				177783852530FF0E003D19A3 /* Info.plist */,
+			);
+			path = MyRadioIntentHandler;
+			sourceTree = "<group>";
+		};
 		177A47BA252F3D6D009A4EDB /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -186,7 +221,6 @@
 				17C6DD522530CD2A003D603E /* MyRadioWidgets.intentdefinition */,
 				17C6DD532530CD2C003D603E /* Assets.xcassets */,
 				17C6DD552530CD2C003D603E /* Info.plist */,
-				17C6DD6D2530D362003D603E /* MyRadioWidgetsExtension.entitlements */,
 			);
 			path = MyRadioWidgets;
 			sourceTree = "<group>";
@@ -198,6 +232,7 @@
 				1750E233252C723500CB2D4B /* LocalConfig.xcconfig */,
 				17DA93D2252C56500076EBB2 /* MyRadio */,
 				17C6DD4F2530CD2A003D603E /* MyRadioWidgets */,
+				177783822530FF0E003D19A3 /* MyRadioIntentHandler */,
 				17C6DD4A2530CD2A003D603E /* Frameworks */,
 				17DA93D1252C56500076EBB2 /* Products */,
 			);
@@ -208,6 +243,7 @@
 			children = (
 				17DA93D0252C56500076EBB2 /* MyRadio.app */,
 				17C6DD492530CD2A003D603E /* MyRadioWidgetsExtension.appex */,
+				177783812530FF0E003D19A3 /* MyRadioIntentHandler.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -253,6 +289,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		177783802530FF0E003D19A3 /* MyRadioIntentHandler */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 177783892530FF0E003D19A3 /* Build configuration list for PBXNativeTarget "MyRadioIntentHandler" */;
+			buildPhases = (
+				1777837D2530FF0E003D19A3 /* Sources */,
+				1777837E2530FF0E003D19A3 /* Frameworks */,
+				1777837F2530FF0E003D19A3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MyRadioIntentHandler;
+			productName = MyRadioIntentHandler;
+			productReference = 177783812530FF0E003D19A3 /* MyRadioIntentHandler.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		17C6DD482530CD2A003D603E /* MyRadioWidgetsExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 17C6DD5E2530CD2C003D603E /* Build configuration list for PBXNativeTarget "MyRadioWidgetsExtension" */;
@@ -283,6 +336,7 @@
 			);
 			dependencies = (
 				17C6DD592530CD2C003D603E /* PBXTargetDependency */,
+				177783872530FF0E003D19A3 /* PBXTargetDependency */,
 			);
 			name = MyRadio;
 			productName = MyRadio;
@@ -298,6 +352,9 @@
 				LastSwiftUpdateCheck = 1200;
 				LastUpgradeCheck = 1200;
 				TargetAttributes = {
+					177783802530FF0E003D19A3 = {
+						CreatedOnToolsVersion = 12.0;
+					};
 					17C6DD482530CD2A003D603E = {
 						CreatedOnToolsVersion = 12.0;
 					};
@@ -321,11 +378,19 @@
 			targets = (
 				17DA93CF252C56500076EBB2 /* MyRadio */,
 				17C6DD482530CD2A003D603E /* MyRadioWidgetsExtension */,
+				177783802530FF0E003D19A3 /* MyRadioIntentHandler */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1777837F2530FF0E003D19A3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		17C6DD472530CD2A003D603E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -349,6 +414,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1777837D2530FF0E003D19A3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1777839425310018003D19A3 /* UserDefault.swift in Sources */,
+				1777839625310018003D19A3 /* Livestream.swift in Sources */,
+				1777838F2530FF39003D19A3 /* MyRadioWidgets.intentdefinition in Sources */,
+				1777839325310018003D19A3 /* SettingsStore.swift in Sources */,
+				177783842530FF0E003D19A3 /* IntentHandler.swift in Sources */,
+				1777839A25310185003D19A3 /* Bundle+Sharing.swift in Sources */,
+				1777839B25310185003D19A3 /* FileManager+Sharing.swift in Sources */,
+				1777839525310018003D19A3 /* BusinessUnit.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		17C6DD452530CD2A003D603E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -397,6 +477,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		177783872530FF0E003D19A3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 177783802530FF0E003D19A3 /* MyRadioIntentHandler */;
+			targetProxy = 177783862530FF0E003D19A3 /* PBXContainerItemProxy */;
+		};
 		17C6DD592530CD2C003D603E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 17C6DD482530CD2A003D603E /* MyRadioWidgetsExtension */;
@@ -405,12 +490,52 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		1777838A2530FF0E003D19A3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MyRadio/MyRadio.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = P8CC95REUG;
+				INFOPLIST_FILE = MyRadioIntentHandler/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.MyRadio.iOSApp.MyRadioIntentHandler;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1777838B2530FF0E003D19A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MyRadio/MyRadio.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = P8CC95REUG;
+				INFOPLIST_FILE = MyRadioIntentHandler/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.MyRadio.iOSApp.MyRadioIntentHandler;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		17C6DD5C2530CD2C003D603E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = MyRadioWidgets/MyRadioWidgetsExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MyRadio/MyRadio.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = P8CC95REUG;
 				INFOPLIST_FILE = MyRadioWidgets/Info.plist;
@@ -432,7 +557,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = MyRadioWidgets/MyRadioWidgetsExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MyRadio/MyRadio.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = P8CC95REUG;
 				INFOPLIST_FILE = MyRadioWidgets/Info.plist;
@@ -618,6 +743,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		177783892530FF0E003D19A3 /* Build configuration list for PBXNativeTarget "MyRadioIntentHandler" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1777838A2530FF0E003D19A3 /* Debug */,
+				1777838B2530FF0E003D19A3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		17C6DD5E2530CD2C003D603E /* Build configuration list for PBXNativeTarget "MyRadioWidgetsExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
