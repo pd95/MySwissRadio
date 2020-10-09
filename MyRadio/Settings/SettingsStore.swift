@@ -24,6 +24,7 @@ class SettingsStore: ObservableObject {
                 self?.logger.log("UserDefaults.didChangeNotification \(x.description)")
                 self?.checkAndSetVersionAndBuildNumber()
             }
+        //reset = true
         checkAndSetVersionAndBuildNumber()
     }
 

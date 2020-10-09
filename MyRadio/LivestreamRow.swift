@@ -16,7 +16,7 @@ struct LivestreamRow: View {
     var body: some View {
         HStack(spacing: 0) {
             Group {
-                if let uiImage = model.thumbnailImage(for: stream) {
+                if let uiImage = stream.thumbnailImage {
                     Image(uiImage: uiImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)

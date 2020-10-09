@@ -26,38 +26,6 @@ class MyRadioModel: ObservableObject {
         streams.filter({ $0.bu == bu})
     }
 
-    func thumbnailImage(for stream: Livestream) -> UIImage? {
-        // Check first in in-memory cache
-        if let image = ImageCache.shared[stream.imageURL] {
-            return image
-        }
-
-        // Then, check on file system in the shared cache
-        let cacheURL = FileManager.sharedCacheLocation()
-        let fileURL = cacheURL.appendingPathComponent("Stream-Thumbnail-\(stream.id).png")
-        if let data = try? Data(contentsOf: fileURL),
-           let image = UIImage(data: data) {
-            ImageCache.shared[stream.imageURL] = image
-            return image
-        }
-        return nil
-    }
-
-    private func saveThumbnail(_ image: UIImage?, for stream: Livestream) {
-        if let data = image?.pngData() {
-            let cacheURL = FileManager.sharedCacheLocation()
-            let fileURL = cacheURL.appendingPathComponent("Stream-Thumbnail-\(stream.id).png")
-            if let _ = try? data.write(to: fileURL, options: .atomicWrite) {
-                DispatchQueue.main.async {
-                    self.objectWillChange.send()
-                }
-            }
-            else {
-                print("Failed to save data to \(fileURL)")
-            }
-        }
-    }
-
     //MARK: - Fetching data from NetworkClient
 
     private var cancellables = Set<AnyCancellable>()
@@ -67,12 +35,16 @@ class MyRadioModel: ObservableObject {
 
         let logger = Logger(subsystem: "MyRadioModel", category: "refreshContent")
 
+        var streams = [Livestream]()
+
         logger.log("starting to refresh")
         let livestreamsPublisher: AnyPublisher<[Livestream], Never> = buSortOrder.publisher
             .flatMap({ SRGService.getLivestreams(client: networkClient, bu: $0.apiBusinessUnit) })
             .handleEvents(receiveOutput: { [weak self] (newStreams: [Livestream]) in
+                streams.append(contentsOf: newStreams)
+
                 DispatchQueue.main.async {
-                    self?.streams.append(contentsOf: newStreams)
+                    self?.streams = streams
                     logger.log("updated streams to show intermediate UI")
                 }
             })
@@ -80,15 +52,20 @@ class MyRadioModel: ObservableObject {
                 Publishers.Sequence(sequence: streams)
                     .eraseToAnyPublisher()
             })
-            .flatMap({ (stream: Livestream) -> AnyPublisher<Livestream?, Never> in
+            .flatMap({ (stream: Livestream) -> AnyPublisher<Livestream, Never> in
                 SRGService.getMediaResource(client: networkClient, for: stream.id, bu: stream.bu.apiBusinessUnit)
+                    .map { (streamUrls: [URL]) -> Livestream in
+                        let index = streams.firstIndex(of: stream)!
+                        streams[index].streams = streamUrls
+                        return streams[index]
+                    }
+                    .eraseToAnyPublisher()
             })
-            .compactMap({ (stream: Livestream?) -> Livestream? in stream })  // get rid of failed entries (=unwrap Livestream?)
             .collect()
             .handleEvents(receiveOutput: { [weak self] (updatedStreams: [Livestream]) in
                 // Make sure UI is updated
                 DispatchQueue.main.async {
-                    self?.streams = updatedStreams
+                    self?.streams = streams
                     logger.log("updated streams to show final UI (without images)")
                 }
             })
@@ -100,7 +77,7 @@ class MyRadioModel: ObservableObject {
                     .eraseToAnyPublisher()
             })
             .flatMap({ (stream: Livestream) -> AnyPublisher<(stream: Livestream, image: UIImage?), Never> in
-                SRGService.getImageResource(client: networkClient, for: stream.imageURL(for: 400))
+                SRGService.getImageResource(client: networkClient, for: stream.thumbnailImageURL)
                     .map { image -> (stream: Livestream, image: UIImage?) in
                         (stream: stream, image: image)
                     }
@@ -108,8 +85,12 @@ class MyRadioModel: ObservableObject {
             })
             .sink(receiveCompletion: { completion in
                 logger.log("completed with \(String(describing: completion))")
-            }, receiveValue: { [weak self](value) in
-                self?.saveThumbnail(value.image, for: value.stream)
+            }, receiveValue: { (value) in
+                guard let image = value.image else {
+                    logger.log("No valid image for \(String(describing: value.stream))")
+                    return
+                }
+                try? value.stream.saveThumbnail(image)
                 logger.log("saving thumbnail image for \(String(describing: value.stream))")
             })
             .store(in: &cancellables)

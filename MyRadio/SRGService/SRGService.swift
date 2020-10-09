@@ -46,15 +46,17 @@ enum SRGService {
                 }
             })
             .map({ (response: SRGService.GetLivestreamsResponse) -> [Livestream] in
-                response.mediaList.map({ (media: SRGService.Media) -> Livestream in
-                    Livestream(id: media.id, name: media.title, imageURL: media.imageUrl, bu: .init(from: media.vendor), streams: []).fixup()
+                let enumeratedMedia = response.mediaList.enumerated()
+
+                return enumeratedMedia.map({ (index, media) -> Livestream in
+                    Livestream(id: media.id, name: media.title, imageURL: media.imageUrl, bu: .init(from: media.vendor), sortOrder: index, streams: []).fixup()
                 })
             })
             .replaceError(with: [])
             .eraseToAnyPublisher()
     }
 
-    static func getMediaResource(client: NetworkClient, for mediaID: String, bu: SRGService.BusinessUnits = .srf) -> AnyPublisher<Livestream?, Never> {
+    static func getMediaResource(client: NetworkClient, for mediaID: String, bu: SRGService.BusinessUnits = .srf) -> AnyPublisher<[URL], Never> {
         return client.authenticatedDataRequest(for: .mediaComposition(for: mediaID, bu: bu))
             .decode(type: SRGService.GetMediaCompositionResponse.self, decoder: SRGService.jsonDecoder)
             .handleEvents(receiveCompletion: { (completion) in
@@ -64,19 +66,21 @@ enum SRGService {
                     default:  break
                 }
             })
-            .map({ (response: SRGService.GetMediaCompositionResponse) -> Livestream? in
-                return response.chapterList.first
-                    .map({ (chapter: SRGService.Chapter) -> Livestream in
+            .map({ (response: SRGService.GetMediaCompositionResponse) -> [URL]? in
+                let mediaURLs = response.chapterList.first
+                    .map({ (chapter: SRGService.Chapter) -> [URL] in
                         let urls = chapter.resourceList.filter{ $0.streaming == .hls }
                             .sorted(by: { (lhs: SRGService.Resource, rhs: SRGService.Resource) -> Bool in
                                 lhs.quality != rhs.quality &&
                                     lhs.quality != .sd
                             })
                             .map(\.url)
-                        return Livestream(id: chapter.id, name: chapter.title, imageURL: chapter.imageUrl, bu: .init(from: chapter.vendor), streams: urls).fixup()
+                        return urls
                     })
+                return mediaURLs
             })
-            .replaceError(with: nil)
+            .replaceError(with: [])
+            .replaceNil(with: [])
             .eraseToAnyPublisher()
     }
 

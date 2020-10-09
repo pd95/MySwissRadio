@@ -21,6 +21,7 @@
 		1788358B252CBE50000279A1 /* SRGService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788358A252CBE50000279A1 /* SRGService.swift */; };
 		1788358E252CBF8C000279A1 /* Livestream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788358D252CBF8C000279A1 /* Livestream.swift */; };
 		1788AAF2252E2EE000B89C22 /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788AAF1252E2EE000B89C22 /* AudioController.swift */; };
+		179B63A32530BAB500D0881E /* Livestream+ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */; };
 		17DA93D4252C56500076EBB2 /* MyRadioApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA93D3252C56500076EBB2 /* MyRadioApp.swift */; };
 		17DA93D6252C56500076EBB2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA93D5252C56500076EBB2 /* ContentView.swift */; };
 		17DA93D8252C56510076EBB2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17DA93D7252C56510076EBB2 /* Assets.xcassets */; };
@@ -47,6 +48,7 @@
 		1788358A252CBE50000279A1 /* SRGService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRGService.swift; sourceTree = "<group>"; };
 		1788358D252CBF8C000279A1 /* Livestream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Livestream.swift; sourceTree = "<group>"; };
 		1788AAF1252E2EE000B89C22 /* AudioController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioController.swift; sourceTree = "<group>"; };
+		179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Livestream+ImageCache.swift"; sourceTree = "<group>"; };
 		17DA93D0252C56500076EBB2 /* MyRadio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyRadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17DA93D3252C56500076EBB2 /* MyRadioApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRadioApp.swift; sourceTree = "<group>"; };
 		17DA93D5252C56500076EBB2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 				1788AAF1252E2EE000B89C22 /* AudioController.swift */,
 				17EC1A8E252F9EF500F8AFCF /* ImageCache.swift */,
 				1788358D252CBF8C000279A1 /* Livestream.swift */,
+				179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */,
 				17883586252CB9C3000279A1 /* BusinessUnit.swift */,
 			);
 			path = Model;
@@ -243,6 +246,7 @@
 				177A47B8252F3D5B009A4EDB /* UserDefault.swift in Sources */,
 				17EC1A88252F9A0900F8AFCF /* BusinessUnit+SRGService.swift in Sources */,
 				17DA93EC252C58F50076EBB2 /* OAuthenticator.swift in Sources */,
+				179B63A32530BAB500D0881E /* Livestream+ImageCache.swift in Sources */,
 				17DA93D4252C56500076EBB2 /* MyRadioApp.swift in Sources */,
 				177A47B5252F3D21009A4EDB /* SettingsStore.swift in Sources */,
 				171F58D925308CF200072EF5 /* Bundle+Sharing.swift in Sources */,
