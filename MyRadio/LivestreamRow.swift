@@ -41,7 +41,6 @@ struct LivestreamRow: View {
                         .foregroundColor(model.isPlaying(stream: stream) ? .red : .accentColor)
                 }
                 .frame(maxHeight: 40)
-                .buttonStyle(BorderlessButtonStyle())
             }
             else {
                 ProgressView()
