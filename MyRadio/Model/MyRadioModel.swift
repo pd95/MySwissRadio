@@ -85,12 +85,15 @@ class MyRadioModel: ObservableObject {
             })
             .sink(receiveCompletion: { completion in
                 logger.log("completed with \(String(describing: completion))")
-            }, receiveValue: { (value) in
+            }, receiveValue: { [weak self] (value) in
                 guard let image = value.image else {
                     logger.log("No valid image for \(String(describing: value.stream))")
                     return
                 }
                 try? value.stream.saveThumbnail(image)
+                DispatchQueue.main.async {
+                    self?.objectWillChange.send()
+                }
                 logger.log("saving thumbnail image for \(String(describing: value.stream))")
             })
             .store(in: &cancellables)
