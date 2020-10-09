@@ -32,6 +32,8 @@
 	<string>$(SRG_AUTH_URL)</string>
 	<key>SRG_BASE_URL</key>
 	<string>$(SRG_BASE_URL)</string>
+	<key>APP_GROUP_IDENTIFIER</key>
+	<string>$(APP_GROUP_IDENTIFIER)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

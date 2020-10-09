@@ -58,7 +58,7 @@ class SettingsStore: ObservableObject {
 
 extension UserDefaults {
     static let currentSuiteName = Bundle.main.bundleIdentifier!
-    static let sharedSuiteName = "MyRadio"
+    static let sharedSuiteName = Bundle.appGroupIdentifier
     static let shared = UserDefaults(suiteName: sharedSuiteName)!
 
     enum SettingsKey: String, CaseIterable {

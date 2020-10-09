@@ -2,6 +2,7 @@
 //   the variables are used in the Info.plist file for this target
 
 PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.MyRadio
+//APP_GROUP_IDENTIFIER =
 //DEVELOPMENT_TEAM =
 //CODE_SIGN_STYLE =
 

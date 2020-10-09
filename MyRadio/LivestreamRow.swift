@@ -15,10 +15,18 @@ struct LivestreamRow: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            URLImage(URLImageViewModel(url: stream.imageURL(for: 200)))
-                .aspectRatio(contentMode: .fit)
-                .frame(height: 40)
-                .clipped()
+            Group {
+                if let uiImage = model.thumbnailImage(for: stream) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .clipped()
+                }
+                else {
+                    ProgressView()
+                }
+            }
+            .frame(height: 40)
 
             Text(stream.name)
                 .padding(.horizontal)
