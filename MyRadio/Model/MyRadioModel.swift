@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import os.log
 import UIKit
+import Intents
 
 class MyRadioModel: ObservableObject {
 
@@ -126,47 +127,89 @@ class MyRadioModel: ObservableObject {
         currentlyPlaying == stream && controller.playerStatus == .unknown
     }
 
+    func stop() {
+        currentlyPlaying = nil
+        controller.stop()
+    }
+
+    func play(_ stream: Livestream) {
+        currentlyPlaying = stream
+        if let url = stream.streams.first {
+            controller.start(id: stream.id, url: url, title: stream.name)
+            controllerObserver = controller.objectWillChange.sink(receiveValue: {
+                _ in
+                print("controller state changed: \(self.controller.playerStatus.rawValue)")
+                self.objectWillChange.send()
+            })
+            donatePlayActivity(stream)
+        }
+    }
+
     func togglePlay(_ stream: Livestream) {
         guard stream.isReady else {
             fatalError("Cannot play stream in unready state: \(stream)")
         }
-        if currentlyPlaying == stream {
-            currentlyPlaying = nil
-            controller.stop()
+        if isPlaying(stream: stream) {
+            stop()
             print("togglePlay: stopped")
         }
         else {
-            if let url = stream.streams.first {
-                currentlyPlaying = stream
-                controller.start(id: stream.id, url: url, title: stream.name)
-                print("togglePlay: start playing \(url)")
-                controllerObserver = controller.objectWillChange.sink(receiveValue: {
-                    _ in
-                    print("controller state changed: \(self.controller.playerStatus.rawValue)")
-                    self.objectWillChange.send()
-                })
+            print("togglePlay: start playing \(stream)")
+            play(stream)
+        }
+    }
+
+    func donatePlayActivity(_ stream: Livestream) {
+        let intent = INPlayMediaIntent(mediaItems: [stream.mediaItem])
+
+        let interaction = INInteraction(intent: intent, response: nil)
+        interaction.donate { (error) in
+            if let error = error {
+                print("Unable to donate \(intent): \(error)")
+            }
+            else {
+                print("Successfully donated playActivity")
             }
         }
     }
 
     func handleActivity(_ userActivity: NSUserActivity) {
-        guard let intent = userActivity.interaction?.intent as? ConfigurationIntent else {
-            print("Wrong intent for activity \(userActivity.activityType): \(userActivity.interaction?.intent)")
-            return
-        }
-        if let station = intent.Station,
-           let streamID = station.identifier
-        {
-            print("ConfigurationIntent = \(intent)")
-            if let stream = stream(withID: streamID) {
-                togglePlay(stream)
+
+        let logger = Logger(subsystem: "MyRadioModel", category: "handleActivity")
+
+        let streamID: String
+        if let intent = userActivity.interaction?.intent as? INPlayMediaIntent {
+            if let item = intent.mediaItems?.first,
+               let itemID = item.identifier
+            {
+                streamID = itemID
             }
             else {
-                print("Unable to find station: \(station)")
+                logger.error("Invalid media item in intent: \(intent)")
+                return
+            }
+        }
+        else if let intent = userActivity.interaction?.intent as? ConfigurationIntent {
+            if let station = intent.Station,
+               let stationID = station.identifier
+            {
+                streamID = stationID
+            }
+            else {
+                logger.error("Invalid station in intent: \(intent)")
+                return
             }
         }
         else {
-            print("No valid station in \(intent)")
+            logger.error("Invalid activity: \(userActivity)")
+            return
+        }
+
+        if let stream = stream(withID: streamID) {
+            play(stream)
+        }
+        else {
+            logger.error("Unable to find stream with ID \(streamID)")
         }
     }
 }

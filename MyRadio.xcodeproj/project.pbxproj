@@ -48,6 +48,10 @@
 		17C6DD6A2530D2A7003D603E /* FileManager+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F58D42530831200072EF5 /* FileManager+Sharing.swift */; };
 		17C6DD782530F422003D603E /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1750E222252C5FBD00CB2D4B /* NetworkClient.swift */; };
 		17C6DD7B2530F431003D603E /* OAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA93EB252C58F50076EBB2 /* OAuthenticator.swift */; };
+		17D8F7642533ABE500041715 /* Livestream+INMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */; };
+		17D8F7682533AC7800041715 /* Livestream+INMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */; };
+		17D8F76C2533ACB900041715 /* Livestream+ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */; };
+		17D8F7702533ACBD00041715 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EC1A8E252F9EF500F8AFCF /* ImageCache.swift */; };
 		17DA93D4252C56500076EBB2 /* MyRadioApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA93D3252C56500076EBB2 /* MyRadioApp.swift */; };
 		17DA93D6252C56500076EBB2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA93D5252C56500076EBB2 /* ContentView.swift */; };
 		17DA93D8252C56510076EBB2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17DA93D7252C56510076EBB2 /* Assets.xcassets */; };
@@ -117,6 +121,7 @@
 		17C6DD522530CD2A003D603E /* MyRadioWidgets.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = MyRadioWidgets.intentdefinition; sourceTree = "<group>"; };
 		17C6DD532530CD2C003D603E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		17C6DD552530CD2C003D603E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Livestream+INMediaItem.swift"; sourceTree = "<group>"; };
 		17DA93D0252C56500076EBB2 /* MyRadio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyRadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17DA93D3252C56500076EBB2 /* MyRadioApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRadioApp.swift; sourceTree = "<group>"; };
 		17DA93D5252C56500076EBB2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -173,6 +178,7 @@
 				17EC1A8E252F9EF500F8AFCF /* ImageCache.swift */,
 				1788358D252CBF8C000279A1 /* Livestream.swift */,
 				179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */,
+				17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */,
 				17883586252CB9C3000279A1 /* BusinessUnit.swift */,
 			);
 			path = Model;
@@ -418,11 +424,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17D8F7702533ACBD00041715 /* ImageCache.swift in Sources */,
 				1777839425310018003D19A3 /* UserDefault.swift in Sources */,
 				1777839625310018003D19A3 /* Livestream.swift in Sources */,
 				1777838F2530FF39003D19A3 /* MyRadioWidgets.intentdefinition in Sources */,
 				1777839325310018003D19A3 /* SettingsStore.swift in Sources */,
 				177783842530FF0E003D19A3 /* IntentHandler.swift in Sources */,
+				17D8F7682533AC7800041715 /* Livestream+INMediaItem.swift in Sources */,
+				17D8F76C2533ACB900041715 /* Livestream+ImageCache.swift in Sources */,
 				1777839A25310185003D19A3 /* Bundle+Sharing.swift in Sources */,
 				1777839B25310185003D19A3 /* FileManager+Sharing.swift in Sources */,
 				1777839525310018003D19A3 /* BusinessUnit.swift in Sources */,
@@ -464,6 +473,7 @@
 				177A47B5252F3D21009A4EDB /* SettingsStore.swift in Sources */,
 				171F58D925308CF200072EF5 /* Bundle+Sharing.swift in Sources */,
 				171F58D52530831200072EF5 /* FileManager+Sharing.swift in Sources */,
+				17D8F7642533ABE500041715 /* Livestream+INMediaItem.swift in Sources */,
 				1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */,
 				1788358E252CBF8C000279A1 /* Livestream.swift in Sources */,
 				17DB7BDC252CC6FA004C4BF8 /* LivestreamRow.swift in Sources */,

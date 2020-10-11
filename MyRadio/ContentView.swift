@@ -27,6 +27,7 @@ struct ContentView: View {
                     }
                 }
             }
+            .onContinueUserActivity("INPlayMediaIntent", perform: model.handleActivity)
             .onContinueUserActivity("ConfigurationIntent", perform: model.handleActivity)
             .onAppear(perform: {
                 if model.streams.isEmpty {
