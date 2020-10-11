@@ -26,6 +26,10 @@ class MyRadioModel: ObservableObject {
         streams.filter({ $0.bu == bu})
     }
 
+    func stream(withID streamID: String) -> Livestream? {
+        streams.first(where: { $0.id == streamID })
+    }
+
     //MARK: - Fetching data from NetworkClient
 
     private var cancellables = Set<AnyCancellable>()
@@ -142,6 +146,27 @@ class MyRadioModel: ObservableObject {
                     self.objectWillChange.send()
                 })
             }
+        }
+    }
+
+    func handleActivity(_ userActivity: NSUserActivity) {
+        guard let intent = userActivity.interaction?.intent as? ConfigurationIntent else {
+            print("Wrong intent for activity \(userActivity.activityType): \(userActivity.interaction?.intent)")
+            return
+        }
+        if let station = intent.Station,
+           let streamID = station.identifier
+        {
+            print("ConfigurationIntent = \(intent)")
+            if let stream = stream(withID: streamID) {
+                togglePlay(stream)
+            }
+            else {
+                print("Unable to find station: \(station)")
+            }
+        }
+        else {
+            print("No valid station in \(intent)")
         }
     }
 }

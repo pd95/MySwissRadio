@@ -27,6 +27,7 @@ struct ContentView: View {
                     }
                 }
             }
+            .onContinueUserActivity("ConfigurationIntent", perform: model.handleActivity)
             .onAppear(perform: {
                 if model.streams.isEmpty {
                     model.refreshContent()
