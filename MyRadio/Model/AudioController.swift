@@ -28,6 +28,7 @@ class AudioController: NSObject, ObservableObject {
     }
 
     func setupMediaPlayerCommands() {
+        print("setupMediaPlayerCommands")
         let commandCenter = MPRemoteCommandCenter.shared()
 
         commandCenter.playCommand.addTarget { [unowned self] _ in
@@ -38,6 +39,11 @@ class AudioController: NSObject, ObservableObject {
             self.player.pause()
             return .success
         }
+    }
+
+    func setupNowPlaying(_ nowPlayingInfo: [String: Any]) {
+        print("setupNowPlaying: \(nowPlayingInfo)")
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
 
     func enterBackground() {
@@ -74,14 +80,6 @@ class AudioController: NSObject, ObservableObject {
 
         player.replaceCurrentItem(with: playerItem)
         player.play()
-
-        // Update "now playing" information
-        var nowPlayingInfo = [String: Any]()
-        nowPlayingInfo[MPMediaItemPropertyTitle] = title
-        nowPlayingInfo[MPMediaItemPropertyArtist] = "My radio"
-        //nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork()
-
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
 
     // KVO callback

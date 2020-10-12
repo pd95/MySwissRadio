@@ -142,6 +142,7 @@ class MyRadioModel: NSObject, ObservableObject {
         currentlyPlaying = stream
         if let url = stream.streams.first {
             controller.start(id: stream.id, url: url, title: stream.name)
+            controller.setupNowPlaying(stream.nowPlayingInfo)
             controllerObserver = controller.objectWillChange.sink(receiveValue: {
                 _ in
                 print("controller state changed: \(self.controller.playerStatus.rawValue)")

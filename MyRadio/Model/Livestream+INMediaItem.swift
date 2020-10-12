@@ -23,8 +23,8 @@ extension Livestream {
     var nowPlayingInfo: [String: Any] {
         var nowPlayingInfo: [String: Any] = [
             MPMediaItemPropertyTitle: name,
-            MPMediaItemPropertyMediaType: MPMediaType.anyAudio
-            //MPMediaItemPropertyPlaybackDuration: NSNumber(value: TimeInterval.infinity)
+            MPMediaItemPropertyMediaType: MPMediaType.anyAudio.rawValue,
+            MPMediaItemPropertyArtist: "My radio"
         ]
 
         if let image = thumbnailImage {
