@@ -7,6 +7,7 @@
 
 import Foundation
 import Intents
+import MediaPlayer
 
 extension Livestream {
     var mediaItem: INMediaItem {
@@ -17,5 +18,23 @@ extension Livestream {
         }
         let media = INMediaItem(identifier: id, title: name, type: .radioStation, artwork: image)
         return media
+    }
+
+    var nowPlayingInfo: [String: Any] {
+        var nowPlayingInfo: [String: Any] = [
+            MPMediaItemPropertyTitle: name,
+            MPMediaItemPropertyMediaType: MPMediaType.anyAudio
+            //MPMediaItemPropertyPlaybackDuration: NSNumber(value: TimeInterval.infinity)
+        ]
+
+        if let image = thumbnailImage {
+            let artwork = MPMediaItemArtwork(boundsSize: CGSize(width: 60, height: 60)) { (_) -> UIImage in
+                return image
+            }
+
+            nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
+        }
+
+        return nowPlayingInfo
     }
 }

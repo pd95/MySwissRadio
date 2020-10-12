@@ -11,6 +11,7 @@
 		171DE89D252F7C0C0099DE8A /* URLReqest+SRGService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171DE89C252F7C0C0099DE8A /* URLReqest+SRGService.swift */; };
 		171F58D52530831200072EF5 /* FileManager+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F58D42530831200072EF5 /* FileManager+Sharing.swift */; };
 		171F58D925308CF200072EF5 /* Bundle+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F58D825308CF200072EF5 /* Bundle+Sharing.swift */; };
+		174508F52534868A00FA3846 /* MyRadioModel+Intents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174508F42534868A00FA3846 /* MyRadioModel+Intents.swift */; };
 		1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1750E222252C5FBD00CB2D4B /* NetworkClient.swift */; };
 		1750E226252C605D00CB2D4B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E225252C605D00CB2D4B /* Config.xcconfig */; };
 		1750E234252C723500CB2D4B /* LocalConfig.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E233252C723500CB2D4B /* LocalConfig.xcconfig */; };
@@ -100,6 +101,7 @@
 		171F58D22530820200072EF5 /* MyRadio.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyRadio.entitlements; sourceTree = "<group>"; };
 		171F58D42530831200072EF5 /* FileManager+Sharing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Sharing.swift"; sourceTree = "<group>"; };
 		171F58D825308CF200072EF5 /* Bundle+Sharing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Sharing.swift"; sourceTree = "<group>"; };
+		174508F42534868A00FA3846 /* MyRadioModel+Intents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyRadioModel+Intents.swift"; sourceTree = "<group>"; };
 		1750E222252C5FBD00CB2D4B /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
 		1750E225252C605D00CB2D4B /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		1750E233252C723500CB2D4B /* LocalConfig.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = LocalConfig.xcconfig; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 		17C6DD532530CD2C003D603E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		17C6DD552530CD2C003D603E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Livestream+INMediaItem.swift"; sourceTree = "<group>"; };
+		17D8F77D2533BD7100041715 /* MyRadioExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyRadioExtension.entitlements; sourceTree = "<group>"; };
 		17DA93D0252C56500076EBB2 /* MyRadio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyRadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17DA93D3252C56500076EBB2 /* MyRadioApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRadioApp.swift; sourceTree = "<group>"; };
 		17DA93D5252C56500076EBB2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -174,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				1788357C252CA6AA000279A1 /* MyRadioModel.swift */,
+				174508F42534868A00FA3846 /* MyRadioModel+Intents.swift */,
 				1788AAF1252E2EE000B89C22 /* AudioController.swift */,
 				17EC1A8E252F9EF500F8AFCF /* ImageCache.swift */,
 				1788358D252CBF8C000279A1 /* Livestream.swift */,
@@ -188,6 +192,7 @@
 			isa = PBXGroup;
 			children = (
 				177783832530FF0E003D19A3 /* IntentHandler.swift */,
+				17D8F77D2533BD7100041715 /* MyRadioExtension.entitlements */,
 				177783852530FF0E003D19A3 /* Info.plist */,
 			);
 			path = MyRadioIntentHandler;
@@ -461,6 +466,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				174508F52534868A00FA3846 /* MyRadioModel+Intents.swift in Sources */,
 				1788AAF2252E2EE000B89C22 /* AudioController.swift in Sources */,
 				17DA93D6252C56500076EBB2 /* ContentView.swift in Sources */,
 				17EC1A8F252F9EF500F8AFCF /* ImageCache.swift in Sources */,
@@ -503,7 +509,7 @@
 		1777838A2530FF0E003D19A3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = MyRadio/MyRadio.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MyRadioIntentHandler/MyRadioExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = P8CC95REUG;
 				INFOPLIST_FILE = MyRadioIntentHandler/Info.plist;
@@ -523,7 +529,7 @@
 		1777838B2530FF0E003D19A3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = MyRadio/MyRadio.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MyRadioIntentHandler/MyRadioExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = P8CC95REUG;
 				INFOPLIST_FILE = MyRadioIntentHandler/Info.plist;
@@ -545,7 +551,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = MyRadio/MyRadio.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MyRadioIntentHandler/MyRadioExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = P8CC95REUG;
 				INFOPLIST_FILE = MyRadioWidgets/Info.plist;
@@ -567,7 +573,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = MyRadio/MyRadio.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MyRadioIntentHandler/MyRadioExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = P8CC95REUG;
 				INFOPLIST_FILE = MyRadioWidgets/Info.plist;

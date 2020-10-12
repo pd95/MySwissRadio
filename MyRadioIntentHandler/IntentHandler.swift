@@ -6,10 +6,12 @@
 //
 
 import Intents
+import os.log
 
 class IntentHandler: INExtension, ConfigurationIntentHandling, INPlayMediaIntentHandling {
 
     let streams = SettingsStore.shared.streams
+    let logger = Logger(subsystem: "MyRadioIntentHandler", category: "IntentHandler")
 
     // MARK: - ConfigurationIntentHandling (used for Widget configuration)
     var allStations: [Station] {
@@ -56,24 +58,24 @@ class IntentHandler: INExtension, ConfigurationIntentHandling, INPlayMediaIntent
             completion(nil)
             return
         }
-        print("resolveMediaItems: mediaSearch = \(mediaSearch)")
+        logger.log("resolveMediaItems: mediaSearch = \(mediaSearch)")
 
         switch mediaSearch.mediaType {
             case .radioStation, .unknown:
 
                 let matchingStreams: [Livestream]
-                if let mediaName = mediaSearch.mediaName?.trimmingCharacters(in: .whitespacesAndNewlines) {
+                if let mediaName = mediaSearch.mediaName?.trimmingCharacters(in: .whitespacesAndNewlines) {
                     matchingStreams = streams.filter { (stream) -> Bool in
                         stream.name.localizedCaseInsensitiveContains(mediaName)
                     }
                 }
                 else {
-                    print("Cannot search for empty name: \(mediaSearch)")
+                    logger.error("Cannot search for empty name: \(mediaSearch)")
                     completion(nil)
                     return
                 }
 
-                print("  found \(matchingStreams.count) matches: \(matchingStreams)")
+                logger.log("  found \(matchingStreams.count) matches: \(matchingStreams)")
                 let mediaItems = matchingStreams.map(\.mediaItem)
                 completion(mediaItems)
 
@@ -83,20 +85,25 @@ class IntentHandler: INExtension, ConfigurationIntentHandling, INPlayMediaIntent
     }
 
     func resolveMediaItems(for intent: INPlayMediaIntent, with completion: @escaping ([INPlayMediaMediaItemResolutionResult]) -> Void) {
-        print("resolveMediaItems: mediaItems = \(intent.mediaItems ?? [])")
+        logger.log("resolveMediaItems: mediaItems = \(intent.mediaItems ?? [])")
 
-        resolveMediaItems(for: intent.mediaSearch) { optionalMediaItems in
-            guard let mediaItems = optionalMediaItems else {
-                completion([INPlayMediaMediaItemResolutionResult.unsupported()])
-                return
-            }
+        if let mediaItems = intent.mediaItems {
             completion(INPlayMediaMediaItemResolutionResult.successes(with: mediaItems))
+        }
+        else {
+            resolveMediaItems(for: intent.mediaSearch) { optionalMediaItems in
+                guard let mediaItems = optionalMediaItems else {
+                    completion([INPlayMediaMediaItemResolutionResult.unsupported()])
+                    return
+                }
+                completion(INPlayMediaMediaItemResolutionResult.successes(with: mediaItems))
+            }
         }
     }
 
     func handle(intent: INPlayMediaIntent, completion: @escaping (INPlayMediaIntentResponse) -> Void) {
-        // FIXME: Playing the media should be handled in the background using .handleInApp instead of .continueInApp
-        completion(INPlayMediaIntentResponse(code: .continueInApp, userActivity: nil))
+        logger.log("handle(mediaItem: \(String(describing: intent.mediaItems?.first!))")
+        completion(INPlayMediaIntentResponse(code: .handleInApp, userActivity: nil))
     }
 
     override func handler(for intent: INIntent) -> Any {
