@@ -37,4 +37,8 @@ extension Livestream {
 
         return nowPlayingInfo
     }
+
+    func matching(_ query: String) -> Bool {
+        return name.localizedCaseInsensitiveContains(query) || bu.description.localizedCaseInsensitiveContains(query)
+    }
 }

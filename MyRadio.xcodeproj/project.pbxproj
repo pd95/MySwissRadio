@@ -11,6 +11,7 @@
 		171DE89D252F7C0C0099DE8A /* URLReqest+SRGService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171DE89C252F7C0C0099DE8A /* URLReqest+SRGService.swift */; };
 		171F58D52530831200072EF5 /* FileManager+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F58D42530831200072EF5 /* FileManager+Sharing.swift */; };
 		171F58D925308CF200072EF5 /* Bundle+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F58D825308CF200072EF5 /* Bundle+Sharing.swift */; };
+		173AAC602534AFF7009E4B9E /* PlayMediaIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173AAC5F2534AFF7009E4B9E /* PlayMediaIntentHandler.swift */; };
 		174508F52534868A00FA3846 /* MyRadioModel+Intents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174508F42534868A00FA3846 /* MyRadioModel+Intents.swift */; };
 		1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1750E222252C5FBD00CB2D4B /* NetworkClient.swift */; };
 		1750E226252C605D00CB2D4B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E225252C605D00CB2D4B /* Config.xcconfig */; };
@@ -101,6 +102,7 @@
 		171F58D22530820200072EF5 /* MyRadio.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyRadio.entitlements; sourceTree = "<group>"; };
 		171F58D42530831200072EF5 /* FileManager+Sharing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Sharing.swift"; sourceTree = "<group>"; };
 		171F58D825308CF200072EF5 /* Bundle+Sharing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Sharing.swift"; sourceTree = "<group>"; };
+		173AAC5F2534AFF7009E4B9E /* PlayMediaIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaIntentHandler.swift; sourceTree = "<group>"; };
 		174508F42534868A00FA3846 /* MyRadioModel+Intents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyRadioModel+Intents.swift"; sourceTree = "<group>"; };
 		1750E222252C5FBD00CB2D4B /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
 		1750E225252C605D00CB2D4B /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 			isa = PBXGroup;
 			children = (
 				177783832530FF0E003D19A3 /* IntentHandler.swift */,
+				173AAC5F2534AFF7009E4B9E /* PlayMediaIntentHandler.swift */,
 				17D8F77D2533BD7100041715 /* MyRadioExtension.entitlements */,
 				177783852530FF0E003D19A3 /* Info.plist */,
 			);
@@ -430,6 +433,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				17D8F7702533ACBD00041715 /* ImageCache.swift in Sources */,
+				173AAC602534AFF7009E4B9E /* PlayMediaIntentHandler.swift in Sources */,
 				1777839425310018003D19A3 /* UserDefault.swift in Sources */,
 				1777839625310018003D19A3 /* Livestream.swift in Sources */,
 				1777838F2530FF39003D19A3 /* MyRadioWidgets.intentdefinition in Sources */,
