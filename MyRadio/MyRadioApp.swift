@@ -14,6 +14,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         logger.log("MyRadioApp application is starting up. ApplicationDelegate didFinishLaunchingWithOptions. \(String(describing: launchOptions?.keys))")
+
+// It is unclear whether we really have to request Siri authorization. Everything works fine so far without it!?
+//        INPreferences.requestSiriAuthorization { (authStatus: INSiriAuthorizationStatus) in
+//            self.logger.log("SiriAutorization: \(String(describing: authStatus))")
+//        }
+//
         return true
     }
 
