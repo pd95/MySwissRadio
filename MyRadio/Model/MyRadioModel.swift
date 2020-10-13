@@ -81,7 +81,6 @@ class MyRadioModel: NSObject, ObservableObject {
                     logger.log("updated streams to show final UI (without images)")
                 }
                 self?.updateSiriSearch(streams)
-                self?.updateSpotlight(for: streams)
             })
             .eraseToAnyPublisher()
 
@@ -99,6 +98,7 @@ class MyRadioModel: NSObject, ObservableObject {
             })
             .sink(receiveCompletion: { completion in
                 logger.log("completed with \(String(describing: completion))")
+                self.updateSpotlight(for: streams)
             }, receiveValue: { [weak self] (value) in
                 guard let image = value.image else {
                     logger.log("No valid image for \(String(describing: value.stream))")
