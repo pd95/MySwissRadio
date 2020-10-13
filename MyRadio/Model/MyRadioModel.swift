@@ -79,6 +79,7 @@ class MyRadioModel: NSObject, ObservableObject {
                     self?.streams = streams
                     logger.log("updated streams to show final UI (without images)")
                 }
+                self?.updateSiriSearch(streams)
             })
             .eraseToAnyPublisher()
 

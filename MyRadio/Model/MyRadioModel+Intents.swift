@@ -11,6 +11,40 @@ import Intents
 
 extension MyRadioModel: INPlayMediaIntentHandling {
 
+    func updateSiriSearch(_ streams: [Livestream]) {
+        var wordToStreamsMap = [String:[Livestream.ID]]()
+
+        let nf = NumberFormatter()
+        nf.numberStyle = .spellOut
+        nf.locale = Locale(identifier: INPreferences.siriLanguageCode())
+
+        for stream in streams {
+            // Gather all words related to this stream
+            var searchWords: [String] = []
+
+            // Split name into separate words and number strings
+            searchWords = stream.name.matches(regex: "[[:alpha:]]+|\\d+")
+
+            // Get spelled out words for the numbers
+            let numberWords = searchWords.compactMap({Int($0)}).compactMap({ nf.string(for: $0) })
+            searchWords.append(contentsOf: numberWords)
+
+            // Add the business units name for search too
+            searchWords.append(stream.bu.description)
+
+            // Add all those words to the mapping
+            searchWords.forEach { (word) in
+                let lowercasedWord = word.lowercased()
+                let streamArray = wordToStreamsMap[lowercasedWord, default: []]
+                if !streamArray.contains(stream.id) {
+                    wordToStreamsMap[lowercasedWord, default: []].append(stream.id)
+                }
+            }
+        }
+
+        SettingsStore.shared.wordToStreamsMap = wordToStreamsMap
+    }
+
     func handle(intent: INPlayMediaIntent, completion: @escaping (INPlayMediaIntentResponse) -> Void) {
 
         let result: INPlayMediaIntentResponse

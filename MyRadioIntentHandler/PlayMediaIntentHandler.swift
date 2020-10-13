@@ -29,10 +29,46 @@ class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
                     completion(nil)
                     return
                 }
+                logger.log("Searching for \(mediaName) in \(self.streams.count) streams")
 
-                let matchingStreams: [Livestream] = streams.filter({ $0.matching(mediaName) })
+                // First try to find a direct match in the stream name
+                var matchingStreams: [Livestream] = streams.filter({ mediaName.localizedCaseInsensitiveContains($0.name) })
+                logger.log("  found \(matchingStreams.count) best matches: \(matchingStreams)")
 
-                logger.log("  found \(matchingStreams.count) matches: \(matchingStreams)")
+                // Then, if no best match was found, try our wordToStreamsMap
+                if matchingStreams.isEmpty {
+                    let wordToStreamsMap = SettingsStore.shared.wordToStreamsMap
+
+                    // Split media name into words and collect all stream IDs which have one of them
+                    let mediaNameWords = mediaName.lowercased().matches(regex: "[[:alpha:]]+|\\d+")
+                    var matchingStreamMap = [Livestream.ID: Int]()
+                    mediaNameWords.forEach { (word) in
+                        if let streamIDs = wordToStreamsMap[word] {
+                            streamIDs.forEach { (streamID) in
+                                matchingStreamMap[streamID, default: 0] += 1
+                            }
+                        }
+                    }
+
+                    // Find good matches which contain all the words we were looking for
+                    let wordCount = mediaNameWords.count
+                    var bestMatches = matchingStreamMap.map{$0}.filter({ $0.value == wordCount })
+                    logger.log("  found \(bestMatches.count) good matches: \(bestMatches)")
+
+                    // If there was no good match, get a sorted list of matching streams
+                    if bestMatches.isEmpty {
+                        let sortedStreamIds = matchingStreamMap.map {$0}
+                            .sorted { $0.value > $1.value }
+                        bestMatches = sortedStreamIds
+                        logger.log("  found \(bestMatches.count) ok matches: \(bestMatches)")
+                    }
+
+                    matchingStreams = bestMatches.compactMap { (element) -> Livestream? in
+                        streams.first { $0.id == element.key }
+                    }
+                    logger.log("  found \(matchingStreams.count) matches based on word list: \(matchingStreams)")
+                }
+
                 let mediaItems = matchingStreams.map(\.mediaItem)
                 completion(mediaItems)
 

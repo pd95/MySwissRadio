@@ -37,6 +37,9 @@ class SettingsStore: ObservableObject {
     @CodableUserDefault(key: .streams, defaultValue: [], storage: .shared)
     var streams: [Livestream]
 
+    @UserDefault(key: .searchWords, defaultValue: [:], storage: .shared)
+    var wordToStreamsMap: [String:[Livestream.ID]]
+
     private func checkAndSetVersionAndBuildNumber() {
         if reset {
             resetAll()
@@ -66,6 +69,7 @@ extension UserDefaults {
         case reset
         case appVersion
         case streams
+        case searchWords
     }
 
     func removeObject(forKey settingsKey: SettingsKey) {
