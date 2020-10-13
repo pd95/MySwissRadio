@@ -7,7 +7,7 @@
 		<key>MyRadio.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>1</integer>
+			<integer>0</integer>
 		</dict>
 		<key>MyRadioIntentHandler.xcscheme_^#shared#^_</key>
 		<dict>
@@ -17,7 +17,25 @@
 		<key>MyRadioWidgetsExtension.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>1</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>177783802530FF0E003D19A3</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>17C6DD482530CD2A003D603E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>17DA93CF252C56500076EBB2</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

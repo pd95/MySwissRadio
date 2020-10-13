@@ -12,7 +12,7 @@ class IntentHandler: INExtension, ConfigurationIntentHandling {
 
     let logger = Logger(subsystem: "MyRadioIntentHandler", category: "IntentHandler")
 
-    let lastPlayedStation = Station(identifier: nil, display: "Last played station")
+    let lastPlayedStation = Station(identifier: nil, display: "Last played")
 
     // MARK: - ConfigurationIntentHandling (used for Widget configuration)
     var allStations: [Station] {

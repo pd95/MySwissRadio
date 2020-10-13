@@ -80,7 +80,7 @@ extension MyRadioModel: INPlayMediaIntentHandling {
         // Handle ConfigurationIntent coming from Widget
         else if let intent = intent as? ConfigurationIntent {
             if let station = intent.station,
-               let stationID = station.identifier
+               let stationID = station.identifier ?? SettingsStore.shared.lastPlayedStreamId
             {
                 streamID = stationID
                 doToggle = true
