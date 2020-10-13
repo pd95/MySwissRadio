@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import os.log
+import CoreSpotlight
 
 class SettingsStore: ObservableObject {
 
@@ -63,6 +64,15 @@ class SettingsStore: ObservableObject {
         self.objectWillChange.send()
         UserDefaults.standard.removePersistentDomain(forName: UserDefaults.sharedSuiteName)
         UserDefaults.standard.removePersistentDomain(forName: UserDefaults.currentSuiteName)
+
+        CSSearchableIndex.default().deleteAllSearchableItems { (error) in
+            if let error = error {
+                self.logger.error("Error deleting searchable items \(error.localizedDescription)")
+            }
+            else {
+                self.logger.log("Successfully deleted searchable items")
+            }
+        }
     }
 }
 
