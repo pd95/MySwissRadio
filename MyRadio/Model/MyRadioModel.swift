@@ -10,6 +10,7 @@ import Combine
 import os.log
 import UIKit
 import Intents
+import CoreSpotlight
 
 class MyRadioModel: NSObject, ObservableObject {
 
@@ -80,6 +81,7 @@ class MyRadioModel: NSObject, ObservableObject {
                     logger.log("updated streams to show final UI (without images)")
                 }
                 self?.updateSiriSearch(streams)
+                self?.updateSpotlight(for: streams)
             })
             .eraseToAnyPublisher()
 
@@ -149,6 +151,7 @@ class MyRadioModel: NSObject, ObservableObject {
                 print("controller state changed: \(self.controller.playerStatus.rawValue)")
                 self.objectWillChange.send()
             })
+            updateLastPlayed(for: stream)
         }
     }
 
@@ -186,8 +189,19 @@ class MyRadioModel: NSObject, ObservableObject {
         let logger = Logger(subsystem: "MyRadioModel", category: "handleActivity")
 
         if let intent = userActivity.interaction?.intent {
+            // Based on intent (Siri or from Widget)
             if handlePlayIntent(intent) == nil {
                 logger.error("Error while handling \(userActivity)")
+            }
+        }
+        else if userActivity.activityType == CSSearchableItemActionType {
+            // Based on Spotlight search result: toggle playing of selected stream
+            if let itemIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
+               let stream = stream(withID: itemIdentifier) {
+                togglePlay(stream)
+            }
+            else {
+                logger.error("Invalid spotlight item: \(userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String ?? "nil")")
             }
         }
         else {

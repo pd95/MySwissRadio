@@ -14,6 +14,8 @@
 		173AAC602534AFF7009E4B9E /* PlayMediaIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173AAC5F2534AFF7009E4B9E /* PlayMediaIntentHandler.swift */; };
 		173AAC652535E167009E4B9E /* String+Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173AAC642535E167009E4B9E /* String+Regex.swift */; };
 		173AAC692535E31A009E4B9E /* String+Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173AAC642535E167009E4B9E /* String+Regex.swift */; };
+		173AACA725363D61009E4B9E /* Livestream+Spotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173AACA625363D61009E4B9E /* Livestream+Spotlight.swift */; };
+		173AACAC25364116009E4B9E /* MyRadioModel+Spotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173AACAB25364116009E4B9E /* MyRadioModel+Spotlight.swift */; };
 		174508F52534868A00FA3846 /* MyRadioModel+Intents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174508F42534868A00FA3846 /* MyRadioModel+Intents.swift */; };
 		1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1750E222252C5FBD00CB2D4B /* NetworkClient.swift */; };
 		1750E226252C605D00CB2D4B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E225252C605D00CB2D4B /* Config.xcconfig */; };
@@ -106,6 +108,8 @@
 		171F58D825308CF200072EF5 /* Bundle+Sharing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Sharing.swift"; sourceTree = "<group>"; };
 		173AAC5F2534AFF7009E4B9E /* PlayMediaIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaIntentHandler.swift; sourceTree = "<group>"; };
 		173AAC642535E167009E4B9E /* String+Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Regex.swift"; sourceTree = "<group>"; };
+		173AACA625363D61009E4B9E /* Livestream+Spotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Livestream+Spotlight.swift"; sourceTree = "<group>"; };
+		173AACAB25364116009E4B9E /* MyRadioModel+Spotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyRadioModel+Spotlight.swift"; sourceTree = "<group>"; };
 		174508F42534868A00FA3846 /* MyRadioModel+Intents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyRadioModel+Intents.swift"; sourceTree = "<group>"; };
 		1750E222252C5FBD00CB2D4B /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
 		1750E225252C605D00CB2D4B /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
@@ -183,11 +187,13 @@
 			children = (
 				1788357C252CA6AA000279A1 /* MyRadioModel.swift */,
 				174508F42534868A00FA3846 /* MyRadioModel+Intents.swift */,
+				173AACAB25364116009E4B9E /* MyRadioModel+Spotlight.swift */,
 				1788AAF1252E2EE000B89C22 /* AudioController.swift */,
 				17EC1A8E252F9EF500F8AFCF /* ImageCache.swift */,
 				1788358D252CBF8C000279A1 /* Livestream.swift */,
 				179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */,
 				17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */,
+				173AACA625363D61009E4B9E /* Livestream+Spotlight.swift */,
 				17883586252CB9C3000279A1 /* BusinessUnit.swift */,
 			);
 			path = Model;
@@ -484,6 +490,7 @@
 				17C6DD572530CD2C003D603E /* MyRadioWidgets.intentdefinition in Sources */,
 				17EC1A88252F9A0900F8AFCF /* BusinessUnit+SRGService.swift in Sources */,
 				17DA93EC252C58F50076EBB2 /* OAuthenticator.swift in Sources */,
+				173AACA725363D61009E4B9E /* Livestream+Spotlight.swift in Sources */,
 				179B63A32530BAB500D0881E /* Livestream+ImageCache.swift in Sources */,
 				17DA93D4252C56500076EBB2 /* MyRadioApp.swift in Sources */,
 				177A47B5252F3D21009A4EDB /* SettingsStore.swift in Sources */,
@@ -496,6 +503,7 @@
 				17883587252CB9C3000279A1 /* BusinessUnit.swift in Sources */,
 				1788358B252CBE50000279A1 /* SRGService.swift in Sources */,
 				171DE89D252F7C0C0099DE8A /* URLReqest+SRGService.swift in Sources */,
+				173AACAC25364116009E4B9E /* MyRadioModel+Spotlight.swift in Sources */,
 				1788357D252CA6AA000279A1 /* MyRadioModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

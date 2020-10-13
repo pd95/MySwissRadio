@@ -8,6 +8,7 @@
 import SwiftUI
 import os.log
 import Intents
+import CoreSpotlight
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     let logger = Logger(subsystem: "MyRadio", category: "AppDelegate")
@@ -41,6 +42,7 @@ struct MyRadioApp: App {
             ContentView()
                 .environmentObject(model)
                 .onContinueUserActivity("ConfigurationIntent", perform: model.handleActivity)
+                .onContinueUserActivity(CSSearchableItemActionType, perform: model.handleActivity)
         }
         .onChange(of: scenePhase) { (newPhase) in
             if newPhase == .active {
