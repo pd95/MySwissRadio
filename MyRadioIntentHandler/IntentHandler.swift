@@ -12,6 +12,8 @@ class IntentHandler: INExtension, ConfigurationIntentHandling {
 
     let logger = Logger(subsystem: "MyRadioIntentHandler", category: "IntentHandler")
 
+    let lastPlayedStation = Station(identifier: nil, display: "Last played station")
+
     // MARK: - ConfigurationIntentHandling (used for Widget configuration)
     var allStations: [Station] {
         return SettingsStore.shared.streams.sorted().map { stream in
@@ -22,21 +24,22 @@ class IntentHandler: INExtension, ConfigurationIntentHandling {
     func provideStationOptionsCollection(for intent: ConfigurationIntent,
                                      with completion: @escaping (INObjectCollection<Station>?, Error?) -> Void)
     {
-        let stations = allStations
+        var stations = allStations
+        stations.insert(lastPlayedStation, at: 0)
 
         let collection = INObjectCollection(items: stations)
         completion(collection, nil)
     }
 
     func defaultStation(for intent: ConfigurationIntent) -> Station? {
-        return nil
+        return lastPlayedStation
     }
 
     func resolveStation(for intent: ConfigurationIntent,
                         with completion: @escaping (StationResolutionResult) -> Void)
     {
         let result: StationResolutionResult
-        if let station = intent.Station {
+        if let station = intent.station {
             result = .success(with: station)
         }
         else {

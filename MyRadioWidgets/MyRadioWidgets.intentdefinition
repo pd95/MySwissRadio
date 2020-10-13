@@ -45,7 +45,7 @@
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>1</integer>
 					<key>INIntentParameterName</key>
-					<string>Station</string>
+					<string>station</string>
 					<key>INIntentParameterObjectType</key>
 					<string>Station</string>
 					<key>INIntentParameterObjectTypeNamespace</key>
@@ -68,7 +68,7 @@
 							<key>INIntentParameterPromptDialogCustom</key>
 							<true/>
 							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>There are ${count} options matching ‘${Station}’.</string>
+							<string>There are ${count} options matching ‘${station}’.</string>
 							<key>INIntentParameterPromptDialogFormatStringID</key>
 							<string>YXbcrE</string>
 							<key>INIntentParameterPromptDialogType</key>
@@ -78,7 +78,7 @@
 							<key>INIntentParameterPromptDialogCustom</key>
 							<true/>
 							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Just to confirm, you wanted ‘${Station}’?</string>
+							<string>Just to confirm, you wanted ‘${station}’?</string>
 							<key>INIntentParameterPromptDialogFormatStringID</key>
 							<string>fVpuU7</string>
 							<key>INIntentParameterPromptDialogType</key>

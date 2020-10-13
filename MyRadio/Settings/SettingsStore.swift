@@ -37,6 +37,12 @@ class SettingsStore: ObservableObject {
     @CodableUserDefault(key: .streams, defaultValue: [], storage: .shared)
     var streams: [Livestream]
 
+    @UserDefault(key: .isPlaying, defaultValue: false, storage: .shared)
+    var isPlaying: Bool
+
+    @UserDefault(key: .lastPlayedStreamId, defaultValue: nil, storage: .shared)
+    var lastPlayedStreamId: Livestream.ID?
+
     @UserDefault(key: .searchWords, defaultValue: [:], storage: .shared)
     var wordToStreamsMap: [String:[Livestream.ID]]
 
@@ -68,6 +74,8 @@ extension UserDefaults {
     enum SettingsKey: String, CaseIterable {
         case reset
         case appVersion
+        case isPlaying
+        case lastPlayedStreamId
         case streams
         case searchWords
     }

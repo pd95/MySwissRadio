@@ -29,8 +29,8 @@ struct Provider: IntentTimelineProvider {
             .store(in: &Self.cancellables)
     }
 
-    private func getStream(for station: Station?) -> Livestream?{
-        guard let selectedStationID = station?.identifier,
+    private func getStream(for station: Station?) -> Livestream? {
+        guard let selectedStationID = station?.identifier ?? SettingsStore.shared.lastPlayedStreamId,
            let stream = Self.streams.first(where: { $0.id == selectedStationID })
         else  {
             return nil
@@ -39,48 +39,38 @@ struct Provider: IntentTimelineProvider {
         return stream
     }
 
+    private func isPlaying(stream: Livestream) -> Bool {
+        SettingsStore.shared.lastPlayedStreamId == stream.id && SettingsStore.shared.isPlaying
+    }
+
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), configuration: ConfigurationIntent(), livestream: .example, isPlaying: false)
+        SimpleEntry(date: Date(), livestream: .example, isPlaying: false)
     }
 
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let stream: Livestream = getStream(for: configuration.Station) ?? .example
-        let entry = SimpleEntry(date: Date(), configuration: configuration, livestream: stream, isPlaying: false)
+        let stream: Livestream = getStream(for: configuration.station) ?? .example
+        let entry = SimpleEntry(date: Date(), livestream: stream, isPlaying: isPlaying(stream: stream))
         completion(entry)
     }
 
     func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        var entries: [SimpleEntry] = []
-
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        if let stream = getStream(for: configuration.Station) {
-            let entry = SimpleEntry(date: currentDate, configuration: configuration, livestream: stream, isPlaying: false)
-            entries.append(entry)
-        }
-        else {
-            for streamOffset in 0 ..< Self.streams.count {
-                let entryDate = Calendar.current.date(byAdding: .second, value: 5*streamOffset, to: currentDate)!
-                let stream = Self.streams[streamOffset]
-                let entry = SimpleEntry(date: entryDate, configuration: configuration, livestream: stream, isPlaying: false)
-                entries.append(entry)
-
-                if stream.thumbnailImage == nil {
-                    fetchImage(stream)
-                }
-            }
-        }
-
-        let timeline = Timeline(entries: entries, policy: .atEnd)
+        let stream: Livestream = getStream(for: configuration.station) ?? .example
+        let entry = SimpleEntry(date: Date(), livestream: stream, isPlaying: isPlaying(stream: stream))
+        let timeline = Timeline(entries: [entry], policy: .never)
         completion(timeline)
     }
 }
 
 struct SimpleEntry: TimelineEntry {
     let date: Date
-    let configuration: ConfigurationIntent
     let livestream: Livestream
     let isPlaying: Bool
+
+    init(date: Date, livestream: Livestream, isPlaying: Bool) {
+        self.date = date
+        self.livestream = livestream
+        self.isPlaying = isPlaying
+    }
 }
 
 struct MyRadioWidgetsEntryView : View {
@@ -138,10 +128,10 @@ struct MyRadioWidgets: Widget {
 struct MyRadioWidgets_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            MyRadioWidgetsEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent(), livestream: .example, isPlaying: false))
+            MyRadioWidgetsEntryView(entry: SimpleEntry(date: Date(), livestream: .example, isPlaying: false))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
 
-            MyRadioWidgetsEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent(), livestream: .example, isPlaying: true))
+            MyRadioWidgetsEntryView(entry: SimpleEntry(date: Date(), livestream: .example, isPlaying: true))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
         }
     }

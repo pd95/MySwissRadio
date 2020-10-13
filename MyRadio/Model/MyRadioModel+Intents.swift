@@ -62,12 +62,14 @@ extension MyRadioModel: INPlayMediaIntentHandling {
         let logger = Logger(subsystem: "MyRadioModel", category: "handleIntent")
 
         let streamID: String
+        let doToggle: Bool
         // Handle INPlayMediaIntent coming from Siri & Shortcuts
         if let intent = intent as? INPlayMediaIntent {
             if let item = intent.mediaItems?.first,
                let itemID = item.identifier
             {
                 streamID = itemID
+                doToggle = false
             }
             else {
                 logger.error("Invalid media item in intent: \(intent)")
@@ -77,10 +79,11 @@ extension MyRadioModel: INPlayMediaIntentHandling {
 
         // Handle ConfigurationIntent coming from Widget
         else if let intent = intent as? ConfigurationIntent {
-            if let station = intent.Station,
+            if let station = intent.station,
                let stationID = station.identifier
             {
                 streamID = stationID
+                doToggle = true
             }
             else {
                 logger.error("Invalid station in intent: \(intent)")
@@ -93,7 +96,12 @@ extension MyRadioModel: INPlayMediaIntentHandling {
         }
 
         if let stream = stream(withID: streamID) {
-            play(stream)
+            if doToggle {
+                togglePlay(stream)
+            }
+            else {
+                play(stream)
+            }
             return stream.nowPlayingInfo
         }
         else {

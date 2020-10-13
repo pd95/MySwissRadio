@@ -8,6 +8,7 @@
 import Foundation
 import AVKit
 import MediaPlayer
+import WidgetKit
 
 class AudioController: NSObject, ObservableObject {
 
@@ -69,6 +70,9 @@ class AudioController: NSObject, ObservableObject {
     func stop() {
         player.pause()
         player.replaceCurrentItem(with: nil)
+
+        SettingsStore.shared.isPlaying = false
+        WidgetCenter.shared.reloadTimelines(ofKind: "MyRadioWidgets")
     }
 
     func start(id: String, url: URL, title: String) {
@@ -80,6 +84,10 @@ class AudioController: NSObject, ObservableObject {
 
         player.replaceCurrentItem(with: playerItem)
         player.play()
+
+        SettingsStore.shared.lastPlayedStreamId = id
+        SettingsStore.shared.isPlaying = true
+        WidgetCenter.shared.reloadTimelines(ofKind: "MyRadioWidgets")
     }
 
     // KVO callback
