@@ -40,7 +40,7 @@ struct LivestreamRow: View {
                         .aspectRatio(contentMode: .fit)
                         .foregroundColor(model.isPlaying(stream: stream) ? .red : .accentColor)
                 }
-                .frame(maxHeight: 40)
+                .frame(height: 40)
             }
             else {
                 ProgressView()
