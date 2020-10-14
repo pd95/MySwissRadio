@@ -11,6 +11,7 @@
 		171DE89D252F7C0C0099DE8A /* URLReqest+SRGService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171DE89C252F7C0C0099DE8A /* URLReqest+SRGService.swift */; };
 		171F58D52530831200072EF5 /* FileManager+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F58D42530831200072EF5 /* FileManager+Sharing.swift */; };
 		171F58D925308CF200072EF5 /* Bundle+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F58D825308CF200072EF5 /* Bundle+Sharing.swift */; };
+		173079A82537989B000B3F82 /* PlayingSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173079A72537989B000B3F82 /* PlayingSheet.swift */; };
 		173AAC602534AFF7009E4B9E /* PlayMediaIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173AAC5F2534AFF7009E4B9E /* PlayMediaIntentHandler.swift */; };
 		173AAC652535E167009E4B9E /* String+Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173AAC642535E167009E4B9E /* String+Regex.swift */; };
 		173AAC692535E31A009E4B9E /* String+Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173AAC642535E167009E4B9E /* String+Regex.swift */; };
@@ -107,6 +108,7 @@
 		171F58D22530820200072EF5 /* MyRadio.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyRadio.entitlements; sourceTree = "<group>"; };
 		171F58D42530831200072EF5 /* FileManager+Sharing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Sharing.swift"; sourceTree = "<group>"; };
 		171F58D825308CF200072EF5 /* Bundle+Sharing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Sharing.swift"; sourceTree = "<group>"; };
+		173079A72537989B000B3F82 /* PlayingSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayingSheet.swift; sourceTree = "<group>"; };
 		173AAC5F2534AFF7009E4B9E /* PlayMediaIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMediaIntentHandler.swift; sourceTree = "<group>"; };
 		173AAC642535E167009E4B9E /* String+Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Regex.swift"; sourceTree = "<group>"; };
 		173AACA625363D61009E4B9E /* Livestream+Spotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Livestream+Spotlight.swift"; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 				17DA93D5252C56500076EBB2 /* ContentView.swift */,
 				17DB7BDB252CC6FA004C4BF8 /* LivestreamRow.swift */,
 				179F2C912537791B0037876E /* WhatsPlayingToolbar.swift */,
+				173079A72537989B000B3F82 /* PlayingSheet.swift */,
 				17A5D2D625309DAA00EF2AF4 /* Extensions */,
 				1750E230252C716A00CB2D4B /* Networking */,
 				17EC1A8A252F9A7500F8AFCF /* SRGService */,
@@ -492,6 +495,7 @@
 				177A47B8252F3D5B009A4EDB /* UserDefault.swift in Sources */,
 				17C6DD572530CD2C003D603E /* MyRadioWidgets.intentdefinition in Sources */,
 				179F2C922537791B0037876E /* WhatsPlayingToolbar.swift in Sources */,
+				173079A82537989B000B3F82 /* PlayingSheet.swift in Sources */,
 				17EC1A88252F9A0900F8AFCF /* BusinessUnit+SRGService.swift in Sources */,
 				17DA93EC252C58F50076EBB2 /* OAuthenticator.swift in Sources */,
 				173AACA725363D61009E4B9E /* Livestream+Spotlight.swift in Sources */,

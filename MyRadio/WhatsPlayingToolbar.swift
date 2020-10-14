@@ -34,7 +34,21 @@ struct WhatsPlayingToolbar: View {
                 Image(systemName: !model.isPaused ? "pause.fill" : "play.fill")
                     .foregroundColor(!model.isPaused ? .red : .accentColor)
             }
-            .border(Color.blue)
         }
+    }
+}
+
+
+struct WhatsPlayingToolbar_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationView {
+            Text("")
+                .toolbar(content: {
+                    ToolbarItemGroup(placement: .bottomBar) {
+                        WhatsPlayingToolbar(stream: .example)
+                    }
+                })
+        }
+        .environmentObject(MyRadioModel.main)
     }
 }
