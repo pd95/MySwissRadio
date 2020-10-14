@@ -8,6 +8,7 @@
 import Foundation
 import AVKit
 import MediaPlayer
+import Combine
 
 class AudioController: NSObject, ObservableObject {
 
@@ -63,49 +64,38 @@ class AudioController: NSObject, ObservableObject {
 
 
     private var player = AVPlayer()
+    private var asset: AVURLAsset!
     private var playerItem: AVPlayerItem!
-    private var playerItemContext = 0
+    private var cancellables = Set<AnyCancellable>()
 
     func stop() {
         player.pause()
         player.replaceCurrentItem(with: nil)
     }
 
-    func start(id: String, url: URL, title: String) {
-        playerItem = AVPlayerItem(url: url)
-        playerItem.addObserver(self,
-                               forKeyPath: #keyPath(AVPlayerItem.status),
-                               options: [.old, .new],
-                               context: &playerItemContext)
-
-        player.replaceCurrentItem(with: playerItem)
-        player.play()
+    func pause() {
+        player.pause()
     }
 
-    // KVO callback
-    override func observeValue(forKeyPath keyPath: String?,
-                               of object: Any?,
-                               change: [NSKeyValueChangeKey : Any]?,
-                               context: UnsafeMutableRawPointer?) {
+    func play(url: URL) {
+        if asset?.url != url {
+            playerItem = AVPlayerItem(url: url)
+            playerItem.publisher(for: \.status)
+                .sink(receiveValue: { [weak self] status in
+                    guard let self = self else { return }
 
-        // Only handle observations for the playerItemContext
-        guard context == &playerItemContext else {
-            super.observeValue(forKeyPath: keyPath,
-                               of: object,
-                               change: change,
-                               context: context)
-            return
+                    self.playerStatus = status
+
+                    if status == .readyToPlay {
+                        self.player.play()
+                    }
+                })
+                .store(in: &cancellables)
+
+            player.replaceCurrentItem(with: playerItem)
         }
-
-        if keyPath == #keyPath(AVPlayerItem.status) {
-            let status: AVPlayerItem.Status
-            if let statusNumber = change?[.newKey] as? NSNumber {
-                status = AVPlayerItem.Status(rawValue: statusNumber.intValue)!
-            } else {
-                status = .unknown
-            }
-
-            playerStatus = status
+        else {
+            player.play()
         }
     }
 }

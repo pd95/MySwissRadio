@@ -148,7 +148,7 @@ class MyRadioModel: NSObject, ObservableObject {
 
     func stop() {
         currentlyPlaying = nil
-        controller.stop()
+        controller.pause()
 
         SettingsStore.shared.isPlaying = false
         updateWidgets()
@@ -157,7 +157,7 @@ class MyRadioModel: NSObject, ObservableObject {
     func play(_ stream: Livestream) {
         currentlyPlaying = stream
         if let url = stream.streams.first {
-            controller.start(id: stream.id, url: url, title: stream.name)
+            controller.play(url: url)
             controller.setupNowPlaying(stream.nowPlayingInfo)
             controllerObserver = controller.objectWillChange.sink(receiveValue: {
                 _ in
