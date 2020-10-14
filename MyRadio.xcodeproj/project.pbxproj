@@ -37,6 +37,7 @@
 		1788358E252CBF8C000279A1 /* Livestream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788358D252CBF8C000279A1 /* Livestream.swift */; };
 		1788AAF2252E2EE000B89C22 /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788AAF1252E2EE000B89C22 /* AudioController.swift */; };
 		179B63A32530BAB500D0881E /* Livestream+ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */; };
+		179F2C922537791B0037876E /* WhatsPlayingToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179F2C912537791B0037876E /* WhatsPlayingToolbar.swift */; };
 		17C6DD4C2530CD2A003D603E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C6DD4B2530CD2A003D603E /* WidgetKit.framework */; };
 		17C6DD4E2530CD2A003D603E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C6DD4D2530CD2A003D603E /* SwiftUI.framework */; };
 		17C6DD512530CD2A003D603E /* MyRadioWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C6DD502530CD2A003D603E /* MyRadioWidgets.swift */; };
@@ -125,6 +126,7 @@
 		1788358D252CBF8C000279A1 /* Livestream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Livestream.swift; sourceTree = "<group>"; };
 		1788AAF1252E2EE000B89C22 /* AudioController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioController.swift; sourceTree = "<group>"; };
 		179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Livestream+ImageCache.swift"; sourceTree = "<group>"; };
+		179F2C912537791B0037876E /* WhatsPlayingToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsPlayingToolbar.swift; sourceTree = "<group>"; };
 		17C6DD492530CD2A003D603E /* MyRadioWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MyRadioWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		17C6DD4B2530CD2A003D603E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		17C6DD4D2530CD2A003D603E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -278,6 +280,7 @@
 				17DA93D3252C56500076EBB2 /* MyRadioApp.swift */,
 				17DA93D5252C56500076EBB2 /* ContentView.swift */,
 				17DB7BDB252CC6FA004C4BF8 /* LivestreamRow.swift */,
+				179F2C912537791B0037876E /* WhatsPlayingToolbar.swift */,
 				17A5D2D625309DAA00EF2AF4 /* Extensions */,
 				1750E230252C716A00CB2D4B /* Networking */,
 				17EC1A8A252F9A7500F8AFCF /* SRGService */,
@@ -488,6 +491,7 @@
 				17EC1A8F252F9EF500F8AFCF /* ImageCache.swift in Sources */,
 				177A47B8252F3D5B009A4EDB /* UserDefault.swift in Sources */,
 				17C6DD572530CD2C003D603E /* MyRadioWidgets.intentdefinition in Sources */,
+				179F2C922537791B0037876E /* WhatsPlayingToolbar.swift in Sources */,
 				17EC1A88252F9A0900F8AFCF /* BusinessUnit+SRGService.swift in Sources */,
 				17DA93EC252C58F50076EBB2 /* OAuthenticator.swift in Sources */,
 				173AACA725363D61009E4B9E /* Livestream+Spotlight.swift in Sources */,

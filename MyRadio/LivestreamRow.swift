@@ -9,8 +9,6 @@ import SwiftUI
 
 struct LivestreamRow: View {
 
-    @EnvironmentObject var model: MyRadioModel
-
     let stream: Livestream
 
     var body: some View {
@@ -30,22 +28,6 @@ struct LivestreamRow: View {
 
             Text(stream.name)
                 .padding(.horizontal)
-
-            Spacer()
-
-            if stream.isReady && !model.isLoading(stream: stream) {
-                Button(action: { model.togglePlay(stream) }) {
-                    Image(systemName: model.isPlaying(stream: stream) ? "stop.circle" : "play.circle")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundColor(model.isPlaying(stream: stream) ? .red : .accentColor)
-                }
-                .frame(height: 40)
-            }
-            else {
-                ProgressView()
-                    .frame(width: 40, height: 40)
-            }
         }
     }
 }

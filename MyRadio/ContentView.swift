@@ -17,7 +17,9 @@ struct ContentView: View {
                     Section(header: Text(bu.description)) {
                         if let streams = model.streams(for: bu), !streams.isEmpty {
                             ForEach(streams) { stream in
-                                LivestreamRow(stream: stream)
+                                Button(action: { play(stream: stream) }) {
+                                    LivestreamRow(stream: stream)
+                                }
                             }
                         }
                         else {
@@ -27,7 +29,18 @@ struct ContentView: View {
                     }
                 }
             }
+            .toolbar(content: {
+                ToolbarItemGroup(placement: .bottomBar) {
+                    model.currentlyPlaying.map { WhatsPlayingToolbar(stream: $0) }
+                }
+            })
             .navigationTitle("My Swiss Radio")
+        }
+    }
+
+    func play(stream: Livestream) {
+        if !model.isPlaying(stream: stream) {
+            model.togglePlay(stream)
         }
     }
 }

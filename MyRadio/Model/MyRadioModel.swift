@@ -136,19 +136,20 @@ class MyRadioModel: NSObject, ObservableObject {
     // MARK: - Playback control
     private var controller = AudioController()
     private var controllerObserver: AnyCancellable?
-    @Published private var currentlyPlaying: Livestream?
+    @Published var currentlyPlaying: Livestream?
+    @Published var isPaused: Bool = false
 
     func isPlaying(stream: Livestream) -> Bool {
-        currentlyPlaying == stream
+        currentlyPlaying == stream && !isPaused
     }
 
     func isLoading(stream: Livestream) -> Bool {
         currentlyPlaying == stream && controller.playerStatus == .unknown
     }
 
-    func stop() {
-        currentlyPlaying = nil
+    func pause() {
         controller.pause()
+        isPaused = true
 
         SettingsStore.shared.isPlaying = false
         updateWidgets()
@@ -159,16 +160,19 @@ class MyRadioModel: NSObject, ObservableObject {
         if let url = stream.streams.first {
             controller.play(url: url)
             controller.setupNowPlaying(stream.nowPlayingInfo)
-            controllerObserver = controller.objectWillChange.sink(receiveValue: {
-                _ in
-                print("controller state changed: \(self.controller.playerStatus.rawValue)")
-                self.objectWillChange.send()
-            })
-            updateLastPlayed(for: stream)
+            controllerObserver = controller.$playerStatus.sink(receiveValue: { status in
+                print("controller state changed: \(status.rawValue)")
 
+                if status == .readyToPlay {
+                    self.isPaused = false
+                    self.updateLastPlayed(for: stream)
+
+                    SettingsStore.shared.isPlaying = true
+                    self.updateWidgets()
+                }
+            })
             SettingsStore.shared.lastPlayedStreamId = stream.id
-            SettingsStore.shared.isPlaying = true
-            updateWidgets()
+            SettingsStore.shared.isPlaying = false
         }
     }
 
@@ -177,8 +181,8 @@ class MyRadioModel: NSObject, ObservableObject {
             fatalError("Cannot play stream in unready state: \(stream)")
         }
         if isPlaying(stream: stream) {
-            stop()
-            print("togglePlay: stopped")
+            pause()
+            print("togglePlay: paused")
         }
         else {
             print("togglePlay: start playing \(stream)")

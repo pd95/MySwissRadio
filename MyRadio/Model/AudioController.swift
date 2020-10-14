@@ -53,13 +53,6 @@ class AudioController: NSObject, ObservableObject {
 
     func enterForeground() {
         print("AudioController.enterForeground")
-        if player.currentItem != nil {
-            print("  recovering audio session")
-            try? AVAudioSession.sharedInstance().setActive(true)
-            player.play()
-        }
-
-        self.objectWillChange.send()
     }
 
 
