@@ -16,7 +16,7 @@ struct ContentView: View {
                 ForEach(model.buSortOrder, id: \.self) { bu in
                     Section(header: Text(bu.description)) {
                         if let streams = model.streams(for: bu), !streams.isEmpty {
-                            ForEach(streams, id: \.self) { stream in
+                            ForEach(streams) { stream in
                                 LivestreamRow(stream: stream)
                             }
                         }
@@ -27,11 +27,6 @@ struct ContentView: View {
                     }
                 }
             }
-            .onAppear(perform: {
-                if model.streams.isEmpty {
-                    model.refreshContent()
-                }
-            })
             .navigationTitle("My Swiss Radio")
         }
     }

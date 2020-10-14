@@ -11,6 +11,7 @@ import os.log
 import UIKit
 import Intents
 import CoreSpotlight
+import WidgetKit
 
 class MyRadioModel: NSObject, ObservableObject {
 
@@ -99,6 +100,7 @@ class MyRadioModel: NSObject, ObservableObject {
             .sink(receiveCompletion: { completion in
                 logger.log("completed with \(String(describing: completion))")
                 self.updateSpotlight(for: streams)
+                self.updateWidgets()
             }, receiveValue: { [weak self] (value) in
                 guard let image = value.image else {
                     logger.log("No valid image for \(String(describing: value.stream))")
@@ -113,6 +115,10 @@ class MyRadioModel: NSObject, ObservableObject {
             .store(in: &cancellables)
     }
 
+    func updateWidgets() {
+        WidgetCenter.shared.reloadTimelines(ofKind: "MyRadioWidgets")
+    }
+
     func enterBackground() {
         print("MyRadioModel.enterBackground")
         controller.enterBackground()
@@ -120,6 +126,10 @@ class MyRadioModel: NSObject, ObservableObject {
 
     func enterForeground() {
         print("MyRadioModel.enterForeground")
+        if SettingsStore.shared.streams.isEmpty {
+            streams = []
+            refreshContent()
+        }
         controller.enterForeground()
     }
 
@@ -139,6 +149,9 @@ class MyRadioModel: NSObject, ObservableObject {
     func stop() {
         currentlyPlaying = nil
         controller.stop()
+
+        SettingsStore.shared.isPlaying = false
+        updateWidgets()
     }
 
     func play(_ stream: Livestream) {
@@ -152,6 +165,10 @@ class MyRadioModel: NSObject, ObservableObject {
                 self.objectWillChange.send()
             })
             updateLastPlayed(for: stream)
+
+            SettingsStore.shared.lastPlayedStreamId = stream.id
+            SettingsStore.shared.isPlaying = true
+            updateWidgets()
         }
     }
 
