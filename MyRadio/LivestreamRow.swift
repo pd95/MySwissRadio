@@ -35,7 +35,7 @@ struct LivestreamRow: View {
 struct LivestreamRow_Previews: PreviewProvider {
     @StateObject static private var model = MyRadioModel.example
     static var previews: some View {
-        LivestreamRow(stream: model.streams.first!)
+        LivestreamRow(stream: Livestream.example)
             .environmentObject(model)
     }
 }

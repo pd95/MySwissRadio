@@ -35,15 +35,4 @@ extension Livestream {
         }
         return nil
     }
-
-    mutating func saveThumbnail(_ image: UIImage) {
-        if let data = image.pngData() {
-            let filename = "Stream-Thumbnail-\(id).png"
-            let cacheURL = FileManager.sharedCacheLocation()
-            let fileURL = cacheURL.appendingPathComponent(filename)
-            if ((try? data.write(to: fileURL, options: .atomicWrite)) != nil) {
-                thumbnailImageFilename = filename
-            }
-        }
-    }
 }

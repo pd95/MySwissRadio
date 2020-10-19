@@ -21,6 +21,10 @@
 		1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1750E222252C5FBD00CB2D4B /* NetworkClient.swift */; };
 		1750E226252C605D00CB2D4B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E225252C605D00CB2D4B /* Config.xcconfig */; };
 		1750E234252C723500CB2D4B /* LocalConfig.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E233252C723500CB2D4B /* LocalConfig.xcconfig */; };
+		17591BF5253D84DE0017CD08 /* LivestreamStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17591BF4253D84DE0017CD08 /* LivestreamStore.swift */; };
+		17591BF6253D84DE0017CD08 /* LivestreamStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17591BF4253D84DE0017CD08 /* LivestreamStore.swift */; };
+		17591BF7253D84DE0017CD08 /* LivestreamStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17591BF4253D84DE0017CD08 /* LivestreamStore.swift */; };
+		17591C0B253DC21C0017CD08 /* LivestreamStore+Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17591C0A253DC21C0017CD08 /* LivestreamStore+Networking.swift */; };
 		177783842530FF0E003D19A3 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177783832530FF0E003D19A3 /* IntentHandler.swift */; };
 		177783882530FF0E003D19A3 /* MyRadioIntentHandler.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 177783812530FF0E003D19A3 /* MyRadioIntentHandler.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1777838F2530FF39003D19A3 /* MyRadioWidgets.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 17C6DD522530CD2A003D603E /* MyRadioWidgets.intentdefinition */; };
@@ -117,6 +121,8 @@
 		1750E222252C5FBD00CB2D4B /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
 		1750E225252C605D00CB2D4B /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		1750E233252C723500CB2D4B /* LocalConfig.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = LocalConfig.xcconfig; sourceTree = "<group>"; };
+		17591BF4253D84DE0017CD08 /* LivestreamStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivestreamStore.swift; sourceTree = "<group>"; };
+		17591C0A253DC21C0017CD08 /* LivestreamStore+Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LivestreamStore+Networking.swift"; sourceTree = "<group>"; };
 		177783812530FF0E003D19A3 /* MyRadioIntentHandler.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MyRadioIntentHandler.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		177783832530FF0E003D19A3 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		177783852530FF0E003D19A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -195,6 +201,8 @@
 				1788AAF1252E2EE000B89C22 /* AudioController.swift */,
 				17EC1A8E252F9EF500F8AFCF /* ImageCache.swift */,
 				1788358D252CBF8C000279A1 /* Livestream.swift */,
+				17591BF4253D84DE0017CD08 /* LivestreamStore.swift */,
+				17591C0A253DC21C0017CD08 /* LivestreamStore+Networking.swift */,
 				179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */,
 				17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */,
 				173AACA625363D61009E4B9E /* Livestream+Spotlight.swift */,
@@ -451,6 +459,7 @@
 				17D8F7702533ACBD00041715 /* ImageCache.swift in Sources */,
 				173AAC602534AFF7009E4B9E /* PlayMediaIntentHandler.swift in Sources */,
 				1777839425310018003D19A3 /* UserDefault.swift in Sources */,
+				17591BF7253D84DE0017CD08 /* LivestreamStore.swift in Sources */,
 				1777839625310018003D19A3 /* Livestream.swift in Sources */,
 				1777838F2530FF39003D19A3 /* MyRadioWidgets.intentdefinition in Sources */,
 				1777839325310018003D19A3 /* SettingsStore.swift in Sources */,
@@ -468,6 +477,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17591BF6253D84DE0017CD08 /* LivestreamStore.swift in Sources */,
 				17C6DD642530D293003D603E /* ImageCache.swift in Sources */,
 				17C6DD7B2530F431003D603E /* OAuthenticator.swift in Sources */,
 				17C6DD622530D293003D603E /* UserDefault.swift in Sources */,
@@ -490,6 +500,7 @@
 				174508F52534868A00FA3846 /* MyRadioModel+Intents.swift in Sources */,
 				1788AAF2252E2EE000B89C22 /* AudioController.swift in Sources */,
 				173AAC652535E167009E4B9E /* String+Regex.swift in Sources */,
+				17591BF5253D84DE0017CD08 /* LivestreamStore.swift in Sources */,
 				17DA93D6252C56500076EBB2 /* ContentView.swift in Sources */,
 				17EC1A8F252F9EF500F8AFCF /* ImageCache.swift in Sources */,
 				177A47B8252F3D5B009A4EDB /* UserDefault.swift in Sources */,
@@ -512,6 +523,7 @@
 				1788358B252CBE50000279A1 /* SRGService.swift in Sources */,
 				171DE89D252F7C0C0099DE8A /* URLReqest+SRGService.swift in Sources */,
 				173AACAC25364116009E4B9E /* MyRadioModel+Spotlight.swift in Sources */,
+				17591C0B253DC21C0017CD08 /* LivestreamStore+Networking.swift in Sources */,
 				1788357D252CA6AA000279A1 /* MyRadioModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

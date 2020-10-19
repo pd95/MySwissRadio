@@ -17,103 +17,40 @@ class MyRadioModel: NSObject, ObservableObject {
 
     static let main = MyRadioModel()
 
+    private(set) var streamStore = LivestreamStore(SettingsStore.shared.streams)
+
     private override init() {
         super.init()
+
+        // Make sure we propagate any change of the streams as "our own" change
+        streamStore.$streams
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { _ in self.objectWillChange.send() })
+            .store(in: &cancellables)
     }
 
     //MARK: - Access to model data and UI helpers
 
-    @Published var streams: [Livestream] = SettingsStore.shared.streams {
-        didSet {
-            SettingsStore.shared.streams = streams
-        }
-    }
-
     @Published var buSortOrder: [BusinessUnit] = BusinessUnit.allCases
-
-    func streams(for bu: BusinessUnit) -> [Livestream] {
-        streams.filter({ $0.bu == bu})
-    }
-
-    func stream(withID streamID: String) -> Livestream? {
-        streams.first(where: { $0.id == streamID })
-    }
 
     //MARK: - Fetching data from NetworkClient
 
     private var cancellables = Set<AnyCancellable>()
 
     func refreshContent() {
-        let networkClient = NetworkClient.shared
-
         let logger = Logger(subsystem: "MyRadioModel", category: "refreshContent")
 
-        var streams = [Livestream]()
-
         logger.log("starting to refresh")
-        let livestreamsPublisher: AnyPublisher<[Livestream], Never> = buSortOrder.publisher
-            .flatMap({ SRGService.getLivestreams(client: networkClient, bu: $0.apiBusinessUnit) })
-            .handleEvents(receiveOutput: { [weak self] (newStreams: [Livestream]) in
-                streams.append(contentsOf: newStreams)
-
-                DispatchQueue.main.async {
-                    self?.streams = streams
-                    logger.log("updated streams to show intermediate UI")
-                }
-            })
-            .flatMap({ streams -> AnyPublisher<Livestream, Never> in
-                Publishers.Sequence(sequence: streams)
-                    .eraseToAnyPublisher()
-            })
-            .flatMap({ (stream: Livestream) -> AnyPublisher<Livestream, Never> in
-                SRGService.getMediaResource(client: networkClient, for: stream.id, bu: stream.bu.apiBusinessUnit)
-                    .map { (streamUrls: [URL]) -> Livestream in
-                        let index = streams.firstIndex(of: stream)!
-                        streams[index].streams = streamUrls
-                        return streams[index]
-                    }
-                    .eraseToAnyPublisher()
-            })
-            .collect()
-            .handleEvents(receiveOutput: { [weak self] (updatedStreams: [Livestream]) in
-                // Make sure UI is updated
-                DispatchQueue.main.async {
-                    self?.streams = streams
-                    logger.log("updated streams to show final UI (without images)")
-                }
-                self?.updateSiriSearch(streams)
-            })
-            .eraseToAnyPublisher()
-
-        livestreamsPublisher
-            .flatMap({ (streams: [Livestream]) -> AnyPublisher<Livestream, Never> in
-                Publishers.Sequence(sequence: streams)
-                    .eraseToAnyPublisher()
-            })
-            .flatMap({ (stream: Livestream) -> AnyPublisher<(stream: Livestream, image: UIImage?), Never> in
-                SRGService.getImageResource(client: networkClient, for: stream.thumbnailImageURL)
-                    .map { image -> (stream: Livestream, image: UIImage?) in
-                        (stream: stream, image: image)
-                    }
-                    .eraseToAnyPublisher()
-            })
+        streamStore.refreshLivestreamPublisher()
             .sink(receiveCompletion: { completion in
                 logger.log("completed with \(String(describing: completion))")
-                self.updateSpotlight(for: streams)
-                self.updateWidgets()
-            }, receiveValue: { [weak self] (value) in
-                guard let image = value.image else {
-                    logger.log("No valid image for \(String(describing: value.stream))")
-                    return
-                }
-                guard let index = streams.firstIndex(where: {$0.id == value.stream.id}) else {
-                    logger.log("No index for \(String(describing: value.stream))")
-                    return
-                }
-                logger.log("saving thumbnail image for \(String(describing: value.stream))")
-                streams[index].saveThumbnail(image)
+            }, receiveValue: { [weak self] (streams) in
+                SettingsStore.shared.streams = streams
+                self?.updateSpotlight(for: streams)
+                self?.updateSiriSearch(streams)
+                self?.updateWidgets()
                 DispatchQueue.main.async {
-                    self?.streams = streams
+                    self?.objectWillChange.send()
                     logger.log("updated streams to show UI (with some images)")
                 }
             })
@@ -132,7 +69,6 @@ class MyRadioModel: NSObject, ObservableObject {
     func enterForeground() {
         print("MyRadioModel.enterForeground")
         if SettingsStore.shared.streams.isEmpty {
-            streams = []
             refreshContent()
         }
         controller.enterForeground()
@@ -223,7 +159,7 @@ class MyRadioModel: NSObject, ObservableObject {
         else if userActivity.activityType == CSSearchableItemActionType {
             // Based on Spotlight search result: toggle playing of selected stream
             if let itemIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
-               let stream = stream(withID: itemIdentifier) {
+               let stream = streamStore.stream(withID: itemIdentifier) {
                 togglePlay(stream)
             }
             else {
@@ -239,7 +175,7 @@ class MyRadioModel: NSObject, ObservableObject {
 extension MyRadioModel {
     static let example: MyRadioModel = {
         let model = MyRadioModel()
-        model.streams = [.example]
+        model.streamStore = LivestreamStore([.example])
         return model
     }()
 }

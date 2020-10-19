@@ -15,23 +15,6 @@ struct Provider: IntentTimelineProvider {
 
     static var streams = SettingsStore.shared.streams
 
-    static var cancellables = Set<AnyCancellable>()
-
-    private func fetchImage(_ stream: Livestream) {
-        Self.networkClient.dataRequest(for: stream.thumbnailImageURL)
-            .map({ UIImage(data: $0) })
-            .replaceError(with: nil)
-            .sink { (image) in
-                if let image = image  {
-                    guard let index = Self.streams.firstIndex(where: {$0.id == stream.id}) else {
-                        return
-                    }
-                    Self.streams[index].saveThumbnail(image)
-                }
-            }
-            .store(in: &Self.cancellables)
-    }
-
     private func getStream(for station: Station?) -> Livestream? {
         guard let selectedStationID = station?.identifier ?? SettingsStore.shared.lastPlayedStreamId,
            let stream = Self.streams.first(where: { $0.id == selectedStationID })

@@ -95,7 +95,7 @@ extension MyRadioModel: INPlayMediaIntentHandling {
             return nil
         }
 
-        if let stream = stream(withID: streamID) {
+        if let stream = streamStore.stream(withID: streamID) {
             if doToggle {
                 togglePlay(stream)
             }
