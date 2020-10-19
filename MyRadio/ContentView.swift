@@ -54,6 +54,9 @@ struct ContentView: View {
         if !model.isPlaying(stream: stream) {
             model.togglePlay(stream)
         }
+        else {
+            model.showSheet = true
+        }
     }
 }
 
