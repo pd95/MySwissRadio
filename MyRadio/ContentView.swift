@@ -10,8 +10,6 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject var model: MyRadioModel
 
-    @State private var showSheet = false
-
     var body: some View {
         NavigationView {
             List {
@@ -32,7 +30,7 @@ struct ContentView: View {
                 }
             }
             .listStyle(PlainListStyle())
-            .sheet(isPresented: $showSheet, content: {
+            .sheet(isPresented: $model.showSheet, content: {
                 model.currentlyPlaying.map {
                     PlayingSheet(stream: $0)
                         .environmentObject(model)
@@ -43,7 +41,7 @@ struct ContentView: View {
                     model.currentlyPlaying.map {
                         WhatsPlayingToolbar(stream: $0)
                             .onTapGesture {
-                                showSheet = true
+                                model.showSheet = true
                             }
                     }
                 }
@@ -55,7 +53,6 @@ struct ContentView: View {
     func play(stream: Livestream) {
         if !model.isPlaying(stream: stream) {
             model.togglePlay(stream)
-            showSheet = true
         }
     }
 }

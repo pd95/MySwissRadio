@@ -33,6 +33,8 @@ class MyRadioModel: NSObject, ObservableObject {
 
     @Published var buSortOrder: [BusinessUnit] = BusinessUnit.allCases
 
+    @Published var showSheet = false
+
     //MARK: - Fetching data from NetworkClient
 
     private var cancellables = Set<AnyCancellable>()
@@ -130,6 +132,7 @@ class MyRadioModel: NSObject, ObservableObject {
             play(stream)
             donatePlayActivity(stream)
         }
+        showSheet = true
     }
 
     func donatePlayActivity(_ stream: Livestream) {
