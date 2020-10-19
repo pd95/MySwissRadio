@@ -60,12 +60,12 @@ class MyRadioModel: NSObject, ObservableObject {
     }
 
     func updateWidgets() {
+        print("updateWidgets")
         WidgetCenter.shared.reloadTimelines(ofKind: "MyRadioWidgets")
     }
 
     func enterBackground() {
         print("MyRadioModel.enterBackground")
-        controller.enterBackground()
     }
 
     func enterForeground() {
@@ -73,7 +73,6 @@ class MyRadioModel: NSObject, ObservableObject {
         if SettingsStore.shared.streams.isEmpty {
             refreshContent()
         }
-        controller.enterForeground()
     }
 
     // MARK: - Playback control
@@ -87,7 +86,7 @@ class MyRadioModel: NSObject, ObservableObject {
     }
 
     func isLoading(stream: Livestream) -> Bool {
-        currentlyPlaying == stream && controller.playerStatus == .unknown
+        currentlyPlaying == stream && controller.playerStatus == .loading
     }
 
     func pause() {
@@ -103,19 +102,26 @@ class MyRadioModel: NSObject, ObservableObject {
         if let url = stream.streams.first {
             controller.play(url: url)
             controller.setupNowPlaying(stream.nowPlayingInfo)
-            controllerObserver = controller.$playerStatus.sink(receiveValue: { status in
-                print("controller state changed: \(status.rawValue)")
 
-                if status == .readyToPlay {
-                    self.isPaused = false
-                    self.updateLastPlayed(for: stream)
-
-                    SettingsStore.shared.isPlaying = true
-                    self.updateWidgets()
-                }
-            })
             SettingsStore.shared.lastPlayedStreamId = stream.id
-            SettingsStore.shared.isPlaying = false
+            SettingsStore.shared.isPlaying = true
+
+            controllerObserver = controller.objectWillChange
+                .sink(receiveValue: { _ in
+                    let status = self.controller.playerStatus
+                    print("controller state changed: \(status)")
+
+                    if status == .playing {
+                        self.isPaused = false
+                        self.updateLastPlayed(for: stream)
+                    }
+                    else {
+                        self.isPaused = true
+                    }
+                    SettingsStore.shared.isPlaying = !self.isPaused
+                    self.updateWidgets()
+                    self.objectWillChange.send()
+                })
         }
     }
 

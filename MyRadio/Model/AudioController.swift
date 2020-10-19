@@ -12,7 +12,26 @@ import Combine
 
 class AudioController: NSObject, ObservableObject {
 
-    @Published var playerStatus: AVPlayerItem.Status = .unknown
+    enum Status {
+        case undefined, paused, playing, loading
+    }
+
+    var playerStatus: Status {
+        if player.rate == 0 {
+            return .paused
+        }
+        else if player.rate == 1 {
+            if player.status == .readyToPlay {
+                return .playing
+            }
+            else {
+                return .loading
+            }
+        }
+        else {
+            return .undefined
+        }
+    }
 
     override init() {
         super.init()
@@ -32,12 +51,12 @@ class AudioController: NSObject, ObservableObject {
         print("setupMediaPlayerCommands")
         let commandCenter = MPRemoteCommandCenter.shared()
 
-        commandCenter.playCommand.addTarget { [unowned self] _ in
-            self.player.play()
+        commandCenter.playCommand.addTarget { [weak self] _ in
+            self?.play()
             return .success
         }
-        commandCenter.pauseCommand.addTarget { [unowned self] _ in
-            self.player.pause()
+        commandCenter.pauseCommand.addTarget { [weak self] _ in
+            self?.pause()
             return .success
         }
     }
@@ -47,48 +66,33 @@ class AudioController: NSObject, ObservableObject {
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
 
-    func enterBackground() {
-        print("AudioController.enterBackground")
-    }
-
-    func enterForeground() {
-        print("AudioController.enterForeground")
-    }
-
 
     private var player = AVPlayer()
     private var asset: AVURLAsset!
     private var playerItem: AVPlayerItem!
-    private var cancellables = Set<AnyCancellable>()
 
     func stop() {
-        player.pause()
+        player.rate = 0
         player.replaceCurrentItem(with: nil)
+        statusChanged()
     }
 
     func pause() {
-        player.pause()
+        player.rate = 0
+        statusChanged()
     }
 
-    func play(url: URL) {
-        if asset?.url != url {
-            playerItem = AVPlayerItem(url: url)
-            playerItem.publisher(for: \.status)
-                .sink(receiveValue: { [weak self] status in
-                    guard let self = self else { return }
-
-                    self.playerStatus = status
-
-                    if status == .readyToPlay {
-                        self.player.play()
-                    }
-                })
-                .store(in: &cancellables)
-
+    func play(url: URL? = nil) {
+        if let url = url, asset?.url != url {
+            asset = AVURLAsset(url: url)
+            playerItem = AVPlayerItem(asset: asset)
             player.replaceCurrentItem(with: playerItem)
         }
-        else {
-            player.play()
-        }
+        player.rate = 1.0
+        statusChanged()
+    }
+
+    func statusChanged() {
+        objectWillChange.send()
     }
 }
