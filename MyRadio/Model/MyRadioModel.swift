@@ -106,11 +106,16 @@ class MyRadioModel: NSObject, ObservableObject {
                     logger.log("No valid image for \(String(describing: value.stream))")
                     return
                 }
-                try? value.stream.saveThumbnail(image)
-                DispatchQueue.main.async {
-                    self?.objectWillChange.send()
+                guard let index = streams.firstIndex(where: {$0.id == value.stream.id}) else {
+                    logger.log("No index for \(String(describing: value.stream))")
+                    return
                 }
                 logger.log("saving thumbnail image for \(String(describing: value.stream))")
+                streams[index].saveThumbnail(image)
+                DispatchQueue.main.async {
+                    self?.streams = streams
+                    logger.log("updated streams to show UI (with some images)")
+                }
             })
             .store(in: &cancellables)
     }

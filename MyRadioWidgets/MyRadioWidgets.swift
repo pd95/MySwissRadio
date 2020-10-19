@@ -13,7 +13,7 @@ import Combine
 struct Provider: IntentTimelineProvider {
     static let networkClient = NetworkClient()
 
-    static let streams = SettingsStore.shared.streams
+    static var streams = SettingsStore.shared.streams
 
     static var cancellables = Set<AnyCancellable>()
 
@@ -23,7 +23,10 @@ struct Provider: IntentTimelineProvider {
             .replaceError(with: nil)
             .sink { (image) in
                 if let image = image  {
-                    try? stream.saveThumbnail(image)
+                    guard let index = Self.streams.firstIndex(where: {$0.id == stream.id}) else {
+                        return
+                    }
+                    Self.streams[index].saveThumbnail(image)
                 }
             }
             .store(in: &Self.cancellables)
