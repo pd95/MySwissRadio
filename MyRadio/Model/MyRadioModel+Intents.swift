@@ -11,6 +11,8 @@ import Intents
 
 extension MyRadioModel: INPlayMediaIntentHandling {
 
+    /// Helper function extracting the list of words which are used in the stream name and business unit description
+    /// to be matched against the Siri provided search query
     func updateSiriSearch(_ streams: [Livestream]) {
         var wordToStreamsMap = [String:[Livestream.ID]]()
 
@@ -45,6 +47,7 @@ extension MyRadioModel: INPlayMediaIntentHandling {
         SettingsStore.shared.wordToStreamsMap = wordToStreamsMap
     }
 
+    // MARK: INPlayMediaIntentHandling implementation
     func handle(intent: INPlayMediaIntent, completion: @escaping (INPlayMediaIntentResponse) -> Void) {
 
         let result: INPlayMediaIntentResponse
@@ -58,18 +61,21 @@ extension MyRadioModel: INPlayMediaIntentHandling {
         completion(result)
     }
 
+    // MARK: Helper to extract Livestream.ID from specific intent
     func handlePlayIntent(_ intent: INIntent) -> [String: Any]? {
         let logger = Logger(subsystem: "MyRadioModel", category: "handleIntent")
 
-        let streamID: String
-        let doToggle: Bool
         // Handle INPlayMediaIntent coming from Siri & Shortcuts
         if let intent = intent as? INPlayMediaIntent {
             if let item = intent.mediaItems?.first,
                let itemID = item.identifier
             {
-                streamID = itemID
-                doToggle = false
+                if let stream = streamStore.stream(withID: itemID) {
+                    play(stream)
+                    return stream.nowPlayingInfo
+                }
+                logger.error("Invalid itemID in intent: \(itemID)")
+                return nil
             }
             else {
                 logger.error("Invalid media item in intent: \(intent)")
@@ -82,8 +88,13 @@ extension MyRadioModel: INPlayMediaIntentHandling {
             if let station = intent.station,
                let stationID = station.identifier ?? SettingsStore.shared.lastPlayedStreamId
             {
-                streamID = stationID
-                doToggle = true
+                if let stream = streamStore.stream(withID: stationID) {
+                    play(stream)
+                    showSheet = true
+                    return stream.nowPlayingInfo
+                }
+                logger.error("Invalid stationID in intent: \(stationID)")
+                return nil
             }
             else {
                 logger.error("Invalid station in intent: \(intent)")
@@ -92,20 +103,6 @@ extension MyRadioModel: INPlayMediaIntentHandling {
         }
         else {
             logger.error("Invalid intent: \(intent)")
-            return nil
-        }
-
-        if let stream = streamStore.stream(withID: streamID) {
-            if doToggle {
-                togglePlay(stream)
-            }
-            else {
-                play(stream)
-            }
-            return stream.nowPlayingInfo
-        }
-        else {
-            logger.error("Unable to find stream with ID \(streamID)")
             return nil
         }
     }
