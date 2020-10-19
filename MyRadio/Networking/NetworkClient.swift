@@ -58,7 +58,7 @@ struct NetworkClient {
                 .eraseToAnyPublisher()
         }
 
-        logger.debug("successful data task, propagating data \(result.data)")
+        logger.debug("successful data task for \(result.response.url!), propagating data \(result.data)")
         return Just(result.data)
             .setFailureType(to: NetworkClientError.self)
             .eraseToAnyPublisher()
@@ -121,7 +121,7 @@ struct NetworkClient {
                 urlRequest.addValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
 
                 // Execute request
-                logger.debug("running data task")
+                logger.debug("running data task for: \(urlRequest.url!)")
                 return urlSession.dataTaskPublisher(for: urlRequest)
                     .mapError({ NetworkClientError.urlError($0) })
                     .flatMap({ result -> AnyPublisher<Data, NetworkClientError> in
