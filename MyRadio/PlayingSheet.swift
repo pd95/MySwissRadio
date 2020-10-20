@@ -12,8 +12,12 @@ struct PlayingSheet: View {
     @EnvironmentObject var model: MyRadioModel
 
     let stream: Livestream
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
-    @State private var position: CGFloat = 100
+    @State private var seekRange = 0.0...1.0
+    @State private var currentTime: Double = 100
+    @State private var currentDate: Date = Date()
+    @State private var isDraggingSlider = false
 
     var body: some View {
         VStack {
@@ -30,16 +34,34 @@ struct PlayingSheet: View {
                 .scaledToFit()
 
             VStack {
-                Slider(value: $position, in: 0.0...100.0,
-                       onEditingChanged: { c in print("\(c) => \(position)") },
+                Slider(value: $currentTime, in: seekRange,
+                       onEditingChanged: { c in
+                            isDraggingSlider = c
+                            print("\(c) => \(currentTime) \(model.controller.relativeSecondsToDate(currentTime).localizedTimeString)")
+                            model.controller.currentTime = currentTime
+                       },
                        label: { Text("Progress") }
                 )
                 .padding(0)
 
-                HStack {
-                    Text("12:00:00")
-                    Spacer()
-                    Text("Live")
+                HStack(alignment: .lastTextBaseline) {
+                    Text(model.controller.earliestSeekDate, style: .time)
+
+                    Text("\(currentDate.localizedTimeString)")
+                        .onReceive(timer) { input in
+                            self.currentDate = model.controller.currentDate
+                            self.seekRange = model.controller.seekRange
+                            if !isDraggingSlider {
+                                self.currentTime = model.controller.currentTime
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+
+                    VStack(alignment: .trailing) {
+                        Text("Live")
+                            .bold()
+                        Text(model.controller.relativeOffsetToLive.relativeTimeString)
+                    }
                 }
                 .padding(0)
             }
@@ -50,13 +72,12 @@ struct PlayingSheet: View {
             HStack {
                 Spacer()
 
-                Button(action: {  }) {
+                Button(action: { model.controller.stepBackward() }) {
                     Image(systemName: "gobackward.15")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: 40, maxHeight: 40)
                 }
-                .disabled(true)
 
                 Spacer()
 
@@ -69,13 +90,12 @@ struct PlayingSheet: View {
 
                 Spacer()
 
-                Button(action: {  }) {
+                Button(action: { model.controller.stepForward() }) {
                     Image(systemName: "goforward.30")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: 40, maxHeight: 40)
                 }
-                .disabled(true)
 
                 Spacer()
             }

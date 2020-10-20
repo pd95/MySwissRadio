@@ -82,7 +82,7 @@ class MyRadioModel: NSObject, ObservableObject {
     }
 
     // MARK: - Playback control
-    private var controller = AudioController()
+    var controller = AudioController()
     private var controllerObserver: AnyCancellable?
     @Published var currentlyPlaying: Livestream?
     @Published var isPaused: Bool = false

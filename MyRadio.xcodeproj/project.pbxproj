@@ -25,6 +25,7 @@
 		17591BF6253D84DE0017CD08 /* LivestreamStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17591BF4253D84DE0017CD08 /* LivestreamStore.swift */; };
 		17591BF7253D84DE0017CD08 /* LivestreamStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17591BF4253D84DE0017CD08 /* LivestreamStore.swift */; };
 		17591C0B253DC21C0017CD08 /* LivestreamStore+Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17591C0A253DC21C0017CD08 /* LivestreamStore+Networking.swift */; };
+		1759A55A253ECDC8000ADCEF /* TimeInterval+Formatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1759A559253ECDC8000ADCEF /* TimeInterval+Formatter.swift */; };
 		177783842530FF0E003D19A3 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177783832530FF0E003D19A3 /* IntentHandler.swift */; };
 		177783882530FF0E003D19A3 /* MyRadioIntentHandler.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 177783812530FF0E003D19A3 /* MyRadioIntentHandler.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1777838F2530FF39003D19A3 /* MyRadioWidgets.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 17C6DD522530CD2A003D603E /* MyRadioWidgets.intentdefinition */; };
@@ -43,6 +44,7 @@
 		1788AAF2252E2EE000B89C22 /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788AAF1252E2EE000B89C22 /* AudioController.swift */; };
 		179B63A32530BAB500D0881E /* Livestream+ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */; };
 		179F2C922537791B0037876E /* WhatsPlayingToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179F2C912537791B0037876E /* WhatsPlayingToolbar.swift */; };
+		17B7AE57253E211D0045F065 /* Date+Formatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B7AE56253E211D0045F065 /* Date+Formatter.swift */; };
 		17C6DD4C2530CD2A003D603E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C6DD4B2530CD2A003D603E /* WidgetKit.framework */; };
 		17C6DD4E2530CD2A003D603E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C6DD4D2530CD2A003D603E /* SwiftUI.framework */; };
 		17C6DD512530CD2A003D603E /* MyRadioWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C6DD502530CD2A003D603E /* MyRadioWidgets.swift */; };
@@ -123,6 +125,7 @@
 		1750E233252C723500CB2D4B /* LocalConfig.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = LocalConfig.xcconfig; sourceTree = "<group>"; };
 		17591BF4253D84DE0017CD08 /* LivestreamStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivestreamStore.swift; sourceTree = "<group>"; };
 		17591C0A253DC21C0017CD08 /* LivestreamStore+Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LivestreamStore+Networking.swift"; sourceTree = "<group>"; };
+		1759A559253ECDC8000ADCEF /* TimeInterval+Formatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+Formatter.swift"; sourceTree = "<group>"; };
 		177783812530FF0E003D19A3 /* MyRadioIntentHandler.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MyRadioIntentHandler.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		177783832530FF0E003D19A3 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		177783852530FF0E003D19A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -135,6 +138,7 @@
 		1788AAF1252E2EE000B89C22 /* AudioController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioController.swift; sourceTree = "<group>"; };
 		179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Livestream+ImageCache.swift"; sourceTree = "<group>"; };
 		179F2C912537791B0037876E /* WhatsPlayingToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsPlayingToolbar.swift; sourceTree = "<group>"; };
+		17B7AE56253E211D0045F065 /* Date+Formatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Formatter.swift"; sourceTree = "<group>"; };
 		17C6DD492530CD2A003D603E /* MyRadioWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MyRadioWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		17C6DD4B2530CD2A003D603E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		17C6DD4D2530CD2A003D603E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -235,6 +239,8 @@
 			isa = PBXGroup;
 			children = (
 				171F58D825308CF200072EF5 /* Bundle+Sharing.swift */,
+				17B7AE56253E211D0045F065 /* Date+Formatter.swift */,
+				1759A559253ECDC8000ADCEF /* TimeInterval+Formatter.swift */,
 				171F58D42530831200072EF5 /* FileManager+Sharing.swift */,
 				173AAC642535E167009E4B9E /* String+Regex.swift */,
 			);
@@ -504,6 +510,7 @@
 				17DA93D6252C56500076EBB2 /* ContentView.swift in Sources */,
 				17EC1A8F252F9EF500F8AFCF /* ImageCache.swift in Sources */,
 				177A47B8252F3D5B009A4EDB /* UserDefault.swift in Sources */,
+				17B7AE57253E211D0045F065 /* Date+Formatter.swift in Sources */,
 				17C6DD572530CD2C003D603E /* MyRadioWidgets.intentdefinition in Sources */,
 				179F2C922537791B0037876E /* WhatsPlayingToolbar.swift in Sources */,
 				173079A82537989B000B3F82 /* PlayingSheet.swift in Sources */,
@@ -518,6 +525,7 @@
 				17D8F7642533ABE500041715 /* Livestream+INMediaItem.swift in Sources */,
 				1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */,
 				1788358E252CBF8C000279A1 /* Livestream.swift in Sources */,
+				1759A55A253ECDC8000ADCEF /* TimeInterval+Formatter.swift in Sources */,
 				17DB7BDC252CC6FA004C4BF8 /* LivestreamRow.swift in Sources */,
 				17883587252CB9C3000279A1 /* BusinessUnit.swift in Sources */,
 				1788358B252CBE50000279A1 /* SRGService.swift in Sources */,
