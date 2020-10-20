@@ -112,21 +112,25 @@ class MyRadioModel: NSObject, ObservableObject {
             SettingsStore.shared.lastPlayedStreamId = stream.id
             SettingsStore.shared.isPlaying = true
 
+            var oldStatus = controller.playerStatus
+
             controllerObserver = controller.objectWillChange
                 .sink(receiveValue: { _ in
                     let status = self.controller.playerStatus
-                    print("controller state changed: \(status)")
 
-                    if status == .playing {
-                        self.isPaused = false
-                        self.updateLastPlayed(for: stream)
+                    if oldStatus != status {
+                        print("controller state changed: \(status)")
+                        if status == .playing {
+                            self.isPaused = false
+                            self.updateLastPlayed(for: stream)
+                        }
+                        else {
+                            self.isPaused = true
+                        }
+                        SettingsStore.shared.isPlaying = !self.isPaused
+                        self.updateWidgets()
+                        oldStatus = status
                     }
-                    else {
-                        self.isPaused = true
-                    }
-                    SettingsStore.shared.isPlaying = !self.isPaused
-                    self.updateWidgets()
-                    self.objectWillChange.send()
                 })
         }
     }
