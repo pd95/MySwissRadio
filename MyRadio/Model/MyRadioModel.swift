@@ -22,6 +22,12 @@ class MyRadioModel: NSObject, ObservableObject {
     private override init() {
         super.init()
 
+        if currentlyPlaying == nil, let stream = streamStore.stream(withID: SettingsStore.shared.lastPlayedStreamId ?? "") {
+            play(stream)
+            pause()
+            showSheet = true
+        }
+
         // Make sure we propagate any change of the streams as "our own" change
         streamStore.$streams
             .receive(on: DispatchQueue.main)
