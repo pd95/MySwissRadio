@@ -24,11 +24,11 @@ extension Livestream {
         var nowPlayingInfo: [String: Any] = [
             MPMediaItemPropertyTitle: name,
             MPMediaItemPropertyMediaType: MPMediaType.anyAudio.rawValue,
-            MPMediaItemPropertyArtist: "My radio"
+            MPNowPlayingInfoCollectionIdentifier: bu,
         ]
 
         if let image = thumbnailImage {
-            let artwork = MPMediaItemArtwork(boundsSize: CGSize(width: 60, height: 60)) { (_) -> UIImage in
+            let artwork = MPMediaItemArtwork(boundsSize: image.size) { (_) -> UIImage in
                 return image
             }
 

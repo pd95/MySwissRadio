@@ -102,7 +102,13 @@ class AudioController: NSObject, ObservableObject {
 
     func setupNowPlaying(_ nowPlayingInfo: [String: Any]) {
         print("setupNowPlaying: \(nowPlayingInfo)")
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+        let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
+
+        var nowPlayingInfo = nowPlayingInfo
+        nowPlayingInfo[MPNowPlayingInfoPropertyAssetURL] = asset.url
+        nowPlayingInfo[MPMediaItemPropertyArtist] = "My radio"
+
+        nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
     }
 
     func enrichNowPlaying(duration: TimeInterval, position: Double, rate: Float) {
