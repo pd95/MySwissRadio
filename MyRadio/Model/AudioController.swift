@@ -142,7 +142,7 @@ class AudioController: NSObject, ObservableObject {
         statusChanged()
     }
 
-    func play(url: URL? = nil) {
+    func play(url: URL? = nil, initiallyPaused: Bool = false) {
         if let url = url, asset?.url != url {
             asset = AVURLAsset(url: url)
 
@@ -160,8 +160,12 @@ class AudioController: NSObject, ObservableObject {
                         self.startTime = Date().addingTimeInterval(-self.playerItem!.configuredTimeOffsetFromLive.seconds)
                         print("   startTime = \(self.startTime)")
                         print("   timebase  = \(self.playerItem?.timebase?.time.seconds ?? -1)")
+                        self.player.rate = initiallyPaused ? 0.0 : 1.0
 
                         self.statusChanged()
+                    }
+                    else if status == .failed, let error = self.playerItem?.error {
+                        print("playerItem.status failed with error \(error.localizedDescription)")
                     }
                 }
                 .store(in: &playerItemCancellables)
@@ -191,7 +195,9 @@ class AudioController: NSObject, ObservableObject {
 
             player.replaceCurrentItem(with: playerItem)
         }
-        player.rate = 1.0
+        else {
+            player.rate = initiallyPaused ? 0.0 : 1.0
+        }
         statusChanged()
     }
 

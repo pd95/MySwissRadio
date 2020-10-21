@@ -23,8 +23,7 @@ class MyRadioModel: NSObject, ObservableObject {
         super.init()
 
         if currentlyPlaying == nil, let stream = streamStore.stream(withID: SettingsStore.shared.lastPlayedStreamId ?? "") {
-            play(stream)
-            pause()
+            play(stream, initiallyPaused: true)
             showSheet = true
         }
 
@@ -103,16 +102,16 @@ class MyRadioModel: NSObject, ObservableObject {
         updateWidgets()
     }
 
-    func play(_ stream: Livestream) {
+    func play(_ stream: Livestream, initiallyPaused: Bool = false) {
         currentlyPlaying = stream
         if let url = stream.streams.first {
-            controller.play(url: url)
+            controller.play(url: url, initiallyPaused: initiallyPaused)
             controller.setupNowPlaying(stream.nowPlayingInfo)
 
             SettingsStore.shared.lastPlayedStreamId = stream.id
             SettingsStore.shared.isPlaying = true
 
-            var oldStatus = controller.playerStatus
+            var oldStatus: AudioController.Status?
 
             controllerObserver = controller.objectWillChange
                 .sink(receiveValue: { _ in
