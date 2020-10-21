@@ -103,6 +103,11 @@ struct PlayingSheet: View {
 
             Spacer()
         }
+        .onAppear() {
+            self.currentDate = model.controller.currentDate
+            self.seekRange = model.controller.seekRange
+            self.currentTime = model.controller.currentTime
+        }
     }
 }
 
