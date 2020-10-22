@@ -24,7 +24,7 @@ extension Livestream {
         var nowPlayingInfo: [String: Any] = [
             MPMediaItemPropertyTitle: name,
             MPMediaItemPropertyMediaType: MPMediaType.anyAudio.rawValue,
-            MPNowPlayingInfoCollectionIdentifier: bu,
+            MPNowPlayingInfoCollectionIdentifier: bu.description,
         ]
 
         if let image = thumbnailImage {
