@@ -44,7 +44,47 @@ class AudioController: NSObject, ObservableObject {
             print("Setting category to AVAudioSessionCategoryPlayback failed.")
         }
 
+        setupNotifications()
         setupRemoteTransportControls()
+    }
+
+    private var notificationCancellable: AnyCancellable?
+
+    func setupNotifications() {
+        notificationCancellable = NotificationCenter.default
+            .publisher(for: AVAudioSession.interruptionNotification)
+            .sink { [weak self] (notification) in
+                guard let userInfo = notification.userInfo,
+                      let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+                      let type = AVAudioSession.InterruptionType(rawValue: typeValue),
+                      let self = self
+                else {
+                    return
+                }
+
+                // Switch over the interruption type.
+                switch type {
+
+                    // An interruption began. Update the UI as needed.
+                    case .began: ()
+
+
+                    // An interruption ended. Resume playback, if appropriate.
+                    case .ended:
+                        guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
+                        let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+                        if options.contains(.shouldResume) {
+                            // Interruption ended. Playback should resume.
+                            self.player.rate = 1.0
+
+                        } else {
+                            // Interruption ended. Playback should not resume.
+                        }
+
+                    // We do not know whether Apple will introduce new interruptions in the future
+                    default: ()
+                }
+            }
     }
 
     func setupRemoteTransportControls() {
