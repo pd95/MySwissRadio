@@ -17,6 +17,14 @@ class AudioController: NSObject, ObservableObject {
     }
 
     var playerStatus: Status {
+        guard let playerItem = playerItem,
+              playerItem.status == .readyToPlay,
+              let seekRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first,
+              seekRange.isValid && !seekRange.isEmpty
+        else {
+            print("🔴 undefined playerStatus")
+            return .undefined
+        }
         if player.rate == 0 {
             return .paused
         }
@@ -152,12 +160,12 @@ class AudioController: NSObject, ObservableObject {
     }
 
     func enrichNowPlaying(duration: TimeInterval, position: Double, rate: Float) {
-        print("enrichNowPlaying: duration=\(duration) position=\(position) rate=\(rate)")
+        print("enrichNowPlaying: isLive=\(isLive) duration=\(duration) position=\(position) rate=\(rate)")
         let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
 
         var nowPlayingInfo = nowPlayingInfoCenter.nowPlayingInfo ?? [String : Any]()
 
-        nowPlayingInfo[MPNowPlayingInfoPropertyIsLiveStream] = (position + 10) > duration
+        nowPlayingInfo[MPNowPlayingInfoPropertyIsLiveStream] = isLive
         nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = duration
         nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = position
         nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = rate
@@ -243,6 +251,7 @@ class AudioController: NSObject, ObservableObject {
         }
         else {
             player.rate = initiallyPaused ? 0.0 : 1.0
+            playerItem!.automaticallyPreservesTimeOffsetFromLive = true
         }
         statusChanged()
     }
@@ -313,14 +322,17 @@ class AudioController: NSObject, ObservableObject {
         })
     }
 
+    func seekToLive() {
+        seek(to: seekRange.upperBound)
+    }
+
     func stepBackward(_ count: Double = 15) {
-        seek(to: currentTime - count)
+        seek(to: currentPosition - count)
     }
 
     func stepForward(_ count: Double = 30) {
-        seek(to: currentTime + count)
+        seek(to: currentPosition + count)
     }
-
 
     var earliestSeekDate: Date {
         guard let playerItem = playerItem else { return .distantPast }
@@ -330,9 +342,9 @@ class AudioController: NSObject, ObservableObject {
         return startTime
     }
 
-    var currentTime: Double {
+    var currentPosition: Double {
         get {
-            playerItem?.currentTime().seconds ?? .zero
+            playerItem?.currentTime().seconds ?? .infinity
         }
         set {
             seek(to: newValue)
@@ -346,6 +358,14 @@ class AudioController: NSObject, ObservableObject {
             return 0...0
         }
         return seekableTimeRange.start.seconds...seekableTimeRange.end.seconds
+    }
+
+    var duration: Double {
+        seekRange.upperBound - seekRange.lowerBound
+    }
+
+    var isLive: Bool {
+        currentPosition > (seekRange.upperBound - 15)
     }
 
     var currentDate: Date {
@@ -368,12 +388,10 @@ class AudioController: NSObject, ObservableObject {
     var relativeOffsetToLive: TimeInterval {
         guard let playerItem = playerItem else { return .zero }
         let currentTime = playerItem.currentTime()
-        if let loadedTimeRange = playerItem.loadedTimeRanges.map({ $0.timeRangeValue }).first,
-           let seekableTimeRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first
+        if let seekableTimeRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first
         {
-            let biggest = max(loadedTimeRange.end.seconds, seekableTimeRange.end.seconds)
-            if biggest > currentTime.seconds {
-                return TimeInterval(currentTime.seconds - biggest)
+            if seekableTimeRange.end.seconds > currentTime.seconds {
+                return TimeInterval(currentTime.seconds - seekableTimeRange.end.seconds)
             }
         }
         return TimeInterval.zero

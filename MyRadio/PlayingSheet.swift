@@ -12,10 +12,9 @@ struct PlayingSheet: View {
     @EnvironmentObject var model: MyRadioModel
 
     let stream: Livestream
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     @State private var seekRange = 0.0...1.0
-    @State private var currentTime: Double = 100
+    @State private var currentPosition: Double = .infinity
     @State private var currentDate: Date = Date()
     @State private var isDraggingSlider = false
 
@@ -33,37 +32,39 @@ struct PlayingSheet: View {
                 .resizable()
                 .scaledToFit()
 
-            VStack {
-                Slider(value: $currentTime, in: seekRange,
-                       onEditingChanged: { c in
-                            isDraggingSlider = c
-                            print("\(c) => \(currentTime) \(model.controller.relativeSecondsToDate(currentTime).localizedTimeString)")
-                            model.controller.currentTime = currentTime
-                       },
-                       label: { Text("Progress") }
-                )
-                .padding(0)
-
-                HStack(alignment: .lastTextBaseline) {
-                    Text(model.controller.earliestSeekDate, style: .time)
-
-                    Text("\(currentDate.localizedTimeString)")
-                        .onReceive(timer) { input in
-                            self.currentDate = model.controller.currentDate
-                            self.seekRange = model.controller.seekRange
-                            if !isDraggingSlider {
-                                self.currentTime = model.controller.currentTime
-                            }
-                        }
-                        .frame(maxWidth: .infinity, alignment: .center)
-
-                    VStack(alignment: .trailing) {
+            VStack(spacing: 0) {
+                HStack {
+                    if model.controller.isLive {
                         Text("Live")
                             .bold()
-                        Text(model.controller.relativeOffsetToLive.relativeTimeString)
+                    }
+                    else {
+                        Button(action: model.controller.seekToLive) {
+                            Text("Live")
+                                .bold()
+                            Image(systemName: "forward.end.fill")
+                        }
                     }
                 }
-                .padding(0)
+                .foregroundColor(.red)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+
+                Slider(value: $currentPosition, in: seekRange,
+                       onEditingChanged: sliderModeChanged,
+                       label: { Text("Progress") }
+                )
+
+                ZStack {
+                    Text(model.controller.earliestSeekDate, style: .time)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Text("\(currentDate.localizedTimeString)")
+                        .frame(maxWidth: .infinity, alignment: .center)
+
+                    Text(model.controller.relativeOffsetToLive.relativeTimeString)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+                .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect(), perform: { _ in updateState() })
             }
             .foregroundColor(.secondary)
             .accentColor(.secondary)
@@ -72,7 +73,7 @@ struct PlayingSheet: View {
             HStack {
                 Spacer()
 
-                Button(action: { model.controller.stepBackward() }) {
+                Button(action: stepBackward) {
                     Image(systemName: "gobackward.15")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -81,7 +82,7 @@ struct PlayingSheet: View {
 
                 Spacer()
 
-                Button(action: { model.togglePlay(stream) }) {
+                Button(action: togglePlayPause) {
                     Image(systemName: !model.isPaused ? "pause.fill" : "play.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -90,7 +91,7 @@ struct PlayingSheet: View {
 
                 Spacer()
 
-                Button(action: { model.controller.stepForward() }) {
+                Button(action: stepForward) {
                     Image(systemName: "goforward.30")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -103,10 +104,41 @@ struct PlayingSheet: View {
 
             Spacer()
         }
-        .onAppear() {
-            self.currentDate = model.controller.currentDate
-            self.seekRange = model.controller.seekRange
-            self.currentTime = model.controller.currentTime
+        .onAppear(perform: updateState)
+    }
+
+    func updateState() {
+        guard model.controller.playerStatus != .undefined else { return }
+
+        currentDate = model.controller.currentDate
+        seekRange = model.controller.seekRange
+
+        if !isDraggingSlider {
+            currentPosition = model.controller.currentPosition
+            print("⚫️⚫️⚫️ currentPosition \(currentPosition)")
+        }
+    }
+
+    func togglePlayPause() {
+        model.togglePlay(stream)
+        updateState()
+    }
+
+    func stepBackward() {
+        model.controller.stepBackward()
+        updateState()
+    }
+
+    func stepForward() {
+        model.controller.stepForward()
+        updateState()
+    }
+
+    func sliderModeChanged(_ started: Bool) {
+        isDraggingSlider = started
+        print("\(started) => \(currentPosition) \(model.controller.relativeSecondsToDate(currentPosition).localizedTimeString)")
+        if !started {
+            model.controller.currentPosition = currentPosition
         }
     }
 }
