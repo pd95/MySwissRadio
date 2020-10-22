@@ -104,6 +104,7 @@ struct PlayingSheet: View {
 
             Spacer()
         }
+        .disabled(model.controller.playerStatus == .undefined)
         .onAppear(perform: updateState)
     }
 

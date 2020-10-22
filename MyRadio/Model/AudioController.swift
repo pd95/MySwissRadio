@@ -58,7 +58,7 @@ class AudioController: NSObject, ObservableObject {
 
     private var notificationCancellable: AnyCancellable?
 
-    func setupNotifications() {
+    private func setupNotifications() {
         notificationCancellable = NotificationCenter.default
             .publisher(for: AVAudioSession.interruptionNotification)
             .sink { [weak self] (notification) in
@@ -95,7 +95,7 @@ class AudioController: NSObject, ObservableObject {
             }
     }
 
-    func setupRemoteTransportControls() {
+    private func setupRemoteTransportControls() {
         print("setupRemoteTransportControls")
         let commandCenter = MPRemoteCommandCenter.shared()
 
@@ -153,13 +153,15 @@ class AudioController: NSObject, ObservableObject {
         let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
 
         var nowPlayingInfo = nowPlayingInfo
-        nowPlayingInfo[MPNowPlayingInfoPropertyAssetURL] = asset.url
+        if let url = (playerItem?.asset as? AVURLAsset)?.url {
+            nowPlayingInfo[MPNowPlayingInfoPropertyAssetURL] = url
+        }
         nowPlayingInfo[MPMediaItemPropertyArtist] = "My radio"
 
         nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
     }
 
-    func enrichNowPlaying(duration: TimeInterval, position: Double, rate: Float) {
+    private func enrichNowPlaying(duration: TimeInterval, position: Double, rate: Float) {
         print("enrichNowPlaying: isLive=\(isLive) duration=\(duration) position=\(position) rate=\(rate)")
         let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
 
@@ -174,9 +176,12 @@ class AudioController: NSObject, ObservableObject {
         nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
     }
 
+    private func removeNowPlaying() {
+        let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
+        nowPlayingInfoCenter.nowPlayingInfo?.removeAll()
+    }
 
     private var player = AVPlayer()
-    private var asset: AVURLAsset!
     private var playerItem: AVPlayerItem?
     private var playerItemCancellables = Set<AnyCancellable>()
     private var startTime: Date = .distantPast {
@@ -188,6 +193,7 @@ class AudioController: NSObject, ObservableObject {
     func stop() {
         player.rate = 0
         player.replaceCurrentItem(with: nil)
+        playerItem = nil
         statusChanged()
     }
 
@@ -197,8 +203,8 @@ class AudioController: NSObject, ObservableObject {
     }
 
     func play(url: URL? = nil, initiallyPaused: Bool = false) {
-        if let url = url, asset?.url != url {
-            asset = AVURLAsset(url: url)
+        if let url = url, (playerItem?.asset as? AVURLAsset)?.url != url {
+            let asset = AVURLAsset(url: url)
 
             playerItem = AVPlayerItem(asset: asset)
             playerItem!.automaticallyPreservesTimeOffsetFromLive = true
@@ -271,6 +277,9 @@ class AudioController: NSObject, ObservableObject {
         if let currentItem = playerItem {
             let range = seekRange
             enrichNowPlaying(duration: range.upperBound-range.lowerBound, position: currentItem.currentTime().seconds-range.lowerBound, rate: player.rate)
+        }
+        else {
+            removeNowPlaying()
         }
         dumpState()
     }
