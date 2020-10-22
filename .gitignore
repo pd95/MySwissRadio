@@ -9,3 +9,7 @@
 
 # Overriden config files
 Local*.xcconfig
+
+# Ignore raw media files
+_resources/*.mov
+_resources/*.pxd
