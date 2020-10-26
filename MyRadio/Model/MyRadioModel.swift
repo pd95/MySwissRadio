@@ -78,6 +78,8 @@ class MyRadioModel: NSObject, ObservableObject {
         if SettingsStore.shared.streams.isEmpty {
             refreshContent()
         }
+
+        recoverFromPossibleInterruption()
     }
 
     // MARK: - Playback control
@@ -148,6 +150,16 @@ class MyRadioModel: NSObject, ObservableObject {
             donatePlayActivity(stream)
         }
         showSheet = true
+    }
+
+    func recoverFromPossibleInterruption() {
+        // If last interruption was not less than 15 minutes ago: continue. Otherwise seek to live.
+        if let interruptionDate = controller.interruptionDate {
+            controller.play()
+            if Date() > interruptionDate.addingTimeInterval(15*60) {
+                controller.seekToLive()
+            }
+        }
     }
 
     func donatePlayActivity(_ stream: Livestream) {

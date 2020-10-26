@@ -57,6 +57,11 @@ class AudioController: NSObject, ObservableObject {
     }
 
     private var notificationCancellable: AnyCancellable?
+    var interruptionDate: Date? {
+        didSet {
+            print("🔺🔺🔺 interruptionDate set to \(interruptionDate?.description ?? "nil")")
+        }
+    }
 
     private func setupNotifications() {
         notificationCancellable = NotificationCenter.default
@@ -75,7 +80,7 @@ class AudioController: NSObject, ObservableObject {
 
                     // An interruption began. Update the UI as needed.
                     case .began: ()
-
+                        self.interruptionDate = Date()
 
                     // An interruption ended. Resume playback, if appropriate.
                     case .ended:
@@ -84,6 +89,7 @@ class AudioController: NSObject, ObservableObject {
                         if options.contains(.shouldResume) {
                             // Interruption ended. Playback should resume.
                             self.player.rate = 1.0
+                            self.interruptionDate = nil
 
                         } else {
                             // Interruption ended. Playback should not resume.
@@ -258,6 +264,9 @@ class AudioController: NSObject, ObservableObject {
         else {
             player.rate = initiallyPaused ? 0.0 : 1.0
             playerItem!.automaticallyPreservesTimeOffsetFromLive = true
+        }
+        if interruptionDate != nil {
+            interruptionDate = nil
         }
         statusChanged()
     }
