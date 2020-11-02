@@ -199,6 +199,7 @@ class AudioController: NSObject, ObservableObject {
             logger.debug("🔴 startTime: \(DateFormatter.localizedString(from: self.startTime, dateStyle: .short, timeStyle: .full))")
         }
     }
+    private var lastRateChange: Date = .distantPast
 
     func stop() {
         player.rate = 0
@@ -259,6 +260,7 @@ class AudioController: NSObject, ObservableObject {
                 .sink { [weak self] (rate) in
                     guard let self = self else { return }
                     self.logger.debug("🔵 New rate set: \(rate)")
+                    self.lastRateChange = Date()
                     self.statusChanged()
                 }
                 .store(in: &playerItemCancellables)
@@ -282,6 +284,44 @@ class AudioController: NSObject, ObservableObject {
         else {
             pause()
         }
+    }
+
+    func unfreezePlayer() {
+        logger.log("unfreezePlayer")
+
+        let maxPausedDuration: TimeInterval = 10 * 60
+        let maxInterruptionDuration: TimeInterval = 2 * 60 * 60
+
+        // If last interruption was not less than 15 minutes ago: continue. Otherwise seek to live.
+        if let interruptionDate = interruptionDate {
+            logger.log("interruptionDate: \(interruptionDate)")
+            play()
+            let delta = interruptionDate.distance(to: Date())
+            logger.log("interruption is \(delta) seconds ago")
+            if delta > maxInterruptionDuration {
+                logger.log("interruption is more than \(maxInterruptionDuration/60) minutes in the past! Restarting stream")
+                restartPlayer(initiallyPaused: false)
+            }
+            else if delta > maxPausedDuration {
+                logger.log("interruption is more than \(maxPausedDuration/60) minutes in the past!")
+                seekToLive()
+            }
+        }
+        else if playerStatus == .paused && lastRateChange.distance(to: Date()) > maxInterruptionDuration {
+            logger.log("Paused for more than \(maxInterruptionDuration/60) minutes, ")
+            restartPlayer(initiallyPaused: true)
+        }
+    }
+
+    func restartPlayer(initiallyPaused: Bool) {
+        logger.log("restartPlayer")
+        guard let url = (playerItem?.asset as? AVURLAsset)?.url else {
+            logger.log("cannot restart when no URL has been playing")
+            return
+        }
+        // Unfreeze state of player, by completely stopping and restarting the stream.
+        stop()
+        play(url: url, initiallyPaused: initiallyPaused)
     }
 
     func statusChanged() {
