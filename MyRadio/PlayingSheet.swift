@@ -64,7 +64,7 @@ struct PlayingSheet: View {
                     Text(model.controller.relativeOffsetToLive.relativeTimeString)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-                .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect(), perform: { _ in updateState() })
+                .onReceive(model.uiUpdateTimer, perform: updateState)
             }
             .foregroundColor(.secondary)
             .accentColor(.secondary)
@@ -105,19 +105,16 @@ struct PlayingSheet: View {
             Spacer()
         }
         .disabled(model.controller.playerStatus == .undefined)
-        .onAppear(perform: updateState)
     }
 
-    func updateState() {
-        guard model.controller.playerStatus != .undefined else { return }
+    func updateState(_ time: Date = Date()) {
+        guard model.controller.playerStatus != .undefined && !isDraggingSlider else {
+            return
+        }
 
         currentDate = model.controller.currentDate
         seekRange = model.controller.seekRange
-
-        if !isDraggingSlider {
-            currentPosition = model.controller.currentPosition
-            print("⚫️⚫️⚫️ currentPosition \(currentPosition)")
-        }
+        currentPosition = model.controller.currentPosition
     }
 
     func togglePlayPause() {

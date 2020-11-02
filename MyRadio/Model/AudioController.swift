@@ -9,6 +9,7 @@ import Foundation
 import AVKit
 import MediaPlayer
 import Combine
+import os.log
 
 class AudioController: NSObject, ObservableObject {
 
@@ -22,7 +23,7 @@ class AudioController: NSObject, ObservableObject {
               let seekRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first,
               seekRange.isValid && !seekRange.isEmpty
         else {
-            print("🔴 undefined playerStatus")
+            logger.debug("🔴 undefined playerStatus")
             return .undefined
         }
         if player.rate == 0 {
@@ -41,6 +42,9 @@ class AudioController: NSObject, ObservableObject {
         }
     }
 
+    private let logger = Logger(subsystem: "AudioController", category: "General")
+
+
     override init() {
         super.init()
 
@@ -49,22 +53,22 @@ class AudioController: NSObject, ObservableObject {
         do {
             try audioSession.setCategory(.playback)
         } catch {
-            print("Setting category to AVAudioSessionCategoryPlayback failed.")
+            logger.debug("Setting category to AVAudioSessionCategoryPlayback failed.")
         }
 
         setupNotifications()
         setupRemoteTransportControls()
     }
 
-    private var notificationCancellable: AnyCancellable?
+    private var interruptionNotificationSubscriber: AnyCancellable?
     var interruptionDate: Date? {
         didSet {
-            print("🔺🔺🔺 interruptionDate set to \(interruptionDate?.description ?? "nil")")
+            logger.debug("🔺🔺🔺 interruptionDate set to \(self.interruptionDate?.description ?? "nil")")
         }
     }
 
     private func setupNotifications() {
-        notificationCancellable = NotificationCenter.default
+        interruptionNotificationSubscriber = NotificationCenter.default
             .publisher(for: AVAudioSession.interruptionNotification)
             .sink { [weak self] (notification) in
                 guard let userInfo = notification.userInfo,
@@ -102,40 +106,40 @@ class AudioController: NSObject, ObservableObject {
     }
 
     private func setupRemoteTransportControls() {
-        print("setupRemoteTransportControls")
+        logger.debug("setupRemoteTransportControls")
         let commandCenter = MPRemoteCommandCenter.shared()
 
         commandCenter.playCommand.addTarget { [weak self] _ in
-            print("playCommand")
+            self?.logger.debug("playCommand")
             self?.play()
             return .success
         }
 
         commandCenter.pauseCommand.addTarget { [weak self] _ in
-            print("pauseCommand")
+            self?.logger.debug("pauseCommand")
             self?.pause()
             return .success
         }
 
         commandCenter.togglePlayPauseCommand.addTarget { [weak self] _ in
-            print("togglePlayPauseCommand")
+            self?.logger.debug("togglePlayPauseCommand")
             self?.togglePlayPause()
             return .success
         }
 
         commandCenter.changePlaybackPositionCommand.addTarget { [weak self] event in
-            print("changePlaybackPositionCommand")
+            self?.logger.debug("changePlaybackPositionCommand")
             guard let event = event as? MPChangePlaybackPositionCommandEvent else {
                 return .commandFailed
             }
-            print(event.positionTime)
+            self?.logger.debug("target position = \(event.positionTime)")
             self?.seek(to: event.positionTime)
             return .success
         }
 
         commandCenter.skipBackwardCommand.preferredIntervals = [NSNumber(integerLiteral: 15)]
         commandCenter.skipBackwardCommand.addTarget { [weak self] event in
-            print("skipBackwardCommand")
+            self?.logger.debug("skipBackwardCommand")
             guard let event = event as? MPSkipIntervalCommandEvent else {
                 return .commandFailed
             }
@@ -145,7 +149,7 @@ class AudioController: NSObject, ObservableObject {
 
         commandCenter.skipForwardCommand.preferredIntervals = [NSNumber(integerLiteral: 30)]
         commandCenter.skipForwardCommand.addTarget { [weak self] event in
-            print("skipForwardCommand")
+            self?.logger.debug("skipForwardCommand")
             guard let event = event as? MPSkipIntervalCommandEvent else {
                 return .commandFailed
             }
@@ -155,7 +159,7 @@ class AudioController: NSObject, ObservableObject {
     }
 
     func setupNowPlaying(_ nowPlayingInfo: [String: Any]) {
-        print("setupNowPlaying: \(nowPlayingInfo)")
+        logger.debug("setupNowPlaying: \(nowPlayingInfo)")
         let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
 
         var nowPlayingInfo = nowPlayingInfo
@@ -168,7 +172,7 @@ class AudioController: NSObject, ObservableObject {
     }
 
     private func enrichNowPlaying(duration: TimeInterval, position: Double, rate: Float) {
-        print("enrichNowPlaying: isLive=\(isLive) duration=\(duration) position=\(position) rate=\(rate)")
+        logger.debug("enrichNowPlaying: isLive=\(self.isLive) duration=\(duration) position=\(position) rate=\(rate)")
         let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
 
         var nowPlayingInfo = nowPlayingInfoCenter.nowPlayingInfo ?? [String : Any]()
@@ -192,7 +196,7 @@ class AudioController: NSObject, ObservableObject {
     private var playerItemCancellables = Set<AnyCancellable>()
     private var startTime: Date = .distantPast {
         didSet {
-            print("🔴 startTime: \(DateFormatter.localizedString(from: startTime, dateStyle: .short, timeStyle: .full))")
+            logger.debug("🔴 startTime: \(DateFormatter.localizedString(from: self.startTime, dateStyle: .short, timeStyle: .full))")
         }
     }
 
@@ -221,17 +225,17 @@ class AudioController: NSObject, ObservableObject {
                 .removeDuplicates()
                 .sink { [weak self] (status) in
                     guard let self = self else { return }
-                    print("🟢 New status set: \(status.rawValue)")
+                    self.logger.debug("🟢 New status set: \(status.rawValue)")
                     if status == .readyToPlay {
                         self.startTime = Date().addingTimeInterval(-self.playerItem!.configuredTimeOffsetFromLive.seconds)
-                        print("   startTime = \(self.startTime)")
-                        print("   timebase  = \(self.playerItem?.timebase?.time.seconds ?? -1)")
+                        self.logger.debug("   startTime = \(self.startTime)")
+                        self.logger.debug("   timebase  = \(self.playerItem?.timebase?.time.seconds ?? -1)")
                         self.player.rate = initiallyPaused ? 0.0 : 1.0
 
                         self.statusChanged()
                     }
                     else if status == .failed, let error = self.playerItem?.error {
-                        print("playerItem.status failed with error \(error.localizedDescription)")
+                        self.logger.debug("playerItem.status failed with error \(error.localizedDescription)")
                     }
                 }
                 .store(in: &playerItemCancellables)
@@ -240,10 +244,10 @@ class AudioController: NSObject, ObservableObject {
                 .removeDuplicates()
                 .sink { [weak self] (seekableTimeRanges) in
                     guard let self = self else { return }
-                    print("🟢 New seekableTimeRanges set: \(seekableTimeRanges)")
+                    self.logger.debug("🟢 New seekableTimeRanges set: \(seekableTimeRanges)")
                     if let firstRange = seekableTimeRanges.map({$0.timeRangeValue}).first {
-                        print("   start:    \(firstRange.start.seconds)")
-                        print("   duration: \(firstRange.duration.seconds)")
+                        self.logger.debug("   start:    \(firstRange.start.seconds)")
+                        self.logger.debug("   duration: \(firstRange.duration.seconds)")
 
                         self.statusChanged()
                     }
@@ -254,7 +258,7 @@ class AudioController: NSObject, ObservableObject {
                 .removeDuplicates()
                 .sink { [weak self] (rate) in
                     guard let self = self else { return }
-                    print("🔵 New rate set: \(rate)")
+                    self.logger.debug("🔵 New rate set: \(rate)")
                     self.statusChanged()
                 }
                 .store(in: &playerItemCancellables)
@@ -296,32 +300,32 @@ class AudioController: NSObject, ObservableObject {
 
     func dumpState() {
 
-        print("playerStatus: \(playerStatus)")
-        print("playerItem: \(playerItem.debugDescription)")
+        logger.debug("playerStatus: \(String(describing: self.playerStatus))")
+        logger.debug("playerItem: \(self.playerItem.debugDescription)")
 
         guard let playerItem = playerItem else { return }
         let asset = playerItem.asset
-        print("asset: \(asset.debugDescription)")
-        print("  duration: \(asset.duration.seconds)  overallDurationHint: \(asset.overallDurationHint.seconds)")
-        print("  minimumTimeOffsetFromLive: \(asset.minimumTimeOffsetFromLive.seconds)")
+        logger.debug("asset: \(asset.debugDescription)")
+        logger.debug("  duration: \(asset.duration.seconds)  overallDurationHint: \(asset.overallDurationHint.seconds)")
+        logger.debug("  minimumTimeOffsetFromLive: \(asset.minimumTimeOffsetFromLive.seconds)")
 
         let currentTime = playerItem.currentTime()
-        print("🟡 currentTime.seconds: \(currentTime.seconds)")
+        logger.debug("🟡 currentTime.seconds: \(currentTime.seconds)")
 
         if let seekableTimeRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first,
            let loadedTimeRange = playerItem.loadedTimeRanges.map({ $0.timeRangeValue }).first {
-            print("🟡 seekableTimeRange: start \(seekableTimeRange.start.seconds) end \(seekableTimeRange.end.seconds) duration \(seekableTimeRange.duration.seconds)")
-            print("   loadedTimeRange:   start \(loadedTimeRange.start.seconds) end \(loadedTimeRange.end.seconds) duration \(loadedTimeRange.duration.seconds)")
+            logger.debug("🟡 seekableTimeRange: start \(seekableTimeRange.start.seconds) end \(seekableTimeRange.end.seconds) duration \(seekableTimeRange.duration.seconds)")
+            logger.debug("   loadedTimeRange:   start \(loadedTimeRange.start.seconds) end \(loadedTimeRange.end.seconds) duration \(loadedTimeRange.duration.seconds)")
 
             let earliestPosition = startTime.addingTimeInterval(seekableTimeRange.start.seconds - seekableTimeRange.duration.seconds)
-            print("   earliestPosition: \(earliestPosition.localizedTimeString)")
+            logger.debug("   earliestPosition: \(earliestPosition.localizedTimeString)")
             let newestPosition = startTime.addingTimeInterval(seekableTimeRange.end.seconds - seekableTimeRange.duration.seconds)
-            print("   newestPosition: \(newestPosition.localizedTimeString)")
+            logger.debug("   newestPosition: \(newestPosition.localizedTimeString)")
             let currentPosition = startTime.addingTimeInterval(currentTime.seconds - seekableTimeRange.duration.seconds)
-            print("   currentPosition: \(currentPosition.localizedTimeString)")
+            logger.debug("   currentPosition: \(currentPosition.localizedTimeString)")
 
-            print("   [\(seekableTimeRange.start.seconds) \(currentTime.seconds) \(seekableTimeRange.end.seconds)] \(currentTime.seconds > seekableTimeRange.end.seconds ? "🔴" : "")")
-            print("   [\(loadedTimeRange.start.seconds) \(currentTime.seconds) \(loadedTimeRange.end.seconds)] \(loadedTimeRange.end.seconds - currentTime.seconds)")
+            logger.debug("   [\(seekableTimeRange.start.seconds) \(currentTime.seconds) \(seekableTimeRange.end.seconds)] \(currentTime.seconds > seekableTimeRange.end.seconds ? "🔴" : "")")
+            logger.debug("   [\(loadedTimeRange.start.seconds) \(currentTime.seconds) \(loadedTimeRange.end.seconds)] \(loadedTimeRange.end.seconds - currentTime.seconds)")
         }
     }
 
@@ -332,10 +336,10 @@ class AudioController: NSObject, ObservableObject {
             return
         }
         let newTime = CMTime(seconds: min(max(seconds, seekableTimeRange.start.seconds), seekableTimeRange.end.seconds), preferredTimescale: CMTimeScale(1))
-        print("🟣 Seek to \(seconds) => newTime = \(newTime.seconds)")
+        logger.debug("🟣 Seek to \(seconds) => newTime = \(newTime.seconds)")
         playerItem.cancelPendingSeeks()
         playerItem.seek(to: newTime, completionHandler: { (finished) in
-            print(" >>> 🟣 Seek finished: Now at \(playerItem.currentTime().seconds)")
+            self.logger.debug(" >>> 🟣 Seek finished: Now at \(playerItem.currentTime().seconds)")
             self.statusChanged()
         })
     }

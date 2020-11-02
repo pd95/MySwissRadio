@@ -18,11 +18,13 @@ class MyRadioModel: NSObject, ObservableObject {
     static let main = MyRadioModel()
 
     private(set) var streamStore = LivestreamStore(SettingsStore.shared.streams)
+    private let logger = Logger(subsystem: "MyRadioModel", category: "General")
 
     private override init() {
         super.init()
 
         if currentlyPlaying == nil, let stream = streamStore.stream(withID: SettingsStore.shared.lastPlayedStreamId ?? "") {
+            logger.log("Last played stream \(stream.name): prepare UI in paused mode")
             play(stream, initiallyPaused: true)
             showSheet = true
         }
@@ -30,7 +32,10 @@ class MyRadioModel: NSObject, ObservableObject {
         // Make sure we propagate any change of the streams as "our own" change
         streamStore.$streams
             .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { _ in self.objectWillChange.send() })
+            .sink(receiveValue: { _ in
+                self.logger.log("streamStore changed, notifying UI")
+                self.objectWillChange.send()
+            })
             .store(in: &cancellables)
     }
 
@@ -43,6 +48,7 @@ class MyRadioModel: NSObject, ObservableObject {
     //MARK: - Fetching data from NetworkClient
 
     private var cancellables = Set<AnyCancellable>()
+    @Published var uiUpdateTimer = Timer.publish (every: 1, on: .current, in: .common).autoconnect()
 
     func refreshContent() {
         let logger = Logger(subsystem: "MyRadioModel", category: "refreshContent")
@@ -65,20 +71,23 @@ class MyRadioModel: NSObject, ObservableObject {
     }
 
     func updateWidgets() {
-        print("updateWidgets")
+        logger.debug("updateWidgets")
         WidgetCenter.shared.reloadTimelines(ofKind: "MyRadioWidgets")
     }
 
     func enterBackground() {
-        print("MyRadioModel.enterBackground")
+        logger.debug("enterBackground")
+        uiUpdateTimer.upstream.connect().cancel()
     }
 
     func enterForeground() {
-        print("MyRadioModel.enterForeground")
+        logger.debug("enterForeground")
         if SettingsStore.shared.streams.isEmpty {
+            logger.log("No streams yet? => Refreshing")
             refreshContent()
         }
 
+        uiUpdateTimer = Timer.publish (every: 1, on: .current, in: .common).autoconnect()
         recoverFromPossibleInterruption()
     }
 
@@ -105,6 +114,7 @@ class MyRadioModel: NSObject, ObservableObject {
     }
 
     func play(_ stream: Livestream, initiallyPaused: Bool = false) {
+        logger.debug("play(\(String(describing: stream)), initiallyPaused: \(initiallyPaused)")
         currentlyPlaying = stream
         if let url = stream.streams.first {
             controller.play(url: url, initiallyPaused: initiallyPaused)
@@ -120,7 +130,7 @@ class MyRadioModel: NSObject, ObservableObject {
                     let status = self.controller.playerStatus
 
                     if oldStatus != status {
-                        print("controller state changed: \(status)")
+                        self.logger.debug("controller state changed: \(String(describing: status))")
                         if status == .playing {
                             self.isPaused = false
                             self.updateLastPlayed(for: stream)
@@ -142,10 +152,10 @@ class MyRadioModel: NSObject, ObservableObject {
         }
         if isPlaying(stream: stream) {
             pause()
-            print("togglePlay: paused")
+            logger.debug("togglePlay: paused")
         }
         else {
-            print("togglePlay: start playing \(stream)")
+            logger.debug("togglePlay: start playing \(String(describing: stream))")
             play(stream)
             donatePlayActivity(stream)
         }
@@ -168,10 +178,10 @@ class MyRadioModel: NSObject, ObservableObject {
         let interaction = INInteraction(intent: intent, response: nil)
         interaction.donate { (error) in
             if let error = error {
-                print("Unable to donate \(intent): \(error)")
+                self.logger.error("Unable to donate \(intent): \(error.localizedDescription)")
             }
             else {
-                print("Successfully donated playActivity")
+                self.logger.debug("Successfully donated playActivity")
             }
         }
     }
