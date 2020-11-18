@@ -58,8 +58,9 @@ struct PlayingSheet: View {
                     Text(model.controller.earliestSeekDate, style: .time)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                    Text("\(currentDate.localizedTimeString)")
-                        .frame(maxWidth: .infinity, alignment: .center)
+                    Text("00:00:00")
+                        .opacity(0.0)
+                        .overlay(Text("\(currentDate.localizedTimeString)"), alignment: .leading)
 
                     Text(model.controller.relativeOffsetToLive.relativeTimeString)
                         .frame(maxWidth: .infinity, alignment: .trailing)
