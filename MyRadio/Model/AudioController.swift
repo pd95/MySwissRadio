@@ -150,7 +150,7 @@ class AudioController: NSObject, ObservableObject {
                 return .commandFailed
             }
             self?.logger.debug("target position = \(event.positionTime)")
-            self?.seek(to: event.positionTime)
+            self?.seek(toOffsetFromStart: event.positionTime)
             return .success
         }
 
@@ -222,12 +222,10 @@ class AudioController: NSObject, ObservableObject {
         player.rate = 0
         player.replaceCurrentItem(with: nil)
         playerItem = nil
-        statusChanged()
     }
 
     func pause() {
         player.rate = 0
-        statusChanged()
     }
 
     func play(url: URL? = nil, initiallyPaused: Bool = false) {
@@ -291,7 +289,6 @@ class AudioController: NSObject, ObservableObject {
         if interruptionDate != nil {
             interruptionDate = nil
         }
-        statusChanged()
     }
 
     func togglePlayPause() {
@@ -387,19 +384,23 @@ class AudioController: NSObject, ObservableObject {
         }
     }
 
-    func seek(to seconds: Double) {
+    func seek(to position: Double) {
         guard let playerItem = playerItem,
               let seekableTimeRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first
         else {
             return
         }
-        let newTime = CMTime(seconds: min(max(seconds, seekableTimeRange.start.seconds), seekableTimeRange.end.seconds), preferredTimescale: CMTimeScale(1))
-        logger.debug("🟣 Seek to \(seconds) => newTime = \(newTime.seconds)")
+        let newTime = CMTime(seconds: min(max(position, seekableTimeRange.start.seconds), seekableTimeRange.end.seconds), preferredTimescale: CMTimeScale(1))
+        logger.debug("🟣 Seek to \(position) => newTime = \(newTime.seconds)")
         playerItem.cancelPendingSeeks()
         playerItem.seek(to: newTime, completionHandler: { (finished) in
             self.logger.debug(" >>> 🟣 Seek finished: Now at \(playerItem.currentTime().seconds)")
             self.statusChanged()
         })
+    }
+
+    func seek(toOffsetFromStart: Double) {
+        seek(to: seekRange.lowerBound + toOffsetFromStart)
     }
 
     func seekToLive() {
