@@ -85,18 +85,26 @@ class AudioController: NSObject, ObservableObject {
 
                     // An interruption began. Update the UI as needed.
                     case .began: ()
+                        let wasSuspended = userInfo[AVAudioSessionInterruptionWasSuspendedKey] as? Bool
+
+                        self.logger.log("⚫️ INTERRUPTION BEGAN: wasSuspended = \( wasSuspended == nil ? "nil" : String(describing: wasSuspended!))")
+                        if !(wasSuspended ?? false) {
                             self.interruptionDate = Date()
+                        }
 
                     // An interruption ended. Resume playback, if appropriate.
                     case .ended:
                         guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
                         let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+                        self.logger.log("⚫️ INTERRUPTION ENDED: optionsValue = \(options.rawValue) playerStatus = \(String(describing:self.playerStatus))")
                         if options.contains(.shouldResume) {
                             // Interruption ended. Playback should resume.
+                            self.logger.log("  Should resume playing.")
                             self.player.rate = 1.0
 
                         } else {
                             // Interruption ended. Playback should not resume.
+                            self.logger.log("  Should not resume.")
                         }
 
                     // We do not know whether Apple will introduce new interruptions in the future
