@@ -60,15 +60,16 @@ class AudioController: NSObject, ObservableObject {
         setupRemoteTransportControls()
     }
 
-    private var interruptionNotificationSubscriber: AnyCancellable?
     var interruptionDate: Date? {
         didSet {
             logger.debug("🔺🔺🔺 interruptionDate set to \(self.interruptionDate?.description ?? "nil")")
         }
     }
 
+    private var notificationSubscriber = Set<AnyCancellable>()
+
     private func setupNotifications() {
-        interruptionNotificationSubscriber = NotificationCenter.default
+        NotificationCenter.default
             .publisher(for: AVAudioSession.interruptionNotification)
             .sink { [weak self] (notification) in
                 guard let userInfo = notification.userInfo,
@@ -84,7 +85,7 @@ class AudioController: NSObject, ObservableObject {
 
                     // An interruption began. Update the UI as needed.
                     case .began: ()
-                        self.interruptionDate = Date()
+                            self.interruptionDate = Date()
 
                     // An interruption ended. Resume playback, if appropriate.
                     case .ended:
@@ -93,7 +94,6 @@ class AudioController: NSObject, ObservableObject {
                         if options.contains(.shouldResume) {
                             // Interruption ended. Playback should resume.
                             self.player.rate = 1.0
-                            self.interruptionDate = nil
 
                         } else {
                             // Interruption ended. Playback should not resume.
@@ -103,6 +103,15 @@ class AudioController: NSObject, ObservableObject {
                     default: ()
                 }
             }
+            .store(in: &notificationSubscriber)
+
+        NotificationCenter.default
+            .publisher(for: UIApplication.significantTimeChangeNotification)
+            .sink { [weak self] (notification) in
+                self?.logger.log("significantTimeChangeNotification: \(notification)")
+                self?.unfreezePlayer()
+            }
+            .store(in: &notificationSubscriber)
     }
 
     private func setupRemoteTransportControls() {
@@ -287,7 +296,8 @@ class AudioController: NSObject, ObservableObject {
     }
 
     func unfreezePlayer() {
-        logger.log("unfreezePlayer")
+        logger.log("⚫️⚫️⚫️ unfreezePlayer")
+        logger.log("  playerStatus=\(String(describing: self.playerStatus)) lastRateChange=\(self.lastRateChange.localizedTimeString) (=\(self.lastRateChange.distance(to: Date())) seconds ago)")
 
         let maxPausedDuration: TimeInterval = 10 * 60
         let maxInterruptionDuration: TimeInterval = 2 * 60 * 60
