@@ -11,14 +11,12 @@ import Intents
 
 extension MyRadioModel: INPlayMediaIntentHandling {
 
+    private static let logger = Logger(subsystem: "MyRadioModel", category: "Siri")
+
     /// Helper function extracting the list of words which are used in the stream name and business unit description
     /// to be matched against the Siri provided search query
     func updateSiriSearch(_ streams: [Livestream]) {
         var wordToStreamsMap = [String:[Livestream.ID]]()
-
-        let nf = NumberFormatter()
-        nf.numberStyle = .spellOut
-        nf.locale = Locale(identifier: INPreferences.siriLanguageCode())
 
         for stream in streams {
             // Gather all words related to this stream
@@ -26,10 +24,6 @@ extension MyRadioModel: INPlayMediaIntentHandling {
 
             // Split name into separate words and number strings
             searchWords = stream.name.matches(regex: "[[:alpha:]]+|\\d+")
-
-            // Get spelled out words for the numbers
-            let numberWords = searchWords.compactMap({Int($0)}).compactMap({ nf.string(for: $0) })
-            searchWords.append(contentsOf: numberWords)
 
             // Add the business units name for search too
             searchWords.append(stream.bu.description)
@@ -44,6 +38,7 @@ extension MyRadioModel: INPlayMediaIntentHandling {
             }
         }
 
+        Self.logger.log("Siri search words contain: \(wordToStreamsMap.keys.sorted())")
         SettingsStore.shared.wordToStreamsMap = wordToStreamsMap
     }
 
@@ -63,8 +58,6 @@ extension MyRadioModel: INPlayMediaIntentHandling {
 
     // MARK: Helper to extract Livestream.ID from specific intent
     func handlePlayIntent(_ intent: INIntent) -> [String: Any]? {
-        let logger = Logger(subsystem: "MyRadioModel", category: "handleIntent")
-
         // Handle INPlayMediaIntent coming from Siri & Shortcuts
         if let intent = intent as? INPlayMediaIntent {
             if let item = intent.mediaItems?.first,
@@ -74,11 +67,11 @@ extension MyRadioModel: INPlayMediaIntentHandling {
                     play(stream)
                     return stream.nowPlayingInfo
                 }
-                logger.error("Invalid itemID in intent: \(itemID)")
+                Self.logger.error("Invalid itemID in intent: \(itemID)")
                 return nil
             }
             else {
-                logger.error("Invalid media item in intent: \(intent)")
+                Self.logger.error("Invalid media item in intent: \(intent)")
                 return nil
             }
         }
@@ -93,16 +86,16 @@ extension MyRadioModel: INPlayMediaIntentHandling {
                     showSheet = true
                     return stream.nowPlayingInfo
                 }
-                logger.error("Invalid stationID in intent: \(stationID)")
+                Self.logger.error("Invalid stationID in intent: \(stationID)")
                 return nil
             }
             else {
-                logger.error("Invalid station in intent: \(intent)")
+                Self.logger.error("Invalid station in intent: \(intent)")
                 return nil
             }
         }
         else {
-            logger.error("Invalid intent: \(intent)")
+            Self.logger.error("Invalid intent: \(intent)")
             return nil
         }
     }
