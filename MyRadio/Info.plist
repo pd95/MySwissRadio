@@ -20,12 +20,18 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>INIntentsSupported</key>
+	<array>
+		<string>INPlayMediaIntent</string>
+	</array>
 	<key>INSupportedMediaCategories</key>
 	<array>
 		<string>INMediaCategoryRadio</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSSiriUsageDescription</key>
+	<string>The list of radio stations is shared with Siri.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>ConfigurationIntent</string>
@@ -70,7 +76,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSSiriUsageDescription</key>
-	<string>The list of radio stations is shared with Siri.</string>
 </dict>
 </plist>
