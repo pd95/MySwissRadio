@@ -13,6 +13,12 @@
       "size" : "20x20"
     },
     {
+      "filename" : "AppIcon~iPhone-29@1x.png",
+      "idiom" : "iphone",
+      "scale" : "1x",
+      "size" : "29x29"
+    },
+    {
       "filename" : "AppIcon~iPhone-29@2x.png",
       "idiom" : "iphone",
       "scale" : "2x",
@@ -35,6 +41,18 @@
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "40x40"
+    },
+    {
+      "filename" : "AppIcon~iPhone-57@1x.png",
+      "idiom" : "iphone",
+      "scale" : "1x",
+      "size" : "57x57"
+    },
+    {
+      "filename" : "AppIcon~iPhone-57@2x.png",
+      "idiom" : "iphone",
+      "scale" : "2x",
+      "size" : "57x57"
     },
     {
       "filename" : "AppIcon~iPhone-60@2x.png",

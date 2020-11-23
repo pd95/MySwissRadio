@@ -17,12 +17,12 @@
 		173AAC692535E31A009E4B9E /* String+Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173AAC642535E167009E4B9E /* String+Regex.swift */; };
 		173AACA725363D61009E4B9E /* Livestream+Spotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173AACA625363D61009E4B9E /* Livestream+Spotlight.swift */; };
 		173AACAC25364116009E4B9E /* MyRadioModel+Spotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173AACAB25364116009E4B9E /* MyRadioModel+Spotlight.swift */; };
+		173E7616256BED7B00DB7307 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EC1A8E252F9EF500F8AFCF /* ImageCache.swift */; };
 		174508F52534868A00FA3846 /* MyRadioModel+Intents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174508F42534868A00FA3846 /* MyRadioModel+Intents.swift */; };
 		1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1750E222252C5FBD00CB2D4B /* NetworkClient.swift */; };
 		1750E226252C605D00CB2D4B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E225252C605D00CB2D4B /* Config.xcconfig */; };
 		1750E234252C723500CB2D4B /* LocalConfig.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E233252C723500CB2D4B /* LocalConfig.xcconfig */; };
 		17591BF5253D84DE0017CD08 /* LivestreamStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17591BF4253D84DE0017CD08 /* LivestreamStore.swift */; };
-		17591BF6253D84DE0017CD08 /* LivestreamStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17591BF4253D84DE0017CD08 /* LivestreamStore.swift */; };
 		17591BF7253D84DE0017CD08 /* LivestreamStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17591BF4253D84DE0017CD08 /* LivestreamStore.swift */; };
 		17591C0B253DC21C0017CD08 /* LivestreamStore+Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17591C0A253DC21C0017CD08 /* LivestreamStore+Networking.swift */; };
 		1759A55A253ECDC8000ADCEF /* TimeInterval+Formatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1759A559253ECDC8000ADCEF /* TimeInterval+Formatter.swift */; };
@@ -55,13 +55,10 @@
 		17C6DD612530D293003D603E /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177A47B4252F3D21009A4EDB /* SettingsStore.swift */; };
 		17C6DD622530D293003D603E /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177A47B7252F3D5B009A4EDB /* UserDefault.swift */; };
 		17C6DD632530D293003D603E /* BusinessUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17883586252CB9C3000279A1 /* BusinessUnit.swift */; };
-		17C6DD642530D293003D603E /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EC1A8E252F9EF500F8AFCF /* ImageCache.swift */; };
 		17C6DD652530D293003D603E /* Livestream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1788358D252CBF8C000279A1 /* Livestream.swift */; };
 		17C6DD662530D293003D603E /* Livestream+ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */; };
 		17C6DD692530D2A7003D603E /* Bundle+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F58D825308CF200072EF5 /* Bundle+Sharing.swift */; };
 		17C6DD6A2530D2A7003D603E /* FileManager+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F58D42530831200072EF5 /* FileManager+Sharing.swift */; };
-		17C6DD782530F422003D603E /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1750E222252C5FBD00CB2D4B /* NetworkClient.swift */; };
-		17C6DD7B2530F431003D603E /* OAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA93EB252C58F50076EBB2 /* OAuthenticator.swift */; };
 		17D8F7642533ABE500041715 /* Livestream+INMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */; };
 		17D8F7682533AC7800041715 /* Livestream+INMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */; };
 		17D8F76C2533ACB900041715 /* Livestream+ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */; };
@@ -485,19 +482,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				17591BF6253D84DE0017CD08 /* LivestreamStore.swift in Sources */,
-				17C6DD642530D293003D603E /* ImageCache.swift in Sources */,
-				17C6DD7B2530F431003D603E /* OAuthenticator.swift in Sources */,
-				17C6DD622530D293003D603E /* UserDefault.swift in Sources */,
-				17C6DD6A2530D2A7003D603E /* FileManager+Sharing.swift in Sources */,
-				17C6DD782530F422003D603E /* NetworkClient.swift in Sources */,
-				17C6DD652530D293003D603E /* Livestream.swift in Sources */,
-				17C6DD692530D2A7003D603E /* Bundle+Sharing.swift in Sources */,
-				17C6DD562530CD2C003D603E /* MyRadioWidgets.intentdefinition in Sources */,
-				17C6DD662530D293003D603E /* Livestream+ImageCache.swift in Sources */,
-				17C6DD612530D293003D603E /* SettingsStore.swift in Sources */,
 				17C6DD512530CD2A003D603E /* MyRadioWidgets.swift in Sources */,
+				17C6DD562530CD2C003D603E /* MyRadioWidgets.intentdefinition in Sources */,
+				17C6DD612530D293003D603E /* SettingsStore.swift in Sources */,
+				17C6DD622530D293003D603E /* UserDefault.swift in Sources */,
 				17C6DD632530D293003D603E /* BusinessUnit.swift in Sources */,
+				17C6DD652530D293003D603E /* Livestream.swift in Sources */,
+				17C6DD662530D293003D603E /* Livestream+ImageCache.swift in Sources */,
+				173E7616256BED7B00DB7307 /* ImageCache.swift in Sources */,
+				17C6DD6A2530D2A7003D603E /* FileManager+Sharing.swift in Sources */,
+				17C6DD692530D2A7003D603E /* Bundle+Sharing.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

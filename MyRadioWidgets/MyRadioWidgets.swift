@@ -11,7 +11,6 @@ import Intents
 import Combine
 
 struct Provider: IntentTimelineProvider {
-    static let networkClient = NetworkClient()
 
     static var streams = SettingsStore.shared.streams
 
@@ -63,7 +62,7 @@ struct MyRadioWidgetsEntryView : View {
     var entry: Provider.Entry
 
     var stretchableImage: UIImage {
-        entry.livestream.thumbnailImage ?? UIImage(named: "SRF3")!
+        entry.livestream.thumbnailImage ?? UIImage(named: "Placeholder")!
     }
 
     var iconName: String {
