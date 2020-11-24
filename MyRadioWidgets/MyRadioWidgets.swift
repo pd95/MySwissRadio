@@ -61,38 +61,10 @@ struct SimpleEntry: TimelineEntry {
 struct MyRadioWidgetsEntryView : View {
     var entry: Provider.Entry
 
-    var stretchableImage: UIImage {
-        entry.livestream.thumbnailImage ?? UIImage(named: "Placeholder")!
-    }
-
-    var iconName: String {
-        entry.isPlaying ? "stop.circle" : "play.circle"
-    }
-
-    var iconColor: Color {
-        entry.isPlaying ? Color.primary.opacity(0.6) : .primary
-    }
-
     var body: some View {
-        ZStack {
-            VStack(spacing: 0) {
-                Image(uiImage: stretchableImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                Image(systemName: iconName)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundColor(iconColor)
-                    .shadow(color: Color(.systemBackground), radius: 10, x: 0, y: 0)
-                    .frame(maxHeight: 40)
-            }
-        }
-        .background(
-            Image(uiImage: stretchableImage)
-                .resizable()
-                .scaleEffect(400, anchor: .bottomLeading)
-                .offset(x: -40, y: +80)
-                .blur(radius: 10)
+        MyRadioWidgetsView(
+            image: entry.livestream.thumbnailImage ?? UIImage(named: "Placeholder")!,
+            button: UIImage(systemName: entry.isPlaying ? "stop.circle" : "play.circle")!
         )
     }
 }
@@ -111,6 +83,7 @@ struct MyRadioWidgets: Widget {
 }
 
 struct MyRadioWidgets_Previews: PreviewProvider {
+
     static var previews: some View {
         Group {
             MyRadioWidgetsEntryView(entry: SimpleEntry(date: Date(), livestream: .example, isPlaying: false))
