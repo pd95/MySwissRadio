@@ -16,6 +16,8 @@ struct MyRadioWidgetsView: View {
     var body: some View {
         ZStack {
             VStack(spacing: 8) {
+                // FB8915721: The image is not visible in Xcode preview/simulator
+                // clipShape seems to be the reason
                 Image(uiImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
