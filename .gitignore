@@ -13,3 +13,7 @@ Local*.xcconfig
 # Ignore raw media files
 _resources/*.mov
 _resources/*.pxd
+_resources/AppIcons
+_resources/v*
+
+_AppStore/
