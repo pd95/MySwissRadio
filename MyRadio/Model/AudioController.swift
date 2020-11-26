@@ -97,6 +97,7 @@ class AudioController: NSObject, ObservableObject {
                         guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
                         let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
                         self.logger.log("⚫️ INTERRUPTION ENDED: optionsValue = \(options.rawValue) playerStatus = \(String(describing:self.playerStatus))")
+                        self.logger.log("   interruptionDate = \(String(describing: self.interruptionDate)) lastRateChange = \(String(describing: self.lastRateChange))")
                         if options.contains(.shouldResume) {
                             // Interruption ended. Playback should resume.
                             self.logger.log("  Should resume playing.")
@@ -218,6 +219,9 @@ class AudioController: NSObject, ObservableObject {
     }
     private var lastRateChange: Date = .distantPast
 
+    private let maxPausedDuration: TimeInterval = 10 * 60
+    private let maxInterruptionDuration: TimeInterval = 2 * 60 * 60
+
     func stop() {
         player.rate = 0
         player.replaceCurrentItem(with: nil)
@@ -285,6 +289,19 @@ class AudioController: NSObject, ObservableObject {
         else {
             player.rate = initiallyPaused ? 0.0 : 1.0
             playerItem!.automaticallyPreservesTimeOffsetFromLive = true
+
+            // Check latest interruption/pausing timestamp
+            let changeDate = interruptionDate ?? lastRateChange
+            let delta = changeDate.distance(to: Date())
+            logger.log("changeDate: \(changeDate) (\(delta) seconds ago)")
+            if delta > maxInterruptionDuration {
+                logger.log("change is more than \(self.maxInterruptionDuration/60) minutes in the past! Restarting stream")
+                restartPlayer(initiallyPaused: initiallyPaused)
+            }
+            else if delta > maxPausedDuration {
+                logger.log("interruption is more than \(self.maxPausedDuration/60) minutes in the past!")
+                seekToLive()
+            }
         }
         if interruptionDate != nil {
             interruptionDate = nil
@@ -304,26 +321,13 @@ class AudioController: NSObject, ObservableObject {
         logger.log("⚫️⚫️⚫️ unfreezePlayer")
         logger.log("  playerStatus=\(String(describing: self.playerStatus)) lastRateChange=\(self.lastRateChange.localizedTimeString) (=\(self.lastRateChange.distance(to: Date())) seconds ago)")
 
-        let maxPausedDuration: TimeInterval = 10 * 60
-        let maxInterruptionDuration: TimeInterval = 2 * 60 * 60
-
         // If last interruption was not less than 15 minutes ago: continue. Otherwise seek to live.
         if let interruptionDate = interruptionDate {
             logger.log("interruptionDate: \(interruptionDate)")
             play()
-            let delta = interruptionDate.distance(to: Date())
-            logger.log("interruption is \(delta) seconds ago")
-            if delta > maxInterruptionDuration {
-                logger.log("interruption is more than \(maxInterruptionDuration/60) minutes in the past! Restarting stream")
-                restartPlayer(initiallyPaused: false)
-            }
-            else if delta > maxPausedDuration {
-                logger.log("interruption is more than \(maxPausedDuration/60) minutes in the past!")
-                seekToLive()
-            }
         }
         else if playerStatus == .paused && lastRateChange.distance(to: Date()) > maxInterruptionDuration {
-            logger.log("Paused for more than \(maxInterruptionDuration/60) minutes, ")
+            logger.log("Paused for more than \(self.maxInterruptionDuration/60) minutes, ")
             restartPlayer(initiallyPaused: true)
         }
     }
