@@ -101,7 +101,7 @@ class AudioController: NSObject, ObservableObject {
                         if options.contains(.shouldResume) {
                             // Interruption ended. Playback should resume.
                             self.logger.log("  Should resume playing.")
-                            self.player.rate = 1.0
+                            self.play()
 
                         } else {
                             // Interruption ended. Playback should not resume.
@@ -111,14 +111,6 @@ class AudioController: NSObject, ObservableObject {
                     // We do not know whether Apple will introduce new interruptions in the future
                     default: ()
                 }
-            }
-            .store(in: &notificationSubscriber)
-
-        NotificationCenter.default
-            .publisher(for: UIApplication.significantTimeChangeNotification)
-            .sink { [weak self] (notification) in
-                self?.logger.log("significantTimeChangeNotification: \(notification)")
-                self?.unfreezePlayer()
             }
             .store(in: &notificationSubscriber)
     }
@@ -226,6 +218,7 @@ class AudioController: NSObject, ObservableObject {
         player.rate = 0
         player.replaceCurrentItem(with: nil)
         playerItem = nil
+        removeNowPlaying()
     }
 
     func pause() {
@@ -321,14 +314,9 @@ class AudioController: NSObject, ObservableObject {
         logger.log("⚫️⚫️⚫️ unfreezePlayer")
         logger.log("  playerStatus=\(String(describing: self.playerStatus)) lastRateChange=\(self.lastRateChange.localizedTimeString) (=\(self.lastRateChange.distance(to: Date())) seconds ago)")
 
-        // If last interruption was not less than 15 minutes ago: continue. Otherwise seek to live.
-        if let interruptionDate = interruptionDate {
-            logger.log("interruptionDate: \(interruptionDate)")
-            play()
-        }
-        else if playerStatus == .paused && lastRateChange.distance(to: Date()) > maxInterruptionDuration {
+        if lastRateChange.distance(to: Date()) > maxInterruptionDuration {
             logger.log("Paused for more than \(self.maxInterruptionDuration/60) minutes, ")
-            restartPlayer(initiallyPaused: true)
+            restartPlayer(initiallyPaused: playerStatus == .paused)
         }
     }
 

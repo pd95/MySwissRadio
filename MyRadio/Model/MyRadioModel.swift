@@ -88,8 +88,8 @@ class MyRadioModel: NSObject, ObservableObject {
         }
 
         uiUpdateTimer = Timer.publish (every: 1, on: .current, in: .common).autoconnect()
-        // FIXME Unfreeze the player should not be necessary anymore
-        //controller.unfreezePlayer()
+        // Unfreeze the player (if the user paused long ago)
+        controller.unfreezePlayer()
     }
 
     // MARK: - Playback control
