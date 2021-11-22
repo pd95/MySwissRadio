@@ -21,8 +21,6 @@
 		173E7625256C10F000DB7307 /* MyRadioWidgetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173E761D256C0F1C00DB7307 /* MyRadioWidgetsView.swift */; };
 		174508F52534868A00FA3846 /* MyRadioModel+Intents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174508F42534868A00FA3846 /* MyRadioModel+Intents.swift */; };
 		1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1750E222252C5FBD00CB2D4B /* NetworkClient.swift */; };
-		1750E226252C605D00CB2D4B /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E225252C605D00CB2D4B /* Config.xcconfig */; };
-		1750E234252C723500CB2D4B /* LocalConfig.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1750E233252C723500CB2D4B /* LocalConfig.xcconfig */; };
 		17591BF5253D84DE0017CD08 /* LivestreamStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17591BF4253D84DE0017CD08 /* LivestreamStore.swift */; };
 		17591BF7253D84DE0017CD08 /* LivestreamStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17591BF4253D84DE0017CD08 /* LivestreamStore.swift */; };
 		17591C0B253DC21C0017CD08 /* LivestreamStore+Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17591C0A253DC21C0017CD08 /* LivestreamStore+Networking.swift */; };
@@ -396,7 +394,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1200;
-				LastUpgradeCheck = 1200;
+				LastUpgradeCheck = 1310;
 				TargetAttributes = {
 					177783802530FF0E003D19A3 = {
 						CreatedOnToolsVersion = 12.0;
@@ -449,8 +447,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1750E226252C605D00CB2D4B /* Config.xcconfig in Resources */,
-				1750E234252C723500CB2D4B /* LocalConfig.xcconfig in Resources */,
 				17DA93DB252C56510076EBB2 /* Preview Assets.xcassets in Resources */,
 				1703F8E6252F48C800F01ECD /* Settings.bundle in Resources */,
 				17DA93D8252C56510076EBB2 /* Assets.xcassets in Resources */,
