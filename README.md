@@ -22,3 +22,38 @@ Another interesting learning project covering the following topics:
 ## Impressions
 
 ![iPhone](./_resources/Screencast-iPhone.gif)
+
+## Components
+
+### Main parts
+
+- MyRadio App, MyRadio Widget, MyRadio Siri Intents
+- SRGSSR REST API Server: api.srgssr.ch
+  - OAuth
+  - Request livestreams, mediaComposition
+- Image Server: e.g. ws.srf.ch
+- Livestream Data Server: lsaplus.swisstxt.ch/audio/
+
+### UI/Views
+
+- MyRadioApp
+- ContentView
+- LivestreamRow
+- WhatsPlayingToolbar
+- PlayingSheet
+
+### Model / Controller
+
+- MyRadioModel
+- AudioController
+- ImageCache
+- Livestream
+- LivestreamStore
+- BusinessUnit
+- SettingsStore
+
+### Networking / API Service
+
+- OAuthenticator
+- NetworkClient
+- SRGService
