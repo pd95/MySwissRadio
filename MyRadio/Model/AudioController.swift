@@ -51,7 +51,7 @@ class AudioController: NSObject, ObservableObject {
         // Configure audio session
         let audioSession = AVAudioSession.sharedInstance()
         do {
-            try audioSession.setCategory(.playback)
+            try audioSession.setCategory(.playback, mode: .default, policy: .longFormAudio)
         } catch {
             logger.debug("Setting category to AVAudioSessionCategoryPlayback failed.")
         }
