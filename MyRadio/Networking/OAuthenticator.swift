@@ -160,7 +160,7 @@ final class OAuthenticator {
     public struct AccessTokenResponse: Codable {
         let accessToken: String
         let tokenType: String
-        let expiresIn: String?
+        let expiresIn: Int?
         let refreshToken: String?
         let scope: String?
     }
