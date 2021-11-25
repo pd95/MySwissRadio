@@ -49,7 +49,7 @@ enum SRGService {
                 let enumeratedMedia = response.mediaList.enumerated()
 
                 return enumeratedMedia.map({ (index, media) -> Livestream in
-                    Livestream(id: media.id, name: media.title, imageURL: media.imageUrl, bu: .init(from: media.vendor), sortOrder: index, streams: []).fixup()
+                    Livestream(id: media.id, name: media.title, imageURL: media.imageUrl, bu: .init(from: media.vendor), sortOrder: index, streams: [])
                 })
             })
             .replaceError(with: [])
