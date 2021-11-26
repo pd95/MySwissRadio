@@ -20,7 +20,7 @@ final class LivestreamStore: ObservableObject {
     // MARK: - Accessors
 
     func streams(for bu: BusinessUnit) -> [Livestream] {
-        streams.filter({ $0.bu == bu})
+        streams.filter({ $0.bu == bu })
     }
 
     func stream(withID streamID: String) -> Livestream? {
@@ -29,6 +29,7 @@ final class LivestreamStore: ObservableObject {
 
 
     // MARK: - Mutators
+
     func removeAll() {
         streams.removeAll()
     }

@@ -39,13 +39,13 @@ class MyRadioModel: NSObject, ObservableObject {
             .store(in: &cancellables)
     }
 
-    //MARK: - Access to model data and UI helpers
+    // MARK: - Access to model data and UI helpers
 
     @Published var buSortOrder: [BusinessUnit] = BusinessUnit.allCases
 
     @Published var showSheet = false
 
-    //MARK: - Fetching data from NetworkClient
+    // MARK: - Fetching data from NetworkClient
 
     private var cancellables = Set<AnyCancellable>()
     @Published var uiUpdateTimer = Timer.publish (every: 1, on: .current, in: .common).autoconnect()
@@ -53,12 +53,14 @@ class MyRadioModel: NSObject, ObservableObject {
     func refreshContent() {
         let logger = Logger(subsystem: "MyRadioModel", category: "refreshContent")
 
-        logger.log("starting to refresh")
+        let refreshStartDate = Date()
+        logger.log("starting to refresh (last refresh was \(SettingsStore.shared.lastLivestreamRefreshDate))")
         streamStore.refreshLivestreamPublisher()
             .sink(receiveCompletion: { completion in
                 logger.log("completed with \(String(describing: completion))")
             }, receiveValue: { [weak self] (streams) in
                 SettingsStore.shared.streams = streams
+                SettingsStore.shared.lastLivestreamRefreshDate = refreshStartDate
                 self?.updateSpotlight(for: streams)
                 self?.updateSiriSearch(streams)
                 self?.updateWidgets()
@@ -82,8 +84,10 @@ class MyRadioModel: NSObject, ObservableObject {
 
     func enterForeground() {
         logger.debug("enterForeground")
-        if SettingsStore.shared.streams.isEmpty {
-            logger.log("No streams yet? => Refreshing")
+        let lastRefresh = SettingsStore.shared.lastLivestreamRefreshDate
+        let timeSinceLastRefresh = lastRefresh.distance(to: Date())
+        logger.log("Last refresh \(lastRefresh) => \(timeSinceLastRefresh)s ago")
+        if SettingsStore.shared.streams.isEmpty || timeSinceLastRefresh > 30*24*60*60 {
             refreshContent()
         }
 
@@ -162,6 +166,8 @@ class MyRadioModel: NSObject, ObservableObject {
         }
         showSheet = true
     }
+
+    // MARK: - "Siri intelligence"
 
     func donatePlayActivity(_ stream: Livestream) {
         let intent = INPlayMediaIntent(mediaItems: [stream.mediaItem])
