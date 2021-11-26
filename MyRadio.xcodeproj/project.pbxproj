@@ -58,6 +58,7 @@
 		17C6DD662530D293003D603E /* Livestream+ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */; };
 		17C6DD692530D2A7003D603E /* Bundle+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F58D825308CF200072EF5 /* Bundle+Sharing.swift */; };
 		17C6DD6A2530D2A7003D603E /* FileManager+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F58D42530831200072EF5 /* FileManager+Sharing.swift */; };
+		17CCDEC42750EC18001380D9 /* LivestreamStore+Spotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CCDEC32750EC18001380D9 /* LivestreamStore+Spotlight.swift */; };
 		17D8F7642533ABE500041715 /* Livestream+INMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */; };
 		17D8F7682533AC7800041715 /* Livestream+INMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */; };
 		17D8F76C2533ACB900041715 /* Livestream+ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */; };
@@ -144,6 +145,7 @@
 		17C6DD522530CD2A003D603E /* MyRadioWidgets.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = MyRadioWidgets.intentdefinition; sourceTree = "<group>"; };
 		17C6DD532530CD2C003D603E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		17C6DD552530CD2C003D603E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		17CCDEC32750EC18001380D9 /* LivestreamStore+Spotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LivestreamStore+Spotlight.swift"; sourceTree = "<group>"; };
 		17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Livestream+INMediaItem.swift"; sourceTree = "<group>"; };
 		17D8F77D2533BD7100041715 /* MyRadioExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyRadioExtension.entitlements; sourceTree = "<group>"; };
 		17DA93D0252C56500076EBB2 /* MyRadio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyRadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -205,6 +207,7 @@
 				1788358D252CBF8C000279A1 /* Livestream.swift */,
 				17591BF4253D84DE0017CD08 /* LivestreamStore.swift */,
 				17591C0A253DC21C0017CD08 /* LivestreamStore+Networking.swift */,
+				17CCDEC32750EC18001380D9 /* LivestreamStore+Spotlight.swift */,
 				179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */,
 				17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */,
 				173AACA625363D61009E4B9E /* Livestream+Spotlight.swift */,
@@ -518,6 +521,7 @@
 				177A47B5252F3D21009A4EDB /* SettingsStore.swift in Sources */,
 				171F58D925308CF200072EF5 /* Bundle+Sharing.swift in Sources */,
 				171F58D52530831200072EF5 /* FileManager+Sharing.swift in Sources */,
+				17CCDEC42750EC18001380D9 /* LivestreamStore+Spotlight.swift in Sources */,
 				17D8F7642533ABE500041715 /* Livestream+INMediaItem.swift in Sources */,
 				1750E223252C5FBD00CB2D4B /* NetworkClient.swift in Sources */,
 				1788358E252CBF8C000279A1 /* Livestream.swift in Sources */,

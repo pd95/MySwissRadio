@@ -17,26 +17,13 @@ extension MyRadioModel {
     // Add list of streams to Spotlight
     func updateSpotlight(for streams: [Livestream]) {
         logger.debug("updateSpotlight with all streams available")
-        let searchableItems = streams.map(\.searchableItem)
-        updateIndex(with: searchableItems)
+        streamStore.updateSpotlight()
     }
 
     // Update last usage date for a given stream
-    func updateLastPlayed(for stream: Livestream) {
+    func updateLastPlayed(for stream: Livestream, date: Date = Date()) {
         logger.debug("updateLastPlayed in Spotlight")
-        let searchableItem = stream.searchableItem
-        searchableItem.attributeSet.lastUsedDate = Date()
-        updateIndex(with: [searchableItem])
+        streamStore.updateLastPlayed(for: stream, date: date)
     }
 
-    private func updateIndex(with searchableItems: [CSSearchableItem]) {
-        CSSearchableIndex.default().indexSearchableItems(searchableItems) { (error) in
-            if let error = error {
-                self.logger.error("Error while adding items to index: \(error.localizedDescription)")
-            }
-            else {
-                self.logger.log("Successfully updated Spotlight")
-            }
-        }
-    }
 }
