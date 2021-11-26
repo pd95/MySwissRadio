@@ -12,9 +12,7 @@ import os.log
 
 extension LivestreamStore {
 
-    func refreshLivestreamPublisher() -> AnyPublisher<[Livestream], Never> {
-        let networkClient = NetworkClient.shared
-
+    func refreshLivestreamPublisher(networkClient: NetworkClient = .shared) -> AnyPublisher<[Livestream], Never> {
         let logger = Logger(subsystem: "LivestreamStore", category: "refreshLivestreamPublisher")
 
         // All updates of the streams have to be executed on our serial queue
