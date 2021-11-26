@@ -21,11 +21,11 @@ class SettingsStore: ObservableObject {
     private init() {
         anyCancellable = NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
             .debounce(for: .seconds(0.3), scheduler: RunLoop.main)
-            .sink { [weak self](x) in
-                self?.logger.log("UserDefaults.didChangeNotification \(x.description)")
+            .sink { [weak self](notification) in
+                self?.logger.log("UserDefaults.didChangeNotification \(notification.description)")
                 self?.checkAndSetVersionAndBuildNumber()
             }
-        //reset = true
+        // reset = true
         checkAndSetVersionAndBuildNumber()
     }
 
@@ -48,14 +48,17 @@ class SettingsStore: ObservableObject {
     var lastPlayedStreamId: Livestream.ID?
 
     @UserDefault(key: .searchWords, defaultValue: [:], storage: .shared)
-    var wordToStreamsMap: [String:[Livestream.ID]]
+    var wordToStreamsMap: [String: [Livestream.ID]]
 
     private func checkAndSetVersionAndBuildNumber() {
         if reset {
             resetAll()
         }
-        let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-        let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
+        guard let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+              let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
+        else {
+            fatalError("CFBundleVersion and CFBundleShortVersionString missing")
+        }
         let currentVersion = "\(version) (\(build))"
         if appVersion != currentVersion {
             appVersion = currentVersion
@@ -71,8 +74,7 @@ class SettingsStore: ObservableObject {
         CSSearchableIndex.default().deleteAllSearchableItems { (error) in
             if let error = error {
                 self.logger.error("Error deleting searchable items \(error.localizedDescription)")
-            }
-            else {
+            } else {
                 self.logger.log("Successfully deleted searchable items")
             }
         }

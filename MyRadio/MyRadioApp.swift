@@ -12,9 +12,9 @@ import CoreSpotlight
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     let logger = Logger(subsystem: "MyRadio", category: "AppDelegate")
-    func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        logger.log("MyRadioApp application is starting up. ApplicationDelegate didFinishLaunchingWithOptions. \(String(describing: launchOptions?.keys))")
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        logger.log("ApplicationDelegate didFinishLaunchingWithOptions. \(String(describing: launchOptions?.keys))")
 
 // It is unclear whether we really have to request Siri authorization. Everything works fine so far without it!?
 //        INPreferences.requestSiriAuthorization { (authStatus: INSiriAuthorizationStatus) in
@@ -29,7 +29,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         return MyRadioModel.main
     }
 }
-
 
 @main
 struct MyRadioApp: App {
@@ -47,8 +46,7 @@ struct MyRadioApp: App {
         .onChange(of: scenePhase) { (newPhase) in
             if newPhase == .active {
                 model.enterForeground()
-            }
-            else if newPhase == .background {
+            } else if newPhase == .background {
                 model.enterBackground()
             }
         }

@@ -19,8 +19,7 @@ struct LivestreamRow: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .clipped()
-                }
-                else {
+                } else {
                     ProgressView()
                 }
             }

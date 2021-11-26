@@ -14,7 +14,9 @@ struct NetworkClient {
 
     /// This is the main apps shared instance of the `NetworkClient`: It has OAuth configured and therefore can use `authenticatedDataRequest`
     /// For extensions which simply need to fetch resources, you can still create a `NetworkClient` without oauthConfig
-    static let shared = NetworkClient(urlSession: .shared, oauthConfig: OAuthConfiguration(fromBundle: .main, prefix: "SRG_"))
+    static let shared = NetworkClient(
+        urlSession: .shared, oauthConfig: OAuthConfiguration(fromBundle: .main, prefix: "SRG_")
+    )
 
     private let logger = Logger(subsystem: "MyRadio", category: "NetworkClient")
 
@@ -32,10 +34,9 @@ struct NetworkClient {
 
         if let config = oauthConfig {
             authenticator = OAuthenticator(configuration: config, urlSession: urlSession)
-            //authenticator.invalidateToken()
-            //authenticator.refreshToken(delay: 0)
-        }
-        else {
+            // authenticator.invalidateToken()
+            // authenticator.refreshToken(delay: 0)
+        } else {
             authenticator = nil
         }
 

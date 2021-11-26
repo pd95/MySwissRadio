@@ -28,22 +28,18 @@ class AudioController: NSObject, ObservableObject {
         }
         if player.rate == 0 {
             return .paused
-        }
-        else if player.rate == 1 {
+        } else if player.rate == 1 {
             if player.status == .readyToPlay {
                 return .playing
-            }
-            else {
+            } else {
                 return .loading
             }
-        }
-        else {
+        } else {
             return .undefined
         }
     }
 
     private let logger = Logger(subsystem: "AudioController", category: "General")
-
 
     override init() {
         super.init()
@@ -87,33 +83,34 @@ class AudioController: NSObject, ObservableObject {
                 // Switch over the interruption type.
                 switch type {
 
-                    // An interruption began. Update the UI as needed.
-                    case .began: ()
-                        let wasSuspended = userInfo[AVAudioSessionInterruptionWasSuspendedKey] as? Bool
+                // An interruption began. Update the UI as needed.
+                case .began:
+                    let wasSuspended = userInfo[AVAudioSessionInterruptionWasSuspendedKey] as? Bool
 
-                        self.logger.log("⚫️ INTERRUPTION BEGAN: wasSuspended = \( wasSuspended == nil ? "nil" : String(describing: wasSuspended!))")
-                        if !(wasSuspended ?? false) {
-                            self.interruptionDate = Date()
-                        }
+                    self.logger.log("⚫️ INTERRUPTION BEGAN: wasSuspended = \( wasSuspended == nil ? "nil" : String(describing: wasSuspended!))")
+                    if !(wasSuspended ?? false) {
+                        self.interruptionDate = Date()
+                    }
 
-                    // An interruption ended. Resume playback, if appropriate.
-                    case .ended:
-                        guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
-                        let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
-                        self.logger.log("⚫️ INTERRUPTION ENDED: optionsValue = \(options.rawValue) playerStatus = \(String(describing:self.playerStatus))")
-                        self.logger.log("   interruptionDate = \(String(describing: self.interruptionDate)) lastRateChange = \(String(describing: self.lastRateChange))")
-                        if options.contains(.shouldResume) {
-                            // Interruption ended. Playback should resume.
-                            self.logger.log("  Should resume playing.")
-                            self.play()
+                // An interruption ended. Resume playback, if appropriate.
+                case .ended:
+                    guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
+                    let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+                    self.logger.log("⚫️ INTERRUPTION ENDED: optionsValue = \(options.rawValue) playerStatus = \(String(describing: self.playerStatus))")
+                    self.logger.log("   interruptionDate = \(String(describing: self.interruptionDate)) lastRateChange = \(String(describing: self.lastRateChange))")
+                    if options.contains(.shouldResume) {
+                        // Interruption ended. Playback should resume.
+                        self.logger.log("  Should resume playing.")
+                        self.play()
 
-                        } else {
-                            // Interruption ended. Playback should not resume.
-                            self.logger.log("  Should not resume.")
-                        }
+                    } else {
+                        // Interruption ended. Playback should not resume.
+                        self.logger.log("  Should not resume.")
+                    }
 
-                    // We do not know whether Apple will introduce new interruptions in the future
-                    default: ()
+                // We do not know whether Apple will introduce new interruptions in the future
+                default:
+                    break
                 }
             }
             .store(in: &notificationSubscriber)
@@ -158,7 +155,7 @@ class AudioController: NSObject, ObservableObject {
             return .success
         }
 
-        commandCenter.skipBackwardCommand.preferredIntervals = [NSNumber(integerLiteral: 15)]
+        commandCenter.skipBackwardCommand.preferredIntervals = [NSNumber(15)]
         commandCenter.skipBackwardCommand.addTarget { [weak self] event in
             self?.logger.debug("skipBackwardCommand")
             guard let event = event as? MPSkipIntervalCommandEvent else {
@@ -168,7 +165,7 @@ class AudioController: NSObject, ObservableObject {
             return .success
         }
 
-        commandCenter.skipForwardCommand.preferredIntervals = [NSNumber(integerLiteral: 30)]
+        commandCenter.skipForwardCommand.preferredIntervals = [NSNumber(30)]
         commandCenter.skipForwardCommand.addTarget { [weak self] event in
             self?.logger.debug("skipForwardCommand")
             guard let event = event as? MPSkipIntervalCommandEvent else {
@@ -196,7 +193,7 @@ class AudioController: NSObject, ObservableObject {
         logger.debug("enrichNowPlaying: isLive=\(self.isLive) duration=\(duration) position=\(position) rate=\(rate)")
         let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
 
-        var nowPlayingInfo = nowPlayingInfoCenter.nowPlayingInfo ?? [String : Any]()
+        var nowPlayingInfo = nowPlayingInfoCenter.nowPlayingInfo ?? [String: Any]()
 
         nowPlayingInfo[MPNowPlayingInfoPropertyIsLiveStream] = isLive
         nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = duration
@@ -251,14 +248,14 @@ class AudioController: NSObject, ObservableObject {
                     guard let self = self else { return }
                     self.logger.debug("🟢 New status set: \(status.rawValue)")
                     if status == .readyToPlay {
-                        self.startTime = Date().addingTimeInterval(-self.playerItem!.configuredTimeOffsetFromLive.seconds)
+                        let offsetFromLive = self.playerItem!.configuredTimeOffsetFromLive.seconds
+                        self.startTime = Date().addingTimeInterval(-offsetFromLive)
                         self.logger.debug("   startTime = \(self.startTime)")
                         self.logger.debug("   timebase  = \(self.playerItem?.timebase?.time.seconds ?? -1)")
                         self.player.rate = initiallyPaused ? 0.0 : 1.0
 
                         self.statusChanged()
-                    }
-                    else if status == .failed, let error = self.playerItem?.error {
+                    } else if status == .failed, let error = self.playerItem?.error {
                         self.logger.debug("playerItem.status failed with error \(error.localizedDescription)")
                     }
                 }
@@ -289,8 +286,7 @@ class AudioController: NSObject, ObservableObject {
                 .store(in: &playerItemCancellables)
 
             player.replaceCurrentItem(with: playerItem)
-        }
-        else {
+        } else {
             player.rate = initiallyPaused ? 0.0 : 1.0
             playerItem!.automaticallyPreservesTimeOffsetFromLive = true
 
@@ -301,8 +297,7 @@ class AudioController: NSObject, ObservableObject {
             if delta > maxInterruptionDuration {
                 logger.log("change is more than \(self.maxInterruptionDuration/60) minutes in the past! Restarting stream")
                 restartPlayer(initiallyPaused: initiallyPaused)
-            }
-            else if delta > maxPausedDuration {
+            } else if delta > maxPausedDuration {
                 logger.log("interruption is more than \(self.maxPausedDuration/60) minutes in the past!")
                 seekToLive()
             }
@@ -315,8 +310,7 @@ class AudioController: NSObject, ObservableObject {
     func togglePlayPause() {
         if player.rate != 1 {
             play()
-        }
-        else {
+        } else {
             pause()
         }
     }
@@ -347,14 +341,13 @@ class AudioController: NSObject, ObservableObject {
 
         if let currentItem = playerItem {
             let range = seekRange
-            enrichNowPlaying(duration: range.upperBound-range.lowerBound, position: currentItem.currentTime().seconds-range.lowerBound, rate: player.rate)
-        }
-        else {
+            enrichNowPlaying(duration: range.upperBound-range.lowerBound,
+                             position: currentItem.currentTime().seconds-range.lowerBound, rate: player.rate)
+        } else {
             removeNowPlaying()
         }
         dumpState()
     }
-
 
     func dumpState() {
 
@@ -375,9 +368,11 @@ class AudioController: NSObject, ObservableObject {
             logger.debug("🟡 seekableTimeRange: start \(seekableTimeRange.start.seconds) end \(seekableTimeRange.end.seconds) duration \(seekableTimeRange.duration.seconds)")
             logger.debug("   loadedTimeRange:   start \(loadedTimeRange.start.seconds) end \(loadedTimeRange.end.seconds) duration \(loadedTimeRange.duration.seconds)")
 
-            let earliestPosition = startTime.addingTimeInterval(seekableTimeRange.start.seconds - seekableTimeRange.duration.seconds)
+            let earliestPosition = startTime.addingTimeInterval(seekableTimeRange.start.seconds
+                                                                - seekableTimeRange.duration.seconds)
             logger.debug("   earliestPosition: \(earliestPosition.localizedTimeString)")
-            let newestPosition = startTime.addingTimeInterval(seekableTimeRange.end.seconds - seekableTimeRange.duration.seconds)
+            let newestPosition = startTime.addingTimeInterval(seekableTimeRange.end.seconds
+                                                              - seekableTimeRange.duration.seconds)
             logger.debug("   newestPosition: \(newestPosition.localizedTimeString)")
             let currentPosition = startTime.addingTimeInterval(currentTime.seconds - seekableTimeRange.duration.seconds)
             logger.debug("   currentPosition: \(currentPosition.localizedTimeString)")
@@ -393,10 +388,13 @@ class AudioController: NSObject, ObservableObject {
         else {
             return
         }
-        let newTime = CMTime(seconds: min(max(position, seekableTimeRange.start.seconds), seekableTimeRange.end.seconds), preferredTimescale: CMTimeScale(1))
+        let newTime = CMTime(
+            seconds: min(max(position, seekableTimeRange.start.seconds), seekableTimeRange.end.seconds),
+            preferredTimescale: CMTimeScale(1)
+        )
         logger.debug("🟣 Seek to \(position) => newTime = \(newTime.seconds)")
         playerItem.cancelPendingSeeks()
-        playerItem.seek(to: newTime, completionHandler: { (finished) in
+        playerItem.seek(to: newTime, completionHandler: { _ in
             self.logger.debug(" >>> 🟣 Seek finished: Now at \(playerItem.currentTime().seconds)")
             self.statusChanged()
         })
@@ -472,8 +470,7 @@ class AudioController: NSObject, ObservableObject {
     var relativeOffsetToLive: TimeInterval {
         guard let playerItem = playerItem else { return .zero }
         let currentTime = playerItem.currentTime()
-        if let seekableTimeRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first
-        {
+        if let seekableTimeRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first {
             if seekableTimeRange.end.seconds > currentTime.seconds {
                 return TimeInterval(currentTime.seconds - seekableTimeRange.end.seconds)
             }

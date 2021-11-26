@@ -27,8 +27,7 @@ extension Livestream {
             let cacheURL = FileManager.sharedCacheLocation()
             let fileURL = cacheURL.appendingPathComponent(filename)
             if let data = try? Data(contentsOf: fileURL),
-               let image = UIImage(data: data)
-            {
+               let image = UIImage(data: data) {
                 ImageCache.shared[thumbnailURL] = image
                 return image
             }

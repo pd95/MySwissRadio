@@ -38,7 +38,6 @@ struct WhatsPlayingToolbar: View {
     }
 }
 
-
 struct WhatsPlayingToolbar_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {

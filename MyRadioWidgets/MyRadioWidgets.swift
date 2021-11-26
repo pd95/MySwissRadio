@@ -17,7 +17,7 @@ struct Provider: IntentTimelineProvider {
     private func getStream(for station: Station?) -> Livestream? {
         guard let selectedStationID = station?.identifier ?? SettingsStore.shared.lastPlayedStreamId,
            let stream = Self.streams.first(where: { $0.id == selectedStationID })
-        else  {
+        else {
             return nil
         }
 
@@ -32,13 +32,13 @@ struct Provider: IntentTimelineProvider {
         SimpleEntry(date: Date(), livestream: .example, isPlaying: false)
     }
 
-    func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
+    func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> Void) {
         let stream: Livestream = getStream(for: configuration.station) ?? .example
         let entry = SimpleEntry(date: Date(), livestream: stream, isPlaying: isPlaying(stream: stream))
         completion(entry)
     }
 
-    func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
+    func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
         let stream: Livestream = getStream(for: configuration.station) ?? .example
         let entry = SimpleEntry(date: Date(), livestream: stream, isPlaying: isPlaying(stream: stream))
         let timeline = Timeline(entries: [entry], policy: .never)
@@ -58,7 +58,7 @@ struct SimpleEntry: TimelineEntry {
     }
 }
 
-struct MyRadioWidgetsEntryView : View {
+struct MyRadioWidgetsEntryView: View {
     var entry: Provider.Entry
 
     var body: some View {

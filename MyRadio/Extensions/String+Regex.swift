@@ -21,12 +21,11 @@ extension String {
         let matches  = regex.matches(in: self, options: [], range: NSRange(self.startIndex..., in: self))
         return matches.reduce([]) { res, match in
             var newRes = res
-            for i in 0..<match.numberOfRanges {
-                let x = String(self[Range(match.range(at: i), in: self)!])
-                newRes.append(x)
+            for index in 0..<match.numberOfRanges {
+                let matchedString = String(self[Range(match.range(at: index), in: self)!])
+                newRes.append(matchedString)
             }
             return newRes
         }
     }
 }
-

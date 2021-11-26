@@ -14,7 +14,7 @@ struct Livestream: Identifiable, Codable, Hashable {
     let bu: BusinessUnit
     let sortOrder: Int
     var streams: [URL]
-    var thumbnailImageFilename: String? = nil
+    var thumbnailImageFilename: String?
 
     var isReady: Bool {
         !streams.isEmpty

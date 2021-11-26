@@ -20,7 +20,6 @@ extension URLRequest {
         return URL(string: baseURLString.hasPrefix("https://") ? baseURLString : "https://\(baseURLString)")!
     }
 
-
     /// Creates an URLRequest initialized for the given endpoint path.
     ///
     /// The expected response type is JSON and the character set UTF8
@@ -48,12 +47,11 @@ extension URLRequest {
         self.addValue("utf-8", forHTTPHeaderField: "Accept-Charset")
     }
 
-
     static func livestreams(bu: SRGService.BusinessUnits = .srf) -> URLRequest {
-        .init(endpoint: "audiometadata/v2/livestreams", query: ["bu" : bu.parameterValue])
+        .init(endpoint: "audiometadata/v2/livestreams", query: ["bu": bu.parameterValue])
     }
 
     static func mediaComposition(for mediaID: String, bu: SRGService.BusinessUnits = .srf) -> URLRequest {
-        .init(endpoint: "audiometadata/v2/mediaComposition/audios/\(mediaID)", query: ["bu" : bu.parameterValue])
+        .init(endpoint: "audiometadata/v2/mediaComposition/audios/\(mediaID)", query: ["bu": bu.parameterValue])
     }
 }

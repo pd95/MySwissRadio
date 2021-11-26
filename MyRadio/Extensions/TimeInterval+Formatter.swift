@@ -7,7 +7,7 @@
 
 import Foundation
 
-fileprivate let relativeTimeIntervalFormatter: DateComponentsFormatter = {
+private let relativeTimeIntervalFormatter: DateComponentsFormatter = {
     let formatter = DateComponentsFormatter()
     formatter.unitsStyle = .abbreviated
     formatter.allowedUnits = [.hour, .minute, .second]
@@ -18,6 +18,6 @@ fileprivate let relativeTimeIntervalFormatter: DateComponentsFormatter = {
 extension TimeInterval {
 
     var relativeTimeString: String {
-        return relativeTimeIntervalFormatter.string(from: self) ?? "(n/a)"
+        relativeTimeIntervalFormatter.string(from: self) ?? "(n/a)"
     }
 }

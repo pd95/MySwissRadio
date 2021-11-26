@@ -55,12 +55,12 @@ struct OAuthConfiguration: Codable {
     ///
     ///   Example JSON file:
     /// ```json
-    ///{
+    /// {
     ///     "authorizationURL": "https://api.example.com/auth/accesstoken?grant_type=client_credentials",
     ///     "clientKey": "ABC123DEF567",
     ///     "clientSecret": "kQ4Mr5A9JD",
     ///     "userDefaultsKey": "MyApp.authResponse"
-    ///}
+    /// }
     /// ```
     ///
     public init(fromJSONResource resourceName: String, in bundle: Bundle = .main) {
@@ -88,23 +88,26 @@ struct OAuthConfiguration: Codable {
     /// The optional prefix parameter is used to modify above keys, for example to `MY_API_AUTH_URL`.
     ///
     public init(fromBundle bundle: Bundle = .main, prefix: String = "") {
-        let clientKey = bundle.object(forInfoDictionaryKey: "\(prefix)AUTH_KEY") as! String
-        let clientSecret = bundle.object(forInfoDictionaryKey: "\(prefix)AUTH_SECRET") as! String
+        guard let clientKey = bundle.object(forInfoDictionaryKey: "\(prefix)AUTH_KEY") as? String,
+              let clientSecret = bundle.object(forInfoDictionaryKey: "\(prefix)AUTH_SECRET") as? String
+        else {
+            fatalError("\(prefix)AUTH_KEY and \(prefix)AUTH_SECRET must be configured in bundle \(bundle.bundlePath)")
+        }
         let userDefaultsKey = bundle.object(forInfoDictionaryKey: "\(prefix)AUTH_DEFAULTS_KEY") as? String
         let userDefaultsSuiteName = bundle.object(forInfoDictionaryKey: "\(prefix)AUTH_DEFAULTS_SUITE") as? String
 
         let authorizationURL: URL
-        if let authUrlString = bundle.object(forInfoDictionaryKey: "\(prefix)AUTH_URL") as? String, !authUrlString.isEmpty,
+        if let authUrlString = bundle.object(forInfoDictionaryKey: "\(prefix)AUTH_URL") as? String,
+            authUrlString.isEmpty == false,
            let authUrl = URL(string: authUrlString.hasPrefix("https://") ? authUrlString : "https://\(authUrlString)") {
                 authorizationURL = authUrl
-        }
-        else {
+        } else {
             fatalError("\(prefix)AUTH_URL configuration missing in bundle \(bundle.bundlePath)")
         }
 
-        self.init(authorizationURL: authorizationURL, clientKey: clientKey, clientSecret: clientSecret, userDefaultsKey: userDefaultsKey, userDefaultsSuiteName: userDefaultsSuiteName)
+        self.init(authorizationURL: authorizationURL, clientKey: clientKey, clientSecret: clientSecret,
+                  userDefaultsKey: userDefaultsKey, userDefaultsSuiteName: userDefaultsSuiteName)
     }
-
 
     fileprivate var persistedData: Data? {
         if let userDefaultsKey = userDefaultsKey {
@@ -119,7 +122,6 @@ struct OAuthConfiguration: Codable {
         }
     }
 }
-
 
 final class OAuthenticator {
     private let logger = Logger(subsystem: "MyRadio", category: "OAuthenticator")
@@ -147,12 +149,12 @@ final class OAuthenticator {
 
         public var description: String {
             switch self {
-                case .invalid:
-                    return "invalid"
-                case .refreshFailed(let error):
-                    return "refreshFailed(error: \(error.localizedDescription))"
-                case .valid(let value, _):
-                    return "valid(value: \(value))"
+            case .invalid:
+                return "invalid"
+            case .refreshFailed(let error):
+                return "refreshFailed(error: \(error.localizedDescription))"
+            case .valid(let value, _):
+                return "valid(value: \(value))"
             }
         }
     }
@@ -210,21 +212,20 @@ final class OAuthenticator {
         serialQueue.sync {
             logger.debug("refreshToken: entered critical section")
             if case TokenState.valid(_, _) = self.currentToken {
-                logger.debug("refreshToken: skipping, token already valid. Should receive current token (\(self.currentToken)) momentarily")
-            }
-            else if refreshCancellable == nil {
+                logger.debug("refreshToken: skipped, token is valid. Should receive token (\(self.currentToken)) soon.")
+            } else if refreshCancellable == nil {
                 refreshCancellable = performRefresh(delay: delay)
                     .receive(on: serialQueue)
                     .sink(receiveCompletion: { [weak self] (completion) in
                         self?.refreshCancellable = nil
                         switch completion {
-                            // This case should never happen because we "catch" the errors and convert them just above
-                            case .failure(let error):
-                                self?.logger.error("performRefresh: error occured: \(error.localizedDescription)")
 
-                            case .finished:
-                                self?.logger.debug("performRefresh: done")
-                                break
+                        // This case should never happen because we "catch" the errors and convert them just above
+                        case .failure(let error):
+                            self?.logger.error("performRefresh: error occured: \(error.localizedDescription)")
+
+                        case .finished:
+                            self?.logger.debug("performRefresh: done")
                         }
                     }, receiveValue: { [weak self](token) in
                         guard let self = self else { return }
@@ -233,8 +234,7 @@ final class OAuthenticator {
                         self.logger.debug("performRefresh: sending new token \(token)")
                         self.currentToken = token
                     })
-            }
-            else {
+            } else {
                 logger.debug("refreshToken: skipping refresh as there is already one ongoing")
             }
 
@@ -251,9 +251,10 @@ final class OAuthenticator {
                                  cachePolicy: .reloadIgnoringLocalAndRemoteCacheData,
                                  timeoutInterval: TimeInterval(10))
 
-        let credentials = "\(configuration.clientKey):\(configuration.clientSecret)".data(using: .ascii)!.base64EncodedString()
+        let credentials = "\(configuration.clientKey):\(configuration.clientSecret)"
+            .data(using: .ascii)!
+            .base64EncodedString()
         request.addValue("Basic \(credentials)", forHTTPHeaderField: "Authorization")
-
 
         let jsonDecoder = JSONDecoder()
         jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -277,14 +278,18 @@ final class OAuthenticator {
                 if !(200..<400).contains(httpResponse.statusCode) {
 
                     // Try to extract the error code from the response body
-                    let errorResponseArray = try? jsonDecoder.decode([String:String].self, from: data)
+                    let errorResponseArray = try? jsonDecoder.decode([String: String].self, from: data)
                     self?.logger.error("performRefresh: responseArray: \(errorResponseArray?.description ?? "-")")
 
                     let errorCode = errorResponseArray?["ErrorCode"] ??
                         errorResponseArray?["errorCode"] ??
                         errorResponseArray?["error_code"]
 
-                    let errorDescription = errorResponseArray?["ErrorDescription"] ?? errorResponseArray?["errorDescription"] ?? errorResponseArray?["error_description"] ?? errorResponseArray?["Error"] ?? errorResponseArray?["error"]
+                    let errorDescription = (errorResponseArray?["ErrorDescription"] ??
+                                            errorResponseArray?["errorDescription"] ??
+                                            errorResponseArray?["error_description"] ??
+                                            errorResponseArray?["Error"] ??
+                                            errorResponseArray?["error"])
 
                     self?.logger.error("performRefresh: errorCode = \(errorCode ?? "-") errorDescription = \(errorDescription ?? "-")")
 

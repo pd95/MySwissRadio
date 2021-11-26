@@ -22,8 +22,7 @@ class IntentHandler: INExtension, ConfigurationIntentHandling {
     }
 
     func provideStationOptionsCollection(for intent: ConfigurationIntent,
-                                     with completion: @escaping (INObjectCollection<Station>?, Error?) -> Void)
-    {
+                                         with completion: @escaping (INObjectCollection<Station>?, Error?) -> Void) {
         var stations = allStations
         stations.insert(lastPlayedStation, at: 0)
 
@@ -36,13 +35,11 @@ class IntentHandler: INExtension, ConfigurationIntentHandling {
     }
 
     func resolveStation(for intent: ConfigurationIntent,
-                        with completion: @escaping (StationResolutionResult) -> Void)
-    {
+                        with completion: @escaping (StationResolutionResult) -> Void) {
         let result: StationResolutionResult
         if let station = intent.station {
             result = .success(with: station)
-        }
-        else {
+        } else {
             print("resolveStation without station called")
             result = .disambiguation(with: allStations)
         }
@@ -57,5 +54,4 @@ class IntentHandler: INExtension, ConfigurationIntentHandling {
         }
         return self
     }
-    
 }

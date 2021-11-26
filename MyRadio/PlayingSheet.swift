@@ -37,8 +37,7 @@ struct PlayingSheet: View {
                     if model.controller.isLive {
                         Text("Live")
                             .bold()
-                    }
-                    else {
+                    } else {
                         Button(action: model.controller.seekToLive) {
                             Text("Live")
                                 .bold()

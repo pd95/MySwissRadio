@@ -11,7 +11,7 @@ import MediaPlayer
 
 extension Livestream {
     var mediaItem: INMediaItem {
-        var image: INImage? = nil
+        var image: INImage?
         if let thumbnail = thumbnailImage,
            let imageData = thumbnail.pngData() {
             image = INImage(imageData: imageData)
@@ -24,7 +24,7 @@ extension Livestream {
         var nowPlayingInfo: [String: Any] = [
             MPMediaItemPropertyTitle: name,
             MPMediaItemPropertyMediaType: MPMediaType.anyAudio.rawValue,
-            MPNowPlayingInfoCollectionIdentifier: bu.description,
+            MPNowPlayingInfoCollectionIdentifier: bu.description
         ]
 
         if let image = thumbnailImage {

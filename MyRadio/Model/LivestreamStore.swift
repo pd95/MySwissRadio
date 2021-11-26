@@ -37,7 +37,6 @@ final class LivestreamStore: ObservableObject {
         return streams[index]
     }
 
-
     // MARK: - Mutators
 
     func removeAll() {

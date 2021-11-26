@@ -21,8 +21,7 @@ struct ContentView: View {
                                     LivestreamRow(stream: stream)
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             ProgressView()
                                 .frame(maxWidth: .infinity)
                         }
@@ -53,8 +52,7 @@ struct ContentView: View {
     func play(stream: Livestream) {
         if !model.isPlaying(stream: stream) {
             model.togglePlay(stream)
-        }
-        else {
+        } else {
             model.showSheet = true
         }
     }

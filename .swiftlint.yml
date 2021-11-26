@@ -1,0 +1,25 @@
+identifier_name:
+  excluded:
+    - id
+    - bu
+    - tv
+    - sd
+    - hd
+    - hq
+
+# file_length:
+#   - 600
+
+type_body_length:
+  - 200
+
+function_body_length:
+  - 100
+
+line_length:
+  warning: 120
+  # error: 150
+  ignores_function_declarations: true
+  ignores_comments: true
+  ignores_interpolated_strings: true
+  ignores_urls: true

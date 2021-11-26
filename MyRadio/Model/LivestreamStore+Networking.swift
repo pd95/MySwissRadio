@@ -57,12 +57,10 @@ extension LivestreamStore {
                         guard let self = self else { return stream }
 
                         if let image = image,
-                           let data = image.pngData()
-                        {
+                           let data = image.pngData() {
                             logger.log("saving thumbnail image for \(String(describing: stream))")
                             return self.saveThumbnailData(data, for: stream)
-                        }
-                        else {
+                        } else {
                             logger.log("No valid image for \(String(describing: stream))")
                             return stream
                         }

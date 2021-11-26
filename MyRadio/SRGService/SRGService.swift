@@ -11,7 +11,7 @@ import UIKit
 
 enum SRGService {
 
-    static let jsonDecoder : JSONDecoder = initJSONDecoder()
+    static let jsonDecoder: JSONDecoder = initJSONDecoder()
 
     // JSON Decoder initialisation
     private static func initJSONDecoder() -> JSONDecoder {
@@ -32,24 +32,24 @@ enum SRGService {
         return decoder
     }
 
-
-    //MARK: - Main API calls to fetch specific content
+    // MARK: - Main API calls to fetch specific content
 
     static func getLivestreams(client: NetworkClient, bu: SRGService.BusinessUnits = .srf) -> AnyPublisher<[Livestream], Never> {
         return client.authenticatedDataRequest(for: .livestreams(bu: bu))
             .decode(type: SRGService.GetLivestreamsResponse.self, decoder: SRGService.jsonDecoder)
             .handleEvents(receiveCompletion: { (completion) in
                 switch completion {
-                    case .failure(let error):
-                        print("getLivestreams(\(bu)) Error: \(error)")
-                    default:  break
+                case .failure(let error):
+                    print("getLivestreams(\(bu)) Error: \(error)")
+                default:  break
                 }
             })
             .map({ (response: SRGService.GetLivestreamsResponse) -> [Livestream] in
                 let enumeratedMedia = response.mediaList.enumerated()
 
                 return enumeratedMedia.map({ (index, media) -> Livestream in
-                    Livestream(id: media.id, name: media.title, imageURL: media.imageUrl, bu: .init(from: media.vendor), sortOrder: index, streams: [])
+                    Livestream(id: media.id, name: media.title, imageURL: media.imageUrl,
+                               bu: .init(from: media.vendor), sortOrder: index, streams: [])
                 })
             })
             .replaceError(with: [])
@@ -61,15 +61,15 @@ enum SRGService {
             .decode(type: SRGService.GetMediaCompositionResponse.self, decoder: SRGService.jsonDecoder)
             .handleEvents(receiveCompletion: { (completion) in
                 switch completion {
-                    case .failure(let error):
-                        print("getMediaResource(\(mediaID), \(bu)) Error: \(error)")
-                    default:  break
+                case .failure(let error):
+                    print("getMediaResource(\(mediaID), \(bu)) Error: \(error)")
+                default:  break
                 }
             })
             .map({ (response: SRGService.GetMediaCompositionResponse) -> [URL]? in
                 let mediaURLs = response.chapterList.first
                     .map({ (chapter: SRGService.Chapter) -> [URL] in
-                        let urls = chapter.resourceList.filter{ $0.streaming == .hls }
+                        let urls = chapter.resourceList.filter({ $0.streaming == .hls })
                             .sorted(by: { (lhs: SRGService.Resource, rhs: SRGService.Resource) -> Bool in
                                 lhs.quality != rhs.quality &&
                                     lhs.quality != .sd
@@ -92,8 +92,7 @@ enum SRGService {
     }
 }
 
-
-//MARK: - Data structures used in the API
+// MARK: - Data structures used in the API
 extension SRGService {
 
     enum BusinessUnits: String, Decodable, CaseIterable {
@@ -260,7 +259,6 @@ extension SRGService {
         // let analyticsData: AnalyticsMetaData
         // let analyticsMetadata: AnalyticsMetaDataChapter
     }
-
 
     struct Status: Decodable {
         let code: Int

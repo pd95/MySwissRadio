@@ -23,7 +23,9 @@ class MyRadioModel: NSObject, ObservableObject {
     private override init() {
         super.init()
 
-        if currentlyPlaying == nil, let stream = streamStore.stream(withID: SettingsStore.shared.lastPlayedStreamId ?? "") {
+        if currentlyPlaying == nil,
+           let lastPlayedStreamID = SettingsStore.shared.lastPlayedStreamId,
+           let stream = streamStore.stream(withID: lastPlayedStreamID) {
             logger.log("Last played stream \(stream.name): prepare UI in paused mode")
             play(stream, initiallyPaused: true)
             showSheet = true
@@ -48,7 +50,7 @@ class MyRadioModel: NSObject, ObservableObject {
     // MARK: - Fetching data from NetworkClient
 
     private var cancellables = Set<AnyCancellable>()
-    @Published var uiUpdateTimer = Timer.publish (every: 1, on: .current, in: .common).autoconnect()
+    @Published var uiUpdateTimer = Timer.publish(every: 1, on: .current, in: .common).autoconnect()
 
     func refreshContent() {
         let logger = Logger(subsystem: "MyRadioModel", category: "refreshContent")
@@ -90,7 +92,7 @@ class MyRadioModel: NSObject, ObservableObject {
             refreshContent()
         }
 
-        uiUpdateTimer = Timer.publish (every: 1, on: .current, in: .common).autoconnect()
+        uiUpdateTimer = Timer.publish(every: 1, on: .current, in: .common).autoconnect()
         // Unfreeze the player (if the user paused long ago)
         controller.unfreezePlayer()
     }
@@ -138,8 +140,7 @@ class MyRadioModel: NSObject, ObservableObject {
                         if status == .playing {
                             self.isPaused = false
                             self.streamStore.updateLastPlayed(for: stream, date: Date())
-                        }
-                        else {
+                        } else {
                             self.isPaused = true
                         }
                         SettingsStore.shared.isPlaying = !self.isPaused
@@ -157,8 +158,7 @@ class MyRadioModel: NSObject, ObservableObject {
         if isPlaying(stream: stream) {
             pause()
             logger.debug("togglePlay: paused")
-        }
-        else {
+        } else {
             logger.debug("togglePlay: start playing \(String(describing: stream))")
             play(stream)
             donatePlayActivity(stream)
@@ -175,8 +175,7 @@ class MyRadioModel: NSObject, ObservableObject {
         interaction.donate { (error) in
             if let error = error {
                 self.logger.error("Unable to donate \(intent): \(error.localizedDescription)")
-            }
-            else {
+            } else {
                 self.logger.debug("Successfully donated playActivity")
             }
         }
@@ -191,18 +190,15 @@ class MyRadioModel: NSObject, ObservableObject {
             if handlePlayIntent(intent) == nil {
                 logger.error("Error while handling \(userActivity)")
             }
-        }
-        else if userActivity.activityType == CSSearchableItemActionType {
+        } else if userActivity.activityType == CSSearchableItemActionType {
             // Based on Spotlight search result: toggle playing of selected stream
             if let itemIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
                let stream = streamStore.stream(withID: itemIdentifier) {
                 togglePlay(stream)
-            }
-            else {
+            } else {
                 logger.error("Invalid spotlight item: \(userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String ?? "nil")")
             }
-        }
-        else {
+        } else {
             logger.error("Invalid activity: \(userActivity)")
         }
     }

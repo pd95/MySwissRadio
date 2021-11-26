@@ -14,12 +14,13 @@ extension Bundle {
     /// by dropping the last part and prepending "group."
     static let appGroupIdentifier: String = {
         let identifier: String
-        if let infoPlist = Bundle.main.object(forInfoDictionaryKey: "APP_GROUP_IDENTIFIER") as? String, !infoPlist.isEmpty {
+        if let infoPlist = Bundle.main.object(forInfoDictionaryKey: "APP_GROUP_IDENTIFIER") as? String,
+           infoPlist.isEmpty == false {
             identifier = infoPlist
             Logger().info("Populated appGroupIdentifier \(identifier) from Info.plist")
-        }
-        else {
-            identifier = "group.\(Bundle.main.bundleIdentifier?.split(separator: ".").dropLast().joined(separator: ".") ?? "invalid.bundleIdentifier")"
+        } else {
+            let mainIdentifier = Bundle.main.bundleIdentifier?.split(separator: ".").dropLast().joined(separator: ".")
+            identifier = "group.\(mainIdentifier ?? "invalid.bundleIdentifier")"
             Logger().info("Derived appGroupIdentifier \(identifier) from bundleIdentifier")
         }
         return identifier

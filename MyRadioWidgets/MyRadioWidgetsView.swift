@@ -44,7 +44,7 @@ struct MyRadioWidgetsView: View {
 
 struct MyRadioWidgetsView_Previews: PreviewProvider {
     static var images: [UIImage] = [
-        UIImage(named: "Placeholder")!,
+        UIImage(named: "Placeholder")!
 //        UIImage(named: "SRF1")!, UIImage(named: "SRF2")!, UIImage(named: "SRF3")!,
 //        UIImage(named: "SRFInfo")!, UIImage(named: "SRFVirus")!, UIImage(named: "SRFMusikwelle")!,
 //        UIImage(named: "RTS1")!, UIImage(named: "RTS2")!, UIImage(named: "RTS3")!, UIImage(named: "RTS4")!,
