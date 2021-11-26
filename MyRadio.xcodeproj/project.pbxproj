@@ -58,6 +58,8 @@
 		17C6DD692530D2A7003D603E /* Bundle+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F58D825308CF200072EF5 /* Bundle+Sharing.swift */; };
 		17C6DD6A2530D2A7003D603E /* FileManager+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F58D42530831200072EF5 /* FileManager+Sharing.swift */; };
 		17CCDEC42750EC18001380D9 /* LivestreamStore+Spotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CCDEC32750EC18001380D9 /* LivestreamStore+Spotlight.swift */; };
+		17CCDEC827513978001380D9 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 17CCDEC627513978001380D9 /* .gitignore */; };
+		17CCDEC927513978001380D9 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 17CCDEC727513978001380D9 /* .swiftlint.yml */; };
 		17D8F7642533ABE500041715 /* Livestream+INMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */; };
 		17D8F7682533AC7800041715 /* Livestream+INMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */; };
 		17D8F76C2533ACB900041715 /* Livestream+ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */; };
@@ -144,6 +146,8 @@
 		17C6DD532530CD2C003D603E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		17C6DD552530CD2C003D603E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		17CCDEC32750EC18001380D9 /* LivestreamStore+Spotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LivestreamStore+Spotlight.swift"; sourceTree = "<group>"; };
+		17CCDEC627513978001380D9 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		17CCDEC727513978001380D9 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Livestream+INMediaItem.swift"; sourceTree = "<group>"; };
 		17D8F77D2533BD7100041715 /* MyRadioExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyRadioExtension.entitlements; sourceTree = "<group>"; };
 		17DA93D0252C56500076EBB2 /* MyRadio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyRadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -272,6 +276,8 @@
 				17C33847254094AD00072313 /* README.md */,
 				1750E225252C605D00CB2D4B /* Config.xcconfig */,
 				1750E233252C723500CB2D4B /* LocalConfig.xcconfig */,
+				17CCDEC627513978001380D9 /* .gitignore */,
+				17CCDEC727513978001380D9 /* .swiftlint.yml */,
 				17DA93D2252C56500076EBB2 /* MyRadio */,
 				17C6DD4F2530CD2A003D603E /* MyRadioWidgets */,
 				177783822530FF0E003D19A3 /* MyRadioIntentHandler */,
@@ -448,6 +454,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17CCDEC927513978001380D9 /* .swiftlint.yml in Resources */,
+				17CCDEC827513978001380D9 /* .gitignore in Resources */,
 				17DA93DB252C56510076EBB2 /* Preview Assets.xcassets in Resources */,
 				1703F8E6252F48C800F01ECD /* Settings.bundle in Resources */,
 				17DA93D8252C56510076EBB2 /* Assets.xcassets in Resources */,
