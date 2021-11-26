@@ -70,9 +70,9 @@ extension LivestreamStore {
                     .eraseToAnyPublisher()
             })
             .collect()
-            .handleEvents(receiveCompletion: { completion in
+            .handleEvents(receiveCompletion: { [weak self] completion in
                 logger.log("completed with \(String(describing: completion))")
-                self.updateSpotlight()
+                self?.updateSpotlight()
             })
             .eraseToAnyPublisher()
 
