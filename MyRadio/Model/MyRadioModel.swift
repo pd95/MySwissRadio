@@ -61,7 +61,6 @@ class MyRadioModel: NSObject, ObservableObject {
             }, receiveValue: { [weak self] (streams) in
                 SettingsStore.shared.streams = streams
                 SettingsStore.shared.lastLivestreamRefreshDate = refreshStartDate
-                self?.updateSpotlight(for: streams)
                 self?.updateSiriSearch(streams)
                 self?.updateWidgets()
                 DispatchQueue.main.async {
@@ -138,7 +137,7 @@ class MyRadioModel: NSObject, ObservableObject {
                         self.logger.debug("controller state changed: \(String(describing: status))")
                         if status == .playing {
                             self.isPaused = false
-                            self.updateLastPlayed(for: stream)
+                            self.streamStore.updateLastPlayed(for: stream, date: Date())
                         }
                         else {
                             self.isPaused = true

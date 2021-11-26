@@ -74,6 +74,7 @@ extension LivestreamStore {
             .collect()
             .handleEvents(receiveCompletion: { completion in
                 logger.log("completed with \(String(describing: completion))")
+                self.updateSpotlight()
             })
             .eraseToAnyPublisher()
 
