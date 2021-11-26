@@ -38,6 +38,9 @@ class SettingsStore: ObservableObject {
     @CodableUserDefault(key: .streams, defaultValue: [], storage: .shared)
     var streams: [Livestream]
 
+    @CodableUserDefault(key: .lastLivestreamRefreshDate, defaultValue: .distantPast, storage: .shared)
+    var lastLivestreamRefreshDate: Date
+
     @UserDefault(key: .isPlaying, defaultValue: false, storage: .shared)
     var isPlaying: Bool
 
@@ -87,6 +90,7 @@ extension UserDefaults {
         case isPlaying
         case lastPlayedStreamId
         case streams
+        case lastLivestreamRefreshDate
         case searchWords
     }
 
