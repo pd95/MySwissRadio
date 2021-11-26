@@ -48,16 +48,18 @@ class AudioController: NSObject, ObservableObject {
     override init() {
         super.init()
 
-        // Configure audio session
-        let audioSession = AVAudioSession.sharedInstance()
-        do {
-            try audioSession.setCategory(.playback, mode: .default, policy: .longFormAudio)
-        } catch {
-            logger.debug("Setting category to AVAudioSessionCategoryPlayback failed.")
-        }
-
+        setupAudioSession()
         setupNotifications()
         setupRemoteTransportControls()
+    }
+
+    func setupAudioSession() {
+        // Configure audio session
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, policy: .longFormAudio)
+        } catch {
+            logger.error("Failed to set audio session route sharing policy: \(error.localizedDescription)")
+        }
     }
 
     var interruptionDate: Date? {
@@ -69,7 +71,9 @@ class AudioController: NSObject, ObservableObject {
     private var notificationSubscriber = Set<AnyCancellable>()
 
     private func setupNotifications() {
-        NotificationCenter.default
+        let notificationCenter = NotificationCenter.default
+
+        notificationCenter
             .publisher(for: AVAudioSession.interruptionNotification)
             .sink { [weak self] (notification) in
                 guard let userInfo = notification.userInfo,
@@ -111,6 +115,13 @@ class AudioController: NSObject, ObservableObject {
                     // We do not know whether Apple will introduce new interruptions in the future
                     default: ()
                 }
+            }
+            .store(in: &notificationSubscriber)
+
+        notificationCenter
+            .publisher(for: AVAudioSession.mediaServicesWereResetNotification)
+            .sink { _ in
+                self.setupAudioSession()
             }
             .store(in: &notificationSubscriber)
     }
