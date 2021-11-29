@@ -47,11 +47,11 @@ extension URLRequest {
         self.addValue("utf-8", forHTTPHeaderField: "Accept-Charset")
     }
 
-    static func livestreams(bu: SRGService.BusinessUnits = .srf) -> URLRequest {
+    static func livestreams(bu: SRGService.BusinessUnit = .srf) -> URLRequest {
         .init(endpoint: "audiometadata/v2/livestreams", query: ["bu": bu.parameterValue])
     }
 
-    static func mediaComposition(for mediaID: String, bu: SRGService.BusinessUnits = .srf) -> URLRequest {
+    static func mediaComposition(for mediaID: String, bu: SRGService.BusinessUnit = .srf) -> URLRequest {
         .init(endpoint: "audiometadata/v2/mediaComposition/audios/\(mediaID)", query: ["bu": bu.parameterValue])
     }
 }

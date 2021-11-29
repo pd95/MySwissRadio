@@ -34,7 +34,7 @@ enum SRGService {
 
     // MARK: - Main API calls to fetch specific content
 
-    static func getLivestreams(client: NetworkClient, bu: SRGService.BusinessUnits = .srf) -> AnyPublisher<[Livestream], Never> {
+    static func getLivestreams(client: NetworkClient, bu: SRGService.BusinessUnit = .srf) -> AnyPublisher<[Livestream], Never> {
         return client.authenticatedDataRequest(for: .livestreams(bu: bu))
             .decode(type: SRGService.GetLivestreamsResponse.self, decoder: SRGService.jsonDecoder)
             .handleEvents(receiveCompletion: { (completion) in
@@ -56,7 +56,7 @@ enum SRGService {
             .eraseToAnyPublisher()
     }
 
-    static func getMediaResource(client: NetworkClient, for mediaID: String, bu: SRGService.BusinessUnits = .srf) -> AnyPublisher<[URL], Never> {
+    static func getMediaResource(client: NetworkClient, for mediaID: String, bu: SRGService.BusinessUnit = .srf) -> AnyPublisher<[URL], Never> {
         return client.authenticatedDataRequest(for: .mediaComposition(for: mediaID, bu: bu))
             .decode(type: SRGService.GetMediaCompositionResponse.self, decoder: SRGService.jsonDecoder)
             .handleEvents(receiveCompletion: { (completion) in
@@ -95,7 +95,7 @@ enum SRGService {
 // MARK: - Data structures used in the API
 extension SRGService {
 
-    enum BusinessUnits: String, Decodable, CaseIterable {
+    enum BusinessUnit: String, Decodable, CaseIterable {
         case srf = "SRF", rsi = "RSI", rtr = "RTR", rts = "RTS", swi = "SWI"
 
         var parameterValue: String { self.rawValue.lowercased() }
@@ -152,7 +152,7 @@ extension SRGService {
 
     struct Channel: Decodable {
         let id: String
-        let vendor: BusinessUnits
+        let vendor: BusinessUnit
         let urn: String
         let title: String
         let imageUrl: URL
@@ -164,7 +164,7 @@ extension SRGService {
     struct Media: Decodable {
         let id: String
         let mediaType: MediaType
-        let vendor: BusinessUnits
+        let vendor: BusinessUnit
         let urn: String
         let title: String
         let description: String?
@@ -190,7 +190,7 @@ extension SRGService {
 
     struct Show: Decodable {
         let id: String
-        let vendor: BusinessUnits
+        let vendor: BusinessUnit
         let transmission: TransmissionType
         let urn: String
         let title: String
@@ -226,7 +226,7 @@ extension SRGService {
     struct Chapter: Decodable {
         let id: String
         let mediaType: MediaType
-        let vendor: BusinessUnits
+        let vendor: BusinessUnit
         let urn: String
         let title: String
         let description: String?

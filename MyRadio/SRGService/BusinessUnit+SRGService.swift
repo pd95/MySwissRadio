@@ -8,11 +8,11 @@
 import Foundation
 
 extension BusinessUnit {
-    init(from: SRGService.BusinessUnits) {
+    init(from: SRGService.BusinessUnit) {
         self.init(rawValue: from.rawValue)!
     }
 
-    var apiBusinessUnit: SRGService.BusinessUnits {
-        SRGService.BusinessUnits(rawValue: self.rawValue)!
+    var apiBusinessUnit: SRGService.BusinessUnit {
+        SRGService.BusinessUnit(rawValue: self.rawValue)!
     }
 }
