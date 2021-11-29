@@ -13,6 +13,8 @@ struct PlayingSheet: View {
 
     let stream: Livestream
 
+    private let startOfDayPlaceholder = Calendar.current.startOfDay(for: Date()).localizedTimeString
+
     @State private var seekRange = 0.0...1.0
     @State private var currentPosition: Double = .infinity
     @State private var currentDate: Date = Date()
@@ -57,8 +59,8 @@ struct PlayingSheet: View {
                     Text(model.controller.earliestSeekDate, style: .time)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                    Text(" 00:00:00 ")
-                        .opacity(0.0)
+                    Text(startOfDayPlaceholder)
+                        .opacity(0)
                         .overlay(Text("\(currentDate.localizedTimeString)"), alignment: .leading)
 
                     Text(model.controller.relativeOffsetToLive.relativeTimeString)
