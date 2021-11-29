@@ -105,6 +105,8 @@ extension SRGService {
         case radio = "RADIO", tv = "TV"
     }
 
+    // MARK: - SRGSSR Audio Metadata
+
     enum MediaType: String, Decodable {
         case audio = "AUDIO", video = "VIDEO"
     }
@@ -260,12 +262,12 @@ extension SRGService {
         // let analyticsMetadata: AnalyticsMetaDataChapter
     }
 
-    struct Status: Decodable {
+    struct ErrorStatusCode: Decodable {
         let code: Int
         let msg: String
     }
 
     struct ErrorResponse: Decodable {
-        let status: Status
+        let status: ErrorStatusCode
     }
 }
