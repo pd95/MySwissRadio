@@ -125,7 +125,7 @@ class MyRadioModel: NSObject, ObservableObject {
         uiUpdateTimer = nil
     }
 
-    func updateState(_ time: Date = Date()) {
+    func updateState() {
         guard controller.playerStatus != .undefined else { return }
 
         let date = controller.currentDate
