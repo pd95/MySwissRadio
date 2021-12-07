@@ -50,7 +50,6 @@ class MyRadioModel: NSObject, ObservableObject {
     // MARK: - Fetching data from NetworkClient
 
     private var cancellables = Set<AnyCancellable>()
-    @Published var uiUpdateTimer = Timer.publish(every: 1, on: .current, in: .common).autoconnect()
 
     func refreshContent() {
         let logger = Logger(subsystem: "MyRadioModel", category: "refreshContent")
@@ -80,7 +79,8 @@ class MyRadioModel: NSObject, ObservableObject {
 
     func enterBackground() {
         logger.debug("enterBackground")
-        uiUpdateTimer.upstream.connect().cancel()
+
+        cancelUITimer()
     }
 
     func enterForeground() {
@@ -92,10 +92,88 @@ class MyRadioModel: NSObject, ObservableObject {
             refreshContent()
         }
 
-        uiUpdateTimer = Timer.publish(every: 1, on: .current, in: .common).autoconnect()
         // Unfreeze the player (if the user paused long ago)
         controller.unfreezePlayer()
+
+        // Restore time (if it was running previously)
+        if uiUpdateTimer != nil {
+            setupUITimer()
+        }
     }
+
+    // MARK: - UI State
+    @Published var uiUpdateTimer: AnyCancellable?
+    @Published var seekRange = 0.0...1.0
+    @Published var currentPosition: Double = 0.0
+    @Published var currentDate: Date = Date()
+
+    func setupUITimer() {
+        logger.debug("Setup UI update timer")
+        uiUpdateTimer = Timer.publish(every: 1, on: .current, in: .common)
+            .autoconnect()
+            .sink(receiveValue: { [weak self] _ in
+                self?.updateState()
+            })
+        updateState()
+    }
+
+    func cancelUITimer() {
+        uiUpdateTimer?.cancel()
+    }
+
+
+    func removeUITimer() {
+        uiUpdateTimer = nil
+    }
+
+    func updateState(_ time: Date = Date()) {
+        currentDate = controller.currentDate
+        seekRange = controller.seekRange
+        currentPosition = controller.currentPosition
+        logger.debug("updateState \(self.currentDate)")
+    }
+
+    var playerIsInitialized: Bool {
+        controller.playerStatus != .undefined
+    }
+
+    var earliestSeekDate: Date {
+        controller.earliestSeekDate
+    }
+
+    var relativeOffsetToLive: TimeInterval {
+        controller.relativeOffsetToLive
+    }
+
+    var isLive: Bool {
+        controller.isLive
+    }
+
+    func togglePlayPause() {
+        guard let stream = currentlyPlaying else { return }
+        togglePlay(stream)
+        updateState()
+    }
+
+    func seekToLive() {
+        controller.seekToLive()
+    }
+
+    func stepBackward() {
+        controller.stepBackward()
+        updateState()
+    }
+
+    func stepForward() {
+        controller.stepForward()
+        updateState()
+    }
+
+    func seekToCurrentPosition() {
+        controller.currentPosition = currentPosition
+        updateState()
+    }
+
 
     // MARK: - Playback control
     var controller = AudioController()

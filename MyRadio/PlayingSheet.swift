@@ -15,9 +15,6 @@ struct PlayingSheet: View {
 
     private let startOfDayPlaceholder = Calendar.current.startOfDay(for: Date()).localizedTimeString
 
-    @State private var seekRange = 0.0...1.0
-    @State private var currentPosition: Double = .infinity
-    @State private var currentDate: Date = Date()
     @State private var isDraggingSlider = false
 
     var body: some View {
@@ -36,11 +33,11 @@ struct PlayingSheet: View {
 
             VStack(spacing: 0) {
                 HStack {
-                    if model.controller.isLive {
+                    if model.isLive {
                         Text("Live")
                             .bold()
                     } else {
-                        Button(action: model.controller.seekToLive) {
+                        Button(action: model.seekToLive) {
                             Text("Live")
                                 .bold()
                             Image(systemName: "forward.end.fill")
@@ -50,23 +47,22 @@ struct PlayingSheet: View {
                 .foregroundColor(.red)
                 .frame(maxWidth: .infinity, alignment: .trailing)
 
-                Slider(value: $currentPosition, in: seekRange,
+                Slider(value: $model.currentPosition, in: model.seekRange,
                        onEditingChanged: sliderModeChanged,
                        label: { Text("Progress") }
                 )
 
                 ZStack {
-                    Text(model.controller.earliestSeekDate, style: .time)
+                    Text(model.earliestSeekDate, style: .time)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
                     Text(startOfDayPlaceholder)
                         .opacity(0)
-                        .overlay(Text("\(currentDate.localizedTimeString)"), alignment: .leading)
+                        .overlay(Text("\(model.currentDate.localizedTimeString)"), alignment: .leading)
 
-                    Text(model.controller.relativeOffsetToLive.relativeTimeString)
+                    Text(model.relativeOffsetToLive.relativeTimeString)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-                .onReceive(model.uiUpdateTimer, perform: updateState)
             }
             .foregroundColor(.secondary)
             .accentColor(.secondary)
@@ -75,7 +71,7 @@ struct PlayingSheet: View {
             HStack {
                 Spacer()
 
-                Button(action: stepBackward) {
+                Button(action: model.stepBackward) {
                     Image(systemName: "gobackward.15")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -84,7 +80,7 @@ struct PlayingSheet: View {
 
                 Spacer()
 
-                Button(action: togglePlayPause) {
+                Button(action: model.togglePlayPause) {
                     Image(systemName: !model.isPaused ? "pause.fill" : "play.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -93,7 +89,7 @@ struct PlayingSheet: View {
 
                 Spacer()
 
-                Button(action: stepForward) {
+                Button(action: model.stepForward) {
                     Image(systemName: "goforward.30")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -106,39 +102,19 @@ struct PlayingSheet: View {
 
             Spacer()
         }
-        .disabled(model.controller.playerStatus == .undefined)
-    }
-
-    func updateState(_ time: Date = Date()) {
-        guard model.controller.playerStatus != .undefined && !isDraggingSlider else {
-            return
+        .disabled(model.playerIsInitialized == false)
+        .onAppear {
+            model.setupUITimer()
         }
-
-        currentDate = model.controller.currentDate
-        seekRange = model.controller.seekRange
-        currentPosition = model.controller.currentPosition
-    }
-
-    func togglePlayPause() {
-        model.togglePlay(stream)
-        updateState()
-    }
-
-    func stepBackward() {
-        model.controller.stepBackward()
-        updateState()
-    }
-
-    func stepForward() {
-        model.controller.stepForward()
-        updateState()
+        .onDisappear {
+            model.removeUITimer()
+        }
     }
 
     func sliderModeChanged(_ started: Bool) {
         isDraggingSlider = started
-        print("\(started) => \(currentPosition) \(model.controller.relativeSecondsToDate(currentPosition).localizedTimeString)")
         if !started {
-            model.controller.currentPosition = currentPosition
+            model.seekToCurrentPosition()
         }
     }
 }
