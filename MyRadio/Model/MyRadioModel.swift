@@ -157,6 +157,7 @@ class MyRadioModel: NSObject, ObservableObject {
 
     func seekToLive() {
         controller.seekToLive()
+        updateState()
     }
 
     func stepBackward() {
@@ -173,7 +174,6 @@ class MyRadioModel: NSObject, ObservableObject {
         controller.currentPosition = currentPosition
         updateState()
     }
-
 
     // MARK: - Playback control
     var controller = AudioController()
