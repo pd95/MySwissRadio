@@ -121,16 +121,18 @@ class MyRadioModel: NSObject, ObservableObject {
         uiUpdateTimer?.cancel()
     }
 
-
     func removeUITimer() {
         uiUpdateTimer = nil
     }
 
     func updateState(_ time: Date = Date()) {
-        currentDate = controller.currentDate
+        guard controller.playerStatus != .undefined else { return }
+
+        let date = controller.currentDate
+        logger.debug("updateState \(date)")
+        currentDate = date
         seekRange = controller.seekRange
         currentPosition = controller.currentPosition
-        logger.debug("updateState \(self.currentDate)")
     }
 
     var playerIsInitialized: Bool {
