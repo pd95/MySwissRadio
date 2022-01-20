@@ -205,13 +205,13 @@ final class OAuthenticator {
     ///
     /// Even though `refreshToken` can be called in parallel by multiple sessions, only a single refresh process is running.
     /// All other calls are going to return without doing anything.
-    func refreshToken(delay: TimeInterval = 0.0) {
+    func refreshToken(delay: TimeInterval = 0.0, oldTokenValue: String? = nil) {
         logger.debug("refreshToken (\(self.currentToken)) 🔸")
 
         logger.debug("refreshToken: right before entering critical section")
         serialQueue.sync {
             logger.debug("refreshToken: entered critical section")
-            if case TokenState.valid(_, _) = self.currentToken {
+            if case TokenState.valid(let value, _) = self.currentToken, value != oldTokenValue {
                 logger.debug("refreshToken: skipped, token is valid. Should receive token (\(self.currentToken)) soon.")
             } else if refreshCancellable == nil {
                 refreshCancellable = performRefresh(delay: delay)

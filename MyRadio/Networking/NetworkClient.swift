@@ -134,7 +134,8 @@ struct NetworkClient {
                             refreshFailureCount += 1
                             if refreshFailureCount <= maxFailureCount {
                                 authenticator.refreshToken(
-                                    delay: TimeInterval(min(1<<refreshFailureCount - 1, 5 * 60))
+                                    delay: TimeInterval(min(1<<refreshFailureCount - 1, 5 * 60)),
+                                    oldTokenValue: bearerToken
                                 )
                             }
                             logger.debug("refreshing token triggered, sending Empty()")
