@@ -119,10 +119,10 @@ struct NetworkClient {
                         .eraseToAnyPublisher()
                 }
 
-                urlRequest.addValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
+                urlRequest.setValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
 
                 // Execute request
-                logger.debug("running data task for: \(urlRequest.url!)")
+                logger.debug("running data task for: \(urlRequest.url!) using \(bearerToken)")
                 return urlSession.dataTaskPublisher(for: urlRequest)
                     .mapError({ NetworkClientError.urlError($0) })
                     .flatMap({ result -> AnyPublisher<Data, NetworkClientError> in
