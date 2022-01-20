@@ -13,18 +13,9 @@ final class LivestreamStore: ObservableObject {
 
     init(_ streams: [Livestream]) {
         self.streams = streams
-
-        // Create lookup dictionary
-        var streamLookup: [String: Int] = Dictionary(minimumCapacity: streams.count)
-        streams.enumerated().forEach { (index, stream) in
-            streamLookup[stream.id] = index
-        }
-        self.streamIDToIndexMap = streamLookup
     }
 
     @Published private(set) var streams: [Livestream]
-
-    private var streamIDToIndexMap: [String: Int]
 
     // MARK: - Accessors
 
@@ -33,7 +24,7 @@ final class LivestreamStore: ObservableObject {
     }
 
     func stream(withID streamID: String) -> Livestream? {
-        guard let index = streamIDToIndexMap[streamID] else { return nil }
+        guard let index = streams.firstIndex(where: { $0.id == streamID }) else { return nil }
         return streams[index]
     }
 
@@ -48,7 +39,7 @@ final class LivestreamStore: ObservableObject {
     }
 
     func update(stream: Livestream) {
-        guard let index = streamIDToIndexMap[stream.id] else {
+        guard let index = streams.firstIndex(where: { $0.id == stream.id }) else {
             fatalError("Streams \(stream) not found.")
         }
         streams[index] = stream
@@ -56,7 +47,7 @@ final class LivestreamStore: ObservableObject {
 
     @discardableResult
     func saveThumbnailData(_ data: Data, for stream: Livestream) -> Livestream {
-        guard let index = streamIDToIndexMap[stream.id] else {
+        guard let index = streams.firstIndex(where: { $0.id == stream.id }) else {
             fatalError("Streams \(stream) not found.")
         }
         var stream = stream
