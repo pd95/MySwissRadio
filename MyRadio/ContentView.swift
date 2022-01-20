@@ -47,6 +47,7 @@ struct ContentView: View {
             })
             .navigationTitle("My Swiss Radio")
         }
+        .navigationViewStyle(.stack)
     }
 
     func play(stream: Livestream) {
