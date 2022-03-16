@@ -141,6 +141,7 @@ extension SRGService {
 
     enum MediaContainer: String, Decodable {
         case none = "NONE"
+        case mpeg2ts = "MPEG2_TS"
     }
 
     enum AudioCodec: String, Decodable {
