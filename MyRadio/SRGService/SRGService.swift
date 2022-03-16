@@ -73,10 +73,10 @@ enum SRGService {
             .map({ (response: SRGService.GetMediaCompositionResponse) -> [URL]? in
                 let mediaURLs = response.chapterList.first
                     .map({ (chapter: SRGService.Chapter) -> [URL] in
-                        let urls = chapter.resourceList.filter({ $0.streaming == .hls })
+                        let urls = chapter.resourceList.filter({ $0.streaming == "HLS" })
                             .sorted(by: { (lhs: SRGService.Resource, rhs: SRGService.Resource) -> Bool in
                                 lhs.quality != rhs.quality &&
-                                    lhs.quality != .sd
+                                    lhs.quality != "SD"
                             })
                             .map(\.url)
                         return urls
@@ -105,57 +105,7 @@ extension SRGService {
         var parameterValue: String { self.rawValue.lowercased() }
     }
 
-    enum TransmissionType: String, Decodable {
-        case radio = "RADIO", tv = "TV"
-    }
-
     // MARK: - SRGSSR Audio Metadata
-
-    enum MediaType: String, Decodable {
-        case audio = "AUDIO", video = "VIDEO"
-    }
-
-    enum StreamType: String, Decodable {
-        case livestream = "LIVESTREAM"
-    }
-
-    enum Quality: String, Decodable {
-        case sd = "SD", hd = "HD", hq = "HQ"
-    }
-
-    enum Encoding: String, Decodable {
-        case aac = "AAC", mp3 = "MP3", h264 = "H264"
-    }
-
-    enum Presentation: String, Decodable {
-        case `default` = "DEFAULT"
-    }
-
-    enum Streaming: String, Decodable {
-        case hls = "HLS"
-        case hds = "HDS"
-        case rtmp = "RTMP"
-        case m3uPlaylist = "M3UPLAYLIST"
-        case progressive = "PROGRESSIVE"
-    }
-
-    enum MediaContainer: String, Decodable {
-        case none = "NONE"
-        case mpeg2ts = "MPEG2_TS"
-    }
-
-    enum AudioCodec: String, Decodable {
-        case none = "NONE", aac = "AAC", mp3 = "MP3"
-        case unknown = "UNKNOWN"
-    }
-
-    enum VideoCodec: String, Decodable {
-        case none = "NONE"
-    }
-
-    enum TokenType: String, Decodable {
-        case none = "NONE"
-    }
 
     struct Channel: Decodable {
         let id: String
@@ -165,19 +115,19 @@ extension SRGService {
         let imageUrl: URL
         let imageTitle: String?
         let imageCopyright: String?
-        let transmission: TransmissionType
+        let transmission: String
     }
 
     struct Media: Decodable {
         let id: String
-        let mediaType: MediaType
+        let mediaType: String
         let vendor: BusinessUnit
         let urn: String
         let title: String
         let description: String?
         let imageUrl: URL
         let imageTitle: String?
-        let type: StreamType
+        let type: String
         let date: Date
         let duration: Int
         let playableAbroad: Bool
@@ -198,7 +148,7 @@ extension SRGService {
     struct Show: Decodable {
         let id: String
         let vendor: BusinessUnit
-        let transmission: TransmissionType
+        let transmission: String
         let urn: String
         let title: String
         let lead: String?
@@ -214,32 +164,32 @@ extension SRGService {
 
     struct Resource: Decodable {
         let url: URL
-        let quality: Quality
+        let quality: String
         let `protocol`: String
-        let encoding: Encoding
+        let encoding: String
         let mimeType: String
-        let presentation: Presentation
-        let streaming: Streaming
+        let presentation: String
+        let streaming: String
         let dvr: Bool
         let live: Bool
-        let mediaContainer: MediaContainer
-        let audioCodec: AudioCodec
-        let videoCodec: VideoCodec
-        let tokenType: TokenType
+        let mediaContainer: String
+        let audioCodec: String
+        let videoCodec: String
+        let tokenType: String
         // let analyticsMetadata: AnalyticsMetaDataResource
         let streamOffset: Int?
     }
 
     struct Chapter: Decodable {
         let id: String
-        let mediaType: MediaType
+        let mediaType: String
         let vendor: BusinessUnit
         let urn: String
         let title: String
         let description: String?
         let imageUrl: URL
         let imageTitle: String?
-        let type: StreamType
+        let type: String
         let date: Date
         let duration: Int
         let playableAbroad: Bool
