@@ -8,8 +8,11 @@
 import Foundation
 import Combine
 import UIKit
+import os.log
 
 enum SRGService {
+
+    static let logger = Logger(subsystem: "MyRadio", category: "SRGService")
 
     static let jsonDecoder: JSONDecoder = initJSONDecoder()
 
@@ -40,7 +43,7 @@ enum SRGService {
             .handleEvents(receiveCompletion: { (completion) in
                 switch completion {
                 case .failure(let error):
-                    print("getLivestreams(\(bu)) Error: \(error)")
+                    SRGService.logger.error("🔴 getLivestreams(\(bu.rawValue)) Error: \(error.localizedDescription, privacy: .public)")
                 default:  break
                 }
             })
@@ -62,8 +65,9 @@ enum SRGService {
             .handleEvents(receiveCompletion: { (completion) in
                 switch completion {
                 case .failure(let error):
-                    print("getMediaResource(\(mediaID), \(bu)) Error: \(error)")
-                default:  break
+                    SRGService.logger.error("🔴 getMediaResource(\(mediaID, privacy: .public), \(bu.rawValue)) Error: \(error.localizedDescription, privacy: .public)")
+                default:
+                    break
                 }
             })
             .map({ (response: SRGService.GetMediaCompositionResponse) -> [URL]? in
