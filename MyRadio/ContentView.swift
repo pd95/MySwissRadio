@@ -15,7 +15,8 @@ struct ContentView: View {
             List {
                 ForEach(model.buSortOrder, id: \.self) { bu in
                     Section(header: Text(bu.description)) {
-                        if let streams = model.streamStore.streams(for: bu), !streams.isEmpty {
+                        let streams = model.streamStore.streams(for: bu)
+                        if !streams.isEmpty {
                             ForEach(streams) { stream in
                                 Button(action: { play(stream: stream) }) {
                                     LivestreamRow(stream: stream)
