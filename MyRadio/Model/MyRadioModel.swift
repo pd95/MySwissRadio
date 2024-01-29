@@ -129,7 +129,7 @@ class MyRadioModel: NSObject, ObservableObject {
         guard controller.playerStatus != .undefined else { return }
 
         let date = controller.currentDate
-        logger.debug("updateState \(date)")
+        logger.debug("updateState \(date.localizedTimeString)")
         currentDate = date
         seekRange = controller.seekRange
         currentPosition = controller.currentPosition
