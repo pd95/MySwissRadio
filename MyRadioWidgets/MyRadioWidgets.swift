@@ -50,12 +50,6 @@ struct SimpleEntry: TimelineEntry {
     let date: Date
     let livestream: Livestream
     let isPlaying: Bool
-
-    init(date: Date, livestream: Livestream, isPlaying: Bool) {
-        self.date = date
-        self.livestream = livestream
-        self.isPlaying = isPlaying
-    }
 }
 
 struct MyRadioWidgetsEntryView: View {
