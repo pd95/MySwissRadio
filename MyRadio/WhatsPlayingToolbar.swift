@@ -30,7 +30,9 @@ struct WhatsPlayingToolbar: View {
 
             Spacer()
 
-            Button(action: { model.togglePlay(stream) }) {
+            Button {
+                model.togglePlay(stream)
+            } label: {
                 Image(systemName: !model.isPaused ? "pause.fill" : "play.fill")
                     .foregroundColor(!model.isPaused ? .red : .accentColor)
             }

@@ -18,7 +18,9 @@ struct ContentView: View {
                         let streams = model.streamStore.streams(for: bu)
                         if !streams.isEmpty {
                             ForEach(streams) { stream in
-                                Button(action: { play(stream: stream) }) {
+                                Button {
+                                    play(stream: stream)
+                                } label: {
                                     LivestreamRow(stream: stream)
                                 }
                             }
