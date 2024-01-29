@@ -254,7 +254,7 @@ class AudioController: NSObject, ObservableObject {
                         self.logger.debug("   timebase  = \(self.playerItem?.timebase?.time.seconds ?? -1)")
                         self.player.rate = initiallyPaused ? 0.0 : 1.0
 
-                        self.statusChanged()
+                        self.statusChanged("status")
                     } else if status == .failed, let error = self.playerItem?.error {
                         self.logger.debug("playerItem.status failed with error \(error.localizedDescription)")
                     }
@@ -270,7 +270,7 @@ class AudioController: NSObject, ObservableObject {
                         self.logger.debug("   start:    \(firstRange.start.seconds)")
                         self.logger.debug("   duration: \(firstRange.duration.seconds)")
 
-                        self.statusChanged()
+                        self.statusChanged("seekableTimeRanges")
                     }
                 }
                 .store(in: &playerItemCancellables)
@@ -281,7 +281,7 @@ class AudioController: NSObject, ObservableObject {
                     guard let self = self else { return }
                     self.logger.debug("🔵 New rate set: \(rate)")
                     self.lastRateChange = Date()
-                    self.statusChanged()
+                    self.statusChanged("rate")
                 }
                 .store(in: &playerItemCancellables)
 
@@ -336,7 +336,7 @@ class AudioController: NSObject, ObservableObject {
         play(url: url, initiallyPaused: initiallyPaused)
     }
 
-    func statusChanged() {
+    func statusChanged(_ reasonString: String = "undefined") {
         objectWillChange.send()
 
         if let currentItem = playerItem {
@@ -346,11 +346,11 @@ class AudioController: NSObject, ObservableObject {
         } else {
             removeNowPlaying()
         }
-        dumpState()
+        dumpState(reasonString)
     }
 
-    func dumpState() {
-
+    func dumpState(_ reasonString: String = "undef") {
+        logger.debug("dumpState: \(reasonString)")
         logger.debug("playerStatus: \(String(describing: self.playerStatus))")
         logger.debug("playerItem: \(self.playerItem.debugDescription)")
 
@@ -361,7 +361,8 @@ class AudioController: NSObject, ObservableObject {
         logger.debug("  minimumTimeOffsetFromLive: \(asset.minimumTimeOffsetFromLive.seconds)")
 
         let currentTime = playerItem.currentTime()
-        logger.debug("🟡 currentTime.seconds: \(currentTime.seconds)")
+        let currentDate = playerItem.currentDate()
+        logger.debug("🟡 currentTime.seconds: \(currentTime.seconds) \(currentDate != nil ? currentDate!.localizedTimeString : "nil")")
 
         if let seekableTimeRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first,
            let loadedTimeRange = playerItem.loadedTimeRanges.map({ $0.timeRangeValue }).first {
@@ -396,7 +397,7 @@ class AudioController: NSObject, ObservableObject {
         playerItem.cancelPendingSeeks()
         playerItem.seek(to: newTime, completionHandler: { _ in
             self.logger.debug(" >>> 🟣 Seek finished: Now at \(playerItem.currentTime().seconds)")
-            self.statusChanged()
+            self.statusChanged("seek finished")
         })
     }
 
