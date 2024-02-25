@@ -70,9 +70,22 @@ struct MyRadioWidgets: Widget {
     var body: some WidgetConfiguration {
         IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
             MyRadioWidgetsEntryView(entry: entry)
+                .widgetBackground()
         }
         .configurationDisplayName("My Swiss Radio")
         .description("Start playing your preferred radio station with a single tap.")
+        .contentMarginsDisabled()
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func widgetBackground() -> some View {
+        if #available(iOSApplicationExtension 17.0, *) {
+            containerBackground(for: .widget) {
+                EmptyView()
+            }
+        }
     }
 }
 
