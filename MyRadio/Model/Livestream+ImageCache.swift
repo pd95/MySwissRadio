@@ -11,7 +11,7 @@ import UIKit
 extension Livestream {
 
     var thumbnailImageURL: URL {
-        imageURL(for: 400)
+        imageURL(for: 480)
     }
 
     var thumbnailImage: UIImage? {

@@ -38,9 +38,19 @@ extension Livestream: Comparable {
 extension Livestream {
 
     func imageURL(for width: Int? = nil) -> URL {
+        var components = URLComponents(string: "https://il.srgssr.ch/images/")!
+
+        var queryItems: [URLQueryItem] = [
+            URLQueryItem(name: "format", value: "jpg")
+        ]
         if let width = width {
-            return imageURL.appendingPathComponent("/scale/width/\(width)")
+            queryItems.append(URLQueryItem(name: "width", value: String(width)))
         }
-        return imageURL
+        queryItems.append(URLQueryItem(name: "imageUrl", value: imageURL.absoluteString))
+        components.queryItems = queryItems
+
+        let url = components.url!
+        print("⚠️ \(url)")
+        return url
     }
 }
