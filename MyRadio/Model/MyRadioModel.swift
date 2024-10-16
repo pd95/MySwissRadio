@@ -51,6 +51,37 @@ class MyRadioModel: NSObject, ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
+    func refreshContent() async {
+        let logger = Logger(subsystem: "MyRadioModel", category: "refreshContent")
+
+        let refreshStartDate = Date()
+        logger.log("starting to refresh (last refresh was \(SettingsStore.shared.lastLivestreamRefreshDate))")
+        let streams = await withCheckedContinuation { continuation in
+            var cancellable: AnyCancellable?
+            cancellable = streamStore.refreshLivestreamPublisher()
+                .sink { result in
+                    switch result {
+                    case .finished:
+                        break
+                    case let .failure(error):
+                        continuation.resume(throwing: error)
+                    }
+                    cancellable?.cancel()
+                } receiveValue: { value in
+                    continuation.resume(with: .success(value))
+                }
+        }
+
+        await MainActor.run {
+            SettingsStore.shared.streams = streams
+            SettingsStore.shared.lastLivestreamRefreshDate = refreshStartDate
+            updateSiriSearch(streams)
+            updateWidgets()
+            objectWillChange.send()
+        }
+        logger.log("updated streams to show UI (with some images)")
+    }
+
     func refreshContent() {
         let logger = Logger(subsystem: "MyRadioModel", category: "refreshContent")
 

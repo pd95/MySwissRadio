@@ -31,6 +31,9 @@ struct ContentView: View {
                     }
                 }
             }
+            .refreshable {
+                await model.refreshContent()
+            }
             .listStyle(PlainListStyle())
             .sheet(isPresented: $model.showSheet, content: {
                 model.currentlyPlaying.map {
