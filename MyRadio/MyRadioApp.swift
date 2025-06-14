@@ -14,7 +14,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     let logger = Logger(subsystem: "MyRadio", category: "AppDelegate")
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        logger.log("ApplicationDelegate didFinishLaunchingWithOptions. \(String(describing: launchOptions?.keys))")
+        logger.log("ApplicationDelegate didFinishLaunchingWithOptions. \(String(describing: launchOptions?.keys), privacy: .public)")
 
         #if DEBUG
         backupSettings()
@@ -23,14 +23,14 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 // It is unclear whether we really have to request Siri authorization. Everything works fine so far without it!?
 //        INPreferences.requestSiriAuthorization { (authStatus: INSiriAuthorizationStatus) in
-//            self.logger.log("SiriAutorization: \(String(describing: authStatus))")
+//            self.logger.log("SiriAutorization: \(String(describing: authStatus), privacy: .public)")
 //        }
 //
         return true
     }
 
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
-        logger.log("ApplicationDelegate handlerFor intent: \(intent)")
+        logger.log("ApplicationDelegate handlerFor intent: \(intent, privacy: .public)")
         return MyRadioModel.main
     }
 
@@ -66,10 +66,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                 let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
                     .appendingPathComponent("\(filename).plist")
                 try data.write(to: url)
-                logger.log("dumpUserDefaults: \(url)")
+                logger.log("dumpUserDefaults: \(url, privacy: .public)")
             }
         } catch {
-            logger.log("dumpUserDefaults: \(error.localizedDescription)")
+            logger.log("dumpUserDefaults: \(error.localizedDescription, privacy: .public)")
         }
     }
 #endif

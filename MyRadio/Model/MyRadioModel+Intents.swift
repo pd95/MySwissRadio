@@ -38,7 +38,7 @@ extension MyRadioModel: INPlayMediaIntentHandling {
             }
         }
 
-        Self.logger.log("Siri search words contain: \(wordToStreamsMap.keys.sorted())")
+        Self.logger.log("Siri search words contain: \(wordToStreamsMap.keys.sorted(), privacy: .public)")
         SettingsStore.shared.wordToStreamsMap = wordToStreamsMap
     }
 
@@ -65,10 +65,10 @@ extension MyRadioModel: INPlayMediaIntentHandling {
                     play(stream)
                     return stream.nowPlayingInfo
                 }
-                Self.logger.error("Invalid itemID in intent: \(itemID)")
+                Self.logger.error("Invalid itemID in intent: \(itemID, privacy: .public)")
                 return nil
             } else {
-                Self.logger.error("Invalid media item in intent: \(intent)")
+                Self.logger.error("Invalid media item in intent: \(intent, privacy: .public)")
                 return nil
             }
         }
@@ -82,14 +82,14 @@ extension MyRadioModel: INPlayMediaIntentHandling {
                     showSheet = true
                     return stream.nowPlayingInfo
                 }
-                Self.logger.error("Invalid stationID in intent: \(stationID)")
+                Self.logger.error("Invalid stationID in intent: \(stationID, privacy: .public)")
                 return nil
             } else {
-                Self.logger.error("Invalid station in intent: \(intent)")
+                Self.logger.error("Invalid station in intent: \(intent, privacy: .public)")
                 return nil
             }
         } else {
-            Self.logger.error("Invalid intent: \(intent)")
+            Self.logger.error("Invalid intent: \(intent, privacy: .public)")
             return nil
         }
     }

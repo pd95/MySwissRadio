@@ -48,7 +48,7 @@ class IntentHandler: INExtension, ConfigurationIntentHandling {
     }
 
     override func handler(for intent: INIntent) -> Any {
-        logger.log("handler(for: \(intent))")
+        logger.log("handler(for: \(intent, privacy: .public))")
         if intent is INPlayMediaIntent {
             return PlayMediaIntentHandler()
         }

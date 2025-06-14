@@ -17,11 +17,11 @@ extension Bundle {
         if let infoPlist = Bundle.main.object(forInfoDictionaryKey: "APP_GROUP_IDENTIFIER") as? String,
            infoPlist.isEmpty == false {
             identifier = infoPlist
-            Logger().info("Populated appGroupIdentifier \(identifier) from Info.plist")
+            Logger().info("Populated appGroupIdentifier \(identifier, privacy: .public) from Info.plist")
         } else {
             let mainIdentifier = Bundle.main.bundleIdentifier?.split(separator: ".").dropLast().joined(separator: ".")
             identifier = "group.\(mainIdentifier ?? "invalid.bundleIdentifier")"
-            Logger().info("Derived appGroupIdentifier \(identifier) from bundleIdentifier")
+            Logger().info("Derived appGroupIdentifier \(identifier, privacy: .public) from bundleIdentifier")
         }
         return identifier
     }()

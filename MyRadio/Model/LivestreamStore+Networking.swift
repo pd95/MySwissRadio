@@ -58,10 +58,10 @@ extension LivestreamStore {
 
                         if let image = image,
                            let data = image.pngData() {
-                            logger.log("saving thumbnail image for \(String(describing: stream))")
+                            logger.log("saving thumbnail image for \(String(describing: stream), privacy: .public)")
                             return self.saveThumbnailData(data, for: stream)
                         } else {
-                            logger.log("No valid image for \(String(describing: stream))")
+                            logger.log("No valid image for \(String(describing: stream), privacy: .public)")
                             return stream
                         }
                     }
@@ -69,7 +69,7 @@ extension LivestreamStore {
             })
             .collect()
             .handleEvents(receiveCompletion: { [weak self] completion in
-                logger.log("completed with \(String(describing: completion))")
+                logger.log("completed with \(String(describing: completion), privacy: .public)")
                 self?.updateSpotlight()
             })
             .eraseToAnyPublisher()

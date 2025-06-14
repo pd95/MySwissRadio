@@ -22,7 +22,7 @@ class SettingsStore: ObservableObject {
         anyCancellable = NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
             .debounce(for: .seconds(0.3), scheduler: RunLoop.main)
             .sink { [weak self](notification) in
-                self?.logger.log("UserDefaults.didChangeNotification \(notification.description)")
+                self?.logger.log("UserDefaults.didChangeNotification \(notification.description, privacy: .public)")
                 self?.checkAndSetVersionAndBuildNumber()
             }
         // reset = true
@@ -66,14 +66,14 @@ class SettingsStore: ObservableObject {
     }
 
     private func resetAll() {
-        logger.log("Resetting all settings for \(UserDefaults.sharedSuiteName) and \(UserDefaults.currentSuiteName)")
+        logger.log("Resetting all settings for \(UserDefaults.sharedSuiteName, privacy: .public) and \(UserDefaults.currentSuiteName, privacy: .public)")
         self.objectWillChange.send()
         UserDefaults.standard.removePersistentDomain(forName: UserDefaults.sharedSuiteName)
         UserDefaults.standard.removePersistentDomain(forName: UserDefaults.currentSuiteName)
 
         CSSearchableIndex.default().deleteAllSearchableItems { (error) in
             if let error = error {
-                self.logger.error("Error deleting searchable items \(error.localizedDescription)")
+                self.logger.error("Error deleting searchable items \(error.localizedDescription, privacy: .public)")
             } else {
                 self.logger.log("Successfully deleted searchable items")
             }

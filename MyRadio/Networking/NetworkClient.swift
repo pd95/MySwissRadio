@@ -54,12 +54,12 @@ struct NetworkClient {
 
         // Handle request and server errors
         if !(200...399 ~= httpResponse.statusCode) {
-            logger.error("received \(httpResponse.statusCode): error \(String(data: result.data, encoding: .utf8) ?? "-")")
+            logger.error("received \(httpResponse.statusCode): error \(String(data: result.data, encoding: .utf8) ?? "-", privacy: .public)")
             return Fail<Data, NetworkClientError>(error: .httpError(httpResponse.statusCode))
                 .eraseToAnyPublisher()
         }
 
-        logger.debug("successful data task for \(result.response.url!), propagating data \(result.data)")
+        logger.debug("successful data task for \(result.response.url!, privacy: .public), propagating data \(result.data, privacy: .public)")
         return Just(result.data)
             .setFailureType(to: NetworkClientError.self)
             .eraseToAnyPublisher()
@@ -71,7 +71,7 @@ struct NetworkClient {
     /// - Parameter for: resource URL
     /// - Returns: A publisher of the data received for the given URL
     func dataRequest(for url: URL) -> AnyPublisher<Data, NetworkClientError> {
-        logger.log("requestResource(for: \(url))")
+        logger.log("requestResource(for: \(url, privacy: .public))")
         return urlSession.dataTaskPublisher(for: url)
             .mapError({ NetworkClientError.urlError($0) })
             .flatMap(handleDataTaskPublisherResponse)
@@ -87,7 +87,7 @@ struct NetworkClient {
     /// - Parameter url: target URL
     /// - Returns: A publisher of the data received for the given URL
     func authenticatedDataRequest(for request: URLRequest) -> AnyPublisher<Data, NetworkClientError> {
-        logger.log("requestData(for: \(request))")
+        logger.log("requestData(for: \(request, privacy: .public))")
 
         guard let authenticator = authenticator else {
             fatalError("Authenticator not configured")
@@ -122,7 +122,7 @@ struct NetworkClient {
                 urlRequest.setValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
 
                 // Execute request
-                logger.debug("running data task for: \(urlRequest.url!) using \(bearerToken)")
+                logger.debug("running data task for: \(urlRequest.url!, privacy: .public) using \(bearerToken, privacy: .public)")
                 return urlSession.dataTaskPublisher(for: urlRequest)
                     .mapError({ NetworkClientError.urlError($0) })
                     .flatMap({ result -> AnyPublisher<Data, NetworkClientError> in

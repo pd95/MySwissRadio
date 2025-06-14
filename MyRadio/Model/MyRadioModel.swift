@@ -26,7 +26,7 @@ class MyRadioModel: NSObject, ObservableObject {
         if currentlyPlaying == nil,
            let lastPlayedStreamID = SettingsStore.shared.lastPlayedStreamId,
            let stream = streamStore.stream(withID: lastPlayedStreamID) {
-            logger.log("Last played stream \(stream.name): prepare UI in paused mode")
+            logger.log("Last played stream \(stream.name, privacy: .public): prepare UI in paused mode")
             play(stream, initiallyPaused: true)
             showSheet = true
         }
@@ -55,7 +55,7 @@ class MyRadioModel: NSObject, ObservableObject {
         let logger = Logger(subsystem: "MyRadioModel", category: "refreshContent")
 
         let refreshStartDate = Date()
-        logger.log("starting to refresh (last refresh was \(SettingsStore.shared.lastLivestreamRefreshDate))")
+        logger.log("starting to refresh (last refresh was \(SettingsStore.shared.lastLivestreamRefreshDate, privacy: .public))")
         let streams = await withCheckedContinuation { continuation in
             var cancellable: AnyCancellable?
             cancellable = streamStore.refreshLivestreamPublisher()
@@ -86,10 +86,10 @@ class MyRadioModel: NSObject, ObservableObject {
         let logger = Logger(subsystem: "MyRadioModel", category: "refreshContent")
 
         let refreshStartDate = Date()
-        logger.log("starting to refresh (last refresh was \(SettingsStore.shared.lastLivestreamRefreshDate))")
+        logger.log("starting to refresh (last refresh was \(SettingsStore.shared.lastLivestreamRefreshDate, privacy: .public))")
         streamStore.refreshLivestreamPublisher()
             .sink(receiveCompletion: { completion in
-                logger.log("completed with \(String(describing: completion))")
+                logger.log("completed with \(String(describing: completion), privacy: .public)")
             }, receiveValue: { [weak self] (streams) in
                 SettingsStore.shared.streams = streams
                 SettingsStore.shared.lastLivestreamRefreshDate = refreshStartDate
@@ -118,7 +118,7 @@ class MyRadioModel: NSObject, ObservableObject {
         logger.debug("enterForeground")
         let lastRefresh = SettingsStore.shared.lastLivestreamRefreshDate
         let timeSinceLastRefresh = lastRefresh.distance(to: Date())
-        logger.log("Last refresh \(lastRefresh) => \(timeSinceLastRefresh)s ago")
+        logger.log("Last refresh \(lastRefresh, privacy: .public) => \(timeSinceLastRefresh)s ago")
         if SettingsStore.shared.streams.isEmpty || timeSinceLastRefresh > 30*24*60*60 {
             refreshContent()
         }
@@ -160,7 +160,7 @@ class MyRadioModel: NSObject, ObservableObject {
         guard controller.playerStatus != .undefined else { return }
 
         let date = controller.currentDate
-        logger.debug("updateState \(date.localizedTimeString)")
+        logger.debug("updateState \(date.localizedTimeString, privacy: .public)")
         currentDate = date
         seekRange = controller.seekRange
         currentPosition = controller.currentPosition
@@ -231,7 +231,7 @@ class MyRadioModel: NSObject, ObservableObject {
     }
 
     func play(_ stream: Livestream, initiallyPaused: Bool = false) {
-        logger.debug("play(\(String(describing: stream)), initiallyPaused: \(initiallyPaused)")
+        logger.debug("play(\(String(describing: stream), privacy: .public), initiallyPaused: \(initiallyPaused)")
         currentlyPlaying = stream
         if let url = stream.streams.first {
             controller.play(url: url, initiallyPaused: initiallyPaused)
@@ -247,7 +247,7 @@ class MyRadioModel: NSObject, ObservableObject {
                     let status = self.controller.playerStatus
 
                     if oldStatus != status {
-                        self.logger.debug("controller state changed: \(String(describing: status))")
+                        self.logger.debug("controller state changed: \(String(describing: status), privacy: .public)")
                         if status == .playing {
                             self.isPaused = false
                             self.streamStore.updateLastPlayed(for: stream, date: Date())
@@ -270,7 +270,7 @@ class MyRadioModel: NSObject, ObservableObject {
             pause()
             logger.debug("togglePlay: paused")
         } else {
-            logger.debug("togglePlay: start playing \(String(describing: stream))")
+            logger.debug("togglePlay: start playing \(String(describing: stream), privacy: .public)")
             play(stream)
             donatePlayActivity(stream)
         }
@@ -285,7 +285,7 @@ class MyRadioModel: NSObject, ObservableObject {
         let interaction = INInteraction(intent: intent, response: nil)
         interaction.donate { (error) in
             if let error = error {
-                self.logger.error("Unable to donate \(intent): \(error.localizedDescription)")
+                self.logger.error("Unable to donate \(intent, privacy: .public): \(error.localizedDescription, privacy: .public)")
             } else {
                 self.logger.debug("Successfully donated playActivity")
             }
@@ -299,7 +299,7 @@ class MyRadioModel: NSObject, ObservableObject {
         if let intent = userActivity.interaction?.intent {
             // Based on intent (Siri or from Widget)
             if handlePlayIntent(intent) == nil {
-                logger.error("Error while handling \(userActivity)")
+                logger.error("Error while handling \(userActivity, privacy: .public)")
             }
         } else if userActivity.activityType == CSSearchableItemActionType {
             // Based on Spotlight search result: toggle playing of selected stream
@@ -307,10 +307,10 @@ class MyRadioModel: NSObject, ObservableObject {
                let stream = streamStore.stream(withID: itemIdentifier) {
                 togglePlay(stream)
             } else {
-                logger.error("Invalid spotlight item: \(userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String ?? "nil")")
+                logger.error("Invalid spotlight item: \(userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String ?? "nil", privacy: .public)")
             }
         } else {
-            logger.error("Invalid activity: \(userActivity)")
+            logger.error("Invalid activity: \(userActivity, privacy: .public)")
         }
     }
 }

@@ -45,7 +45,7 @@ class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
             // Then, if no best match was found, try our wordToStreamsMap
             if matchingStreams.isEmpty {
                 let wordToStreamsMap = SettingsStore.shared.wordToStreamsMap
-                logger.log("Words to stream map: \(wordToStreamsMap)")
+                logger.log("Words to stream map: \(wordToStreamsMap, privacy: .public)")
 
                 // Split media name into words and collect all stream IDs which have one of them
                 let mediaNameWords = mediaName.lowercased().matches(regex: "[[:alpha:]]+|\\d+")
@@ -59,7 +59,7 @@ class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
                     }
                     if let streamIDs = wordToStreamsMap[lookupWord] {
                         streamIDs.forEach { (streamID) in
-                            logger.log("\(lookupWord) matches \(streamID)")
+                            logger.log("\(lookupWord, privacy: .public) matches \(streamID, privacy: .public)")
                             matchingStreamMap[streamID, default: 0] += 1
                         }
                     }
@@ -93,7 +93,7 @@ class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
     }
 
     func resolveMediaItems(for intent: INPlayMediaIntent, with completion: @escaping ([INPlayMediaMediaItemResolutionResult]) -> Void) {
-        logger.log("resolveMediaItems: mediaItems = \(intent.mediaItems ?? [])")
+        logger.log("resolveMediaItems: mediaItems = \(intent.mediaItems ?? [], privacy: .public)")
 
         if let mediaItems = intent.mediaItems {
             completion(INPlayMediaMediaItemResolutionResult.successes(with: mediaItems))
@@ -118,7 +118,7 @@ class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
     }
 
     func handle(intent: INPlayMediaIntent, completion: @escaping (INPlayMediaIntentResponse) -> Void) {
-        logger.log("handle(mediaItem: \(String(describing: intent.mediaItems?.first!))")
+        logger.log("handle(mediaItem: \(String(describing: intent.mediaItems?.first!), privacy: .public)")
         completion(INPlayMediaIntentResponse(code: .handleInApp, userActivity: nil))
     }
 }
