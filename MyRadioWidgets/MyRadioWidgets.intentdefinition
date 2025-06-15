@@ -9,28 +9,58 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>88xZPY</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>19H2</string>
+	<string>24F74</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>12A7208</string>
+	<string>16F6</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>12.0</string>
+	<string>16.4</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
 			<key>INIntentCategory</key>
 			<string>information</string>
+			<key>INIntentConfigurable</key>
+			<true/>
 			<key>INIntentDescription</key>
 			<string>Starts playing the selected radio station</string>
 			<key>INIntentDescriptionID</key>
 			<string>tVvJ9c</string>
 			<key>INIntentEligibleForWidgets</key>
 			<true/>
-			<key>INIntentIneligibleForSuggestions</key>
-			<true/>
+			<key>INIntentKeyParameter</key>
+			<string>station</string>
 			<key>INIntentLastParameterTag</key>
 			<integer>2</integer>
+			<key>INIntentManagedParameterCombinations</key>
+			<dict>
+				<key>station</key>
+				<dict>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Play radio station</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>bewR4Z</string>
+					<key>INIntentParameterCombinationUpdatesLinked</key>
+					<true/>
+				</dict>
+			</dict>
 			<key>INIntentName</key>
 			<string>Configuration</string>
+			<key>INIntentParameterCombinations</key>
+			<dict>
+				<key>station</key>
+				<dict>
+					<key>INIntentParameterCombinationIsLinked</key>
+					<true/>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Play radio station</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>cxpyY8</string>
+				</dict>
+			</dict>
 			<key>INIntentParameters</key>
 			<array>
 				<dict>
