@@ -40,7 +40,7 @@ class IntentHandler: INExtension, ConfigurationIntentHandling {
         if let station = intent.station {
             result = .success(with: station)
         } else {
-            print("resolveStation without station called")
+            logger.warning("resolveStation without station called")
             result = .disambiguation(with: allStations)
         }
 

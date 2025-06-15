@@ -50,7 +50,6 @@ extension Livestream {
         components.queryItems = queryItems
 
         let url = components.url!
-        print("⚠️ \(url)")
         return url
     }
 }
