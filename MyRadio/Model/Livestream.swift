@@ -31,7 +31,7 @@ struct Livestream: Identifiable, Codable, Hashable {
 
 extension Livestream: Comparable {
     static func < (lhs: Livestream, rhs: Livestream) -> Bool {
-        lhs.bu < rhs.bu && lhs.sortOrder < rhs.sortOrder
+        lhs.bu < rhs.bu || (lhs.bu == rhs.bu && lhs.sortOrder < rhs.sortOrder)
     }
 }
 
