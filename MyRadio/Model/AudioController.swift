@@ -85,12 +85,8 @@ class AudioController: NSObject, ObservableObject {
 
                 // An interruption began. Update the UI as needed.
                 case .began:
-                    let wasSuspended = userInfo[AVAudioSessionInterruptionWasSuspendedKey] as? Bool
-
-                    self.logger.log("⚫️ INTERRUPTION BEGAN: wasSuspended = \( wasSuspended == nil ? "nil" : String(describing: wasSuspended!), privacy: .public)")
-                    if !(wasSuspended ?? false) {
-                        self.interruptionDate = Date()
-                    }
+                    self.logger.log("⚫️ INTERRUPTION BEGAN")
+                    self.interruptionDate = .now
 
                 // An interruption ended. Resume playback, if appropriate.
                 case .ended:
