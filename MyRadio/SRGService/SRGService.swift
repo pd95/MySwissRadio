@@ -37,6 +37,7 @@ enum SRGService {
 
     // MARK: - Main API calls to fetch specific content
 
+    @available(*, deprecated, message: "use swift concurrency variant livestreams(client:bu:)")
     static func getLivestreams(client: NetworkClient, bu: SRGService.BusinessUnit = .srf) -> AnyPublisher<[Livestream], Never> {
         return client.authenticatedDataRequest(for: .livestreams(bu: bu))
             .decode(type: SRGService.GetLivestreamsResponse.self, decoder: SRGService.jsonDecoder)
@@ -59,6 +60,7 @@ enum SRGService {
             .eraseToAnyPublisher()
     }
 
+    @available(*, deprecated, message: "use swift concurrency variant mediaResource(client:for:bu:)")
     static func getMediaResource(client: NetworkClient, for mediaID: String, bu: SRGService.BusinessUnit = .srf) -> AnyPublisher<[URL], Never> {
         return client.authenticatedDataRequest(for: .mediaComposition(for: mediaID, bu: bu))
             .decode(type: SRGService.GetMediaCompositionResponse.self, decoder: SRGService.jsonDecoder)
@@ -88,11 +90,28 @@ enum SRGService {
             .eraseToAnyPublisher()
     }
 
+    @available(*, deprecated, message: "replace with swift concurrency variant imageResource(client:for:)")
     static func getImageResource(client: NetworkClient, for url: URL) -> AnyPublisher<UIImage?, Never> {
         return client.dataRequest(for: url)
             .map({ UIImage(data: $0) })
             .replaceError(with: nil)
             .eraseToAnyPublisher()
+    }
+}
+
+extension SRGService {
+    static func livestreams(client: NetworkClient, bu: SRGService.BusinessUnit = .srf) async -> [Livestream] {
+        await getLivestreams(client: client, bu: bu).values.first(where: { _ in true }) ?? []
+    }
+
+    static func mediaResource(
+        client: NetworkClient,
+        for mediaID: String,
+        bu: SRGService.BusinessUnit = .srf
+    ) async -> [URL] {
+        await getMediaResource(client: client, for: mediaID, bu: bu)
+            .values
+            .first(where: { _ in true }) ?? []
     }
 }
 

@@ -152,3 +152,13 @@ struct NetworkClient {
             .eraseToAnyPublisher()
     }
 }
+
+extension NetworkClient {
+    func data(for url: URL) async throws -> Data {
+        try await dataRequest(for: url).values.first(where: { _ in true }) ?? Data()
+    }
+
+    func authenticatedData(for request: URLRequest) async throws -> Data {
+        try await authenticatedDataRequest(for: request).values.first(where: { _ in true }) ?? Data()
+    }
+}
