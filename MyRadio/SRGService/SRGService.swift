@@ -35,9 +35,6 @@ enum SRGService {
         return decoder
     }
 
-}
-
-extension SRGService {
     static func livestreams(client: NetworkClient, bu: SRGService.BusinessUnit = .srf) async -> [Livestream] {
         await  client.authenticatedDataRequest(for: .livestreams(bu: bu))
             .decode(type: SRGService.GetLivestreamsResponse.self, decoder: SRGService.jsonDecoder)
@@ -66,33 +63,25 @@ extension SRGService {
         for mediaID: String,
         bu: SRGService.BusinessUnit = .srf
     ) async -> [URL] {
-        await client.authenticatedDataRequest(for: .mediaComposition(for: mediaID, bu: bu))
-            .decode(type: SRGService.GetMediaCompositionResponse.self, decoder: SRGService.jsonDecoder)
-            .handleEvents(receiveCompletion: { (completion) in
-                switch completion {
-                case .failure(let error):
-                    SRGService.logger.error("🔴 getMediaResource(\(mediaID, privacy: .public), \(bu.rawValue)) Error: \(error.localizedDescription, privacy: .public)")
-                default:
-                    break
-                }
-            })
-            .map({ (response: SRGService.GetMediaCompositionResponse) -> [URL]? in
-                let mediaURLs = response.chapterList.first
-                    .map({ (chapter: SRGService.Chapter) -> [URL] in
-                        let urls = chapter.resourceList.filter({ $0.streaming == "HLS" })
-                            .sorted(by: { (lhs: SRGService.Resource, rhs: SRGService.Resource) -> Bool in
-                                lhs.quality != rhs.quality &&
-                                    lhs.quality != "SD"
-                            })
-                            .map(\.url)
-                        return urls
-                    })
-                return mediaURLs
-            })
-            .replaceError(with: [])
-            .replaceNil(with: [])
-            .values
-            .first(where: { _ in true }) ?? []
+        var mediaURLs: [URL]?
+        do {
+            let data = try await client.authenticatedData(for: .mediaComposition(for: mediaID, bu: bu))
+            let response = try jsonDecoder.decode(GetMediaCompositionResponse.self, from: data)
+            mediaURLs = response.chapterList.first
+                .map({ (chapter: SRGService.Chapter) -> [URL] in
+                    let urls = chapter.resourceList.filter({ $0.streaming == "HLS" })
+                        .sorted(by: { (lhs: SRGService.Resource, rhs: SRGService.Resource) -> Bool in
+                            lhs.quality != rhs.quality &&
+                                lhs.quality != "SD"
+                        })
+                        .map(\.url)
+                    return urls
+                })
+        } catch {
+            logger.error("🔴 mediaResource(\(mediaID, privacy: .public), \(bu.rawValue)) failed with error: \(error.localizedDescription, privacy: .public)")
+        }
+
+        return mediaURLs ?? []
     }
 }
 
