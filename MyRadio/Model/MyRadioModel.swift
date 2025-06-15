@@ -265,6 +265,7 @@ class MyRadioModel: NSObject, ObservableObject {
         let logger = Logger(subsystem: "MyRadioModel", category: "handleActivity")
 
         if let intent = userActivity.interaction?.intent {
+            logger.debug("handleActivity: intent=\(intent, privacy: .public)")
             // Based on intent (Siri or from Widget)
             if handlePlayIntent(intent) == nil {
                 logger.error("Error while handling \(userActivity, privacy: .public)")
@@ -273,6 +274,7 @@ class MyRadioModel: NSObject, ObservableObject {
             // Based on Spotlight search result: toggle playing of selected stream
             if let itemIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
                let stream = streamStore.stream(withID: itemIdentifier) {
+                logger.debug("handleActivity: spotlight selected \(String(describing: stream), privacy: .public)")
                 togglePlay(stream)
             } else {
                 logger.error("Invalid spotlight item: \(userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String ?? "nil", privacy: .public)")
