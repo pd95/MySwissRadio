@@ -13,6 +13,7 @@ import Intents
 import CoreSpotlight
 import WidgetKit
 
+@MainActor
 class MyRadioModel: NSObject, ObservableObject {
 
     static let main = MyRadioModel()
@@ -56,51 +57,16 @@ class MyRadioModel: NSObject, ObservableObject {
 
         let refreshStartDate = Date()
         logger.log("starting to refresh (last refresh was \(SettingsStore.shared.lastLivestreamRefreshDate, privacy: .public))")
-        let streams = await withCheckedContinuation { continuation in
-            var cancellable: AnyCancellable?
-            cancellable = streamStore.refreshLivestreamPublisher()
-                .sink { result in
-                    switch result {
-                    case .finished:
-                        break
-                    case let .failure(error):
-                        continuation.resume(throwing: error)
-                    }
-                    cancellable?.cancel()
-                } receiveValue: { value in
-                    continuation.resume(with: .success(value))
-                }
-        }
 
-        await MainActor.run {
-            SettingsStore.shared.streams = streams
-            SettingsStore.shared.lastLivestreamRefreshDate = refreshStartDate
-            updateSiriSearch(streams)
-            updateWidgets()
-            objectWillChange.send()
-        }
+        let streams = await streamStore.refreshLivestreams()
+
+        SettingsStore.shared.streams = streams
+        SettingsStore.shared.lastLivestreamRefreshDate = refreshStartDate
+        updateSiriSearch(streams)
+        updateWidgets()
+        objectWillChange.send()
+
         logger.log("updated streams to show UI (with some images)")
-    }
-
-    func refreshContent() {
-        let logger = Logger(subsystem: "MyRadioModel", category: "refreshContent")
-
-        let refreshStartDate = Date()
-        logger.log("starting to refresh (last refresh was \(SettingsStore.shared.lastLivestreamRefreshDate, privacy: .public))")
-        streamStore.refreshLivestreamPublisher()
-            .sink(receiveCompletion: { completion in
-                logger.log("completed with \(String(describing: completion), privacy: .public)")
-            }, receiveValue: { [weak self] (streams) in
-                SettingsStore.shared.streams = streams
-                SettingsStore.shared.lastLivestreamRefreshDate = refreshStartDate
-                self?.updateSiriSearch(streams)
-                self?.updateWidgets()
-                DispatchQueue.main.async {
-                    self?.objectWillChange.send()
-                    logger.log("updated streams to show UI (with some images)")
-                }
-            })
-            .store(in: &cancellables)
     }
 
     func updateWidgets() {
@@ -120,7 +86,9 @@ class MyRadioModel: NSObject, ObservableObject {
         let timeSinceLastRefresh = lastRefresh.distance(to: Date())
         logger.log("Last refresh \(lastRefresh, privacy: .public) => \(timeSinceLastRefresh)s ago")
         if SettingsStore.shared.streams.isEmpty || timeSinceLastRefresh > 30*24*60*60 {
-            refreshContent()
+            Task {
+                await refreshContent()
+            }
         }
 
         // Unfreeze the player (if the user paused long ago)

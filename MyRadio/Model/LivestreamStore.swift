@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import Combine
 import SwiftUI
 
+@MainActor
 final class LivestreamStore: ObservableObject {
 
     init(_ streams: [Livestream]) {

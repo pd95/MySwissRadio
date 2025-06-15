@@ -12,68 +12,62 @@ import os.log
 
 extension LivestreamStore {
 
-    func refreshLivestreamPublisher(networkClient: NetworkClient = .shared) -> AnyPublisher<[Livestream], Never> {
-        let logger = Logger(subsystem: "LivestreamStore", category: "refreshLivestreamPublisher")
+    func refreshLivestreams(networkClient: NetworkClient = .shared) async -> [Livestream] {
+        let logger = Logger(subsystem: "LivestreamStore", category: "refreshLivestream")
 
-        // All updates of the streams have to be executed on our serial queue
-        let serialQueue = DispatchQueue(label: "refreshSerialQueue")
-        serialQueue.sync {
-            self.removeAll()
+        removeAll()
+        await withTaskGroup { group in
+            for bu in BusinessUnit.allCases {
+                // Process each business unit as a group
+                group.addTask {
+                    let streams = await SRGService.livestreams(client: networkClient, bu: bu.apiBusinessUnit)
+                    await self.append(streams: streams)
+
+                    // Process each stream as a group
+                    await withTaskGroup { innerGroup in
+                        for var stream in streams {
+                            innerGroup.addTask {
+                                // Fetch the media URLs for the specified stream
+                                let urls = await SRGService.mediaResource(
+                                    client: networkClient,
+                                    for: stream.id,
+                                    bu: bu.apiBusinessUnit
+                                )
+                                stream.streams = urls
+                                await self.update(stream: stream)
+
+                                // Fetch and validate the thumbnail image
+                                let thumnailURL = stream.thumbnailImageURL
+                                do {
+                                    let data = try await networkClient.data(for: thumnailURL)
+                                    if UIImage(data: data) != nil {
+                                        logger.log("saving thumbnail image for \(String(describing: stream), privacy: .public)")
+                                        await self.saveThumbnailData(data, for: stream)
+                                    } else {
+                                        logger.log("No valid image for \(String(describing: stream), privacy: .public)")
+                                    }
+                                } catch {
+                                    logger.error("\(error.localizedDescription, privacy: .public)")
+                                }
+
+                                return stream
+                            }
+                        }
+
+                        // Wait until all streams tasks for this BU are finished
+                        await innerGroup.waitForAll()
+                    }
+                }
+            }
+
+            // Wait until BU tasks are finished
+            await group.waitForAll()
+
+            logger.debug("completed with \(String(describing: self.streams), privacy: .public)")
+
+            updateSpotlight()
         }
 
-        /// Publisher of `Livestream`:
-        /// 1. Fetch for each business unit the list of available live streams (`[Livestream]`)
-        /// 2. Split arrays up into separate `Livestream`
-        /// 3. For each `Livestream` we fetch URLs and update the stream
-        let livestreamsPublisher: AnyPublisher<Livestream, Never> = BusinessUnit.allCases.publisher
-            .flatMap({
-                SRGService.getLivestreams(client: networkClient, bu: $0.apiBusinessUnit)
-            })
-            .receive(on: serialQueue)
-            .flatMap({[weak self] streams -> AnyPublisher<Livestream, Never> in
-                self?.append(streams: streams)
-                return Publishers.Sequence(sequence: streams)
-                    .eraseToAnyPublisher()
-            })
-            .flatMap({[weak self] (stream: Livestream) -> AnyPublisher<Livestream, Never> in
-                SRGService.getMediaResource(client: networkClient, for: stream.id, bu: stream.bu.apiBusinessUnit)
-                    .receive(on: serialQueue)
-                    .map { (streamUrls: [URL]) -> Livestream in
-                        var streamWithURL = stream
-                        streamWithURL.streams = streamUrls
-                        self?.update(stream: streamWithURL)
-                        return streamWithURL
-                    }
-                    .eraseToAnyPublisher()
-            })
-            .eraseToAnyPublisher()
-
-        /// Fetch all the images individually and regroup the streams again into `[Livestream]`
-        let imageDownloadPublisher: AnyPublisher<[Livestream], Never> = livestreamsPublisher
-            .flatMap({ (stream: Livestream) -> AnyPublisher<Livestream, Never> in
-                SRGService.getImageResource(client: networkClient, for: stream.thumbnailImageURL)
-                    .receive(on: serialQueue)
-                    .map { [weak self] image -> Livestream in
-                        guard let self = self else { return stream }
-
-                        if let image = image,
-                           let data = image.pngData() {
-                            logger.log("saving thumbnail image for \(String(describing: stream), privacy: .public)")
-                            return self.saveThumbnailData(data, for: stream)
-                        } else {
-                            logger.log("No valid image for \(String(describing: stream), privacy: .public)")
-                            return stream
-                        }
-                    }
-                    .eraseToAnyPublisher()
-            })
-            .collect()
-            .handleEvents(receiveCompletion: { [weak self] completion in
-                logger.log("completed with \(String(describing: completion), privacy: .public)")
-                self?.updateSpotlight()
-            })
-            .eraseToAnyPublisher()
-
-        return imageDownloadPublisher
+        return streams
     }
 }
