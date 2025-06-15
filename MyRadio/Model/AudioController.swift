@@ -244,6 +244,7 @@ class AudioController: NSObject, ObservableObject {
 
     func play(url: URL? = nil, initiallyPaused: Bool = false) {
         if let url = url, (playerItem?.asset as? AVURLAsset)?.url != url {
+            logger.log("Setting AVPlayerItem to url=\(url)")
             let asset = AVURLAsset(url: url)
 
             playerItem = AVPlayerItem(asset: asset)
@@ -261,7 +262,9 @@ class AudioController: NSObject, ObservableObject {
                         self.startTime = Date().addingTimeInterval(-offsetFromLive)
                         self.logger.debug("   startTime = \(self.startTime, privacy: .public)")
                         self.logger.debug("   timebase  = \(self.playerItem?.timebase?.time.seconds ?? -1)")
-                        self.player.rate = initiallyPaused ? 0.0 : 1.0
+                        let newRate: Float = initiallyPaused ? 0.0 : 1.0
+                        logger.log("setting rate \(newRate)")
+                        self.player.rate = newRate
 
                         self.statusChanged("status")
                     } else if status == .failed, let error = self.playerItem?.error {
@@ -296,8 +299,12 @@ class AudioController: NSObject, ObservableObject {
 
             player.replaceCurrentItem(with: playerItem)
         } else {
-            player.rate = initiallyPaused ? 0.0 : 1.0
-            playerItem!.automaticallyPreservesTimeOffsetFromLive = true
+            let newRate: Float = initiallyPaused ? 0.0 : 1.0
+            logger.log("no change of channel. Setting rate \(newRate)")
+            if player.rate != newRate {
+                player.rate = newRate
+                playerItem!.automaticallyPreservesTimeOffsetFromLive = true
+            }
 
             // Check latest interruption/pausing timestamp
             let changeDate = interruptionDate ?? lastRateChange
