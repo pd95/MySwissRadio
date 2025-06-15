@@ -350,7 +350,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				177F3EC62DFECA5200DDDA94 /* PBXTargetDependency */,
 			);
 			name = MyRadioIntentHandler;
 			productName = MyRadioIntentHandler;
@@ -368,7 +367,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				177F3EC42DFECA4100DDDA94 /* PBXTargetDependency */,
 			);
 			name = MyRadioWidgetsExtension;
 			productName = MyRadioWidgetsExtension;
@@ -558,14 +556,6 @@
 		177F3EC22DFECA1800DDDA94 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			productRef = 177F3EC12DFECA1800DDDA94 /* SwiftLintBuildToolPlugin */;
-		};
-		177F3EC42DFECA4100DDDA94 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 177F3EC32DFECA4100DDDA94 /* SwiftLintBuildToolPlugin */;
-		};
-		177F3EC62DFECA5200DDDA94 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 177F3EC52DFECA5200DDDA94 /* SwiftLintBuildToolPlugin */;
 		};
 		17C6DD592530CD2C003D603E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -877,16 +867,6 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		177F3EC12DFECA1800DDDA94 /* SwiftLintBuildToolPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 177F3EC02DFEC9EC00DDDA94 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
-			productName = "plugin:SwiftLintBuildToolPlugin";
-		};
-		177F3EC32DFECA4100DDDA94 /* SwiftLintBuildToolPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 177F3EC02DFEC9EC00DDDA94 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
-			productName = "plugin:SwiftLintBuildToolPlugin";
-		};
-		177F3EC52DFECA5200DDDA94 /* SwiftLintBuildToolPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 177F3EC02DFEC9EC00DDDA94 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
 			productName = "plugin:SwiftLintBuildToolPlugin";
