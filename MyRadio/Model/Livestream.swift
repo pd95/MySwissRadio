@@ -35,6 +35,12 @@ extension Livestream: Comparable {
     }
 }
 
+extension Livestream: CustomStringConvertible {
+    var description: String {
+        "Livestream(id: \(id), name: \(name), bu: \(bu), streams.count: \(streams.count))"
+    }
+}
+
 extension Livestream {
 
     func imageURL(for width: Int? = nil) -> URL {

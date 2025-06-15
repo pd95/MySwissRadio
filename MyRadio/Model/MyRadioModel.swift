@@ -44,7 +44,7 @@ class MyRadioModel: NSObject, ObservableObject {
 
     // MARK: - Access to model data and UI helpers
 
-    @Published var buSortOrder: [BusinessUnit] = BusinessUnit.allCases
+    var buSortOrder: [BusinessUnit] { BusinessUnit.allCases }
 
     @Published var showSheet = false
 
@@ -199,7 +199,7 @@ class MyRadioModel: NSObject, ObservableObject {
     }
 
     func play(_ stream: Livestream, initiallyPaused: Bool = false) {
-        logger.debug("play(\(String(describing: stream), privacy: .public), initiallyPaused: \(initiallyPaused)")
+        logger.debug("play(\(stream, privacy: .public), initiallyPaused: \(initiallyPaused)")
         currentlyPlaying = stream
         if let url = stream.streams.first {
             controller.play(url: url, initiallyPaused: initiallyPaused)
@@ -215,7 +215,7 @@ class MyRadioModel: NSObject, ObservableObject {
                     let status = self.controller.playerStatus
 
                     if oldStatus != status {
-                        self.logger.debug("controller state changed: \(String(describing: status), privacy: .public)")
+                        self.logger.debug("controller state changed: \(status.debugDescription, privacy: .public)")
                         if status == .playing {
                             self.isPaused = false
                             self.streamStore.updateLastPlayed(for: stream, date: Date())
@@ -238,7 +238,7 @@ class MyRadioModel: NSObject, ObservableObject {
             pause()
             logger.debug("togglePlay: paused")
         } else {
-            logger.debug("togglePlay: start playing \(String(describing: stream), privacy: .public)")
+            logger.debug("togglePlay: start playing \(stream, privacy: .public)")
             play(stream)
             donatePlayActivity(stream)
         }
@@ -274,10 +274,10 @@ class MyRadioModel: NSObject, ObservableObject {
             // Based on Spotlight search result: toggle playing of selected stream
             if let itemIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
                let stream = streamStore.stream(withID: itemIdentifier) {
-                logger.debug("handleActivity: spotlight selected \(String(describing: stream), privacy: .public)")
+                logger.debug("handleActivity: spotlight selected \(stream, privacy: .public)")
                 togglePlay(stream)
             } else {
-                logger.error("Invalid spotlight item: \(userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String ?? "nil", privacy: .public)")
+                logger.error("Invalid spotlight item: \(userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String, privacy: .public)")
             }
         } else {
             logger.error("Invalid activity: \(userActivity, privacy: .public)")

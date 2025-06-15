@@ -41,10 +41,10 @@ extension LivestreamStore {
                                 do {
                                     let data = try await networkClient.data(for: thumnailURL)
                                     if UIImage(data: data) != nil {
-                                        logger.log("saving thumbnail image for \(String(describing: stream), privacy: .public)")
+                                        logger.log("saving thumbnail image for \(stream, privacy: .public)")
                                         await self.saveThumbnailData(data, for: stream)
                                     } else {
-                                        logger.log("No valid image for \(String(describing: stream), privacy: .public)")
+                                        logger.log("No valid image for \(stream, privacy: .public)")
                                     }
                                 } catch {
                                     logger.error("\(error.localizedDescription, privacy: .public)")

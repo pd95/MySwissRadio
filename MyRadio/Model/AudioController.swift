@@ -13,8 +13,21 @@ import os.log
 
 class AudioController: NSObject, ObservableObject {
 
-    enum Status {
+    enum Status: CustomDebugStringConvertible {
         case undefined, paused, playing, loading
+
+        var debugDescription: String {
+            switch self {
+            case .undefined:
+                return "undefined"
+            case .paused:
+                return "paused"
+            case .playing:
+                return "playing"
+            case .loading:
+                return "loading"
+            }
+        }
     }
 
     var playerStatus: Status {
@@ -60,7 +73,7 @@ class AudioController: NSObject, ObservableObject {
 
     var interruptionDate: Date? {
         didSet {
-            logger.debug("🔺🔺🔺 interruptionDate set to \(self.interruptionDate?.description ?? "nil", privacy: .public)")
+            logger.debug("🔺🔺🔺 interruptionDate set to \(self.interruptionDate?.description, privacy: .public)")
         }
     }
 
@@ -92,8 +105,8 @@ class AudioController: NSObject, ObservableObject {
                 case .ended:
                     guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
                     let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
-                    self.logger.log("⚫️ INTERRUPTION ENDED: optionsValue = \(options.rawValue) playerStatus = \(String(describing: self.playerStatus), privacy: .public)")
-                    self.logger.log("   interruptionDate = \(String(describing: self.interruptionDate), privacy: .public) lastRateChange = \(String(describing: self.lastRateChange), privacy: .public)")
+                    self.logger.log("⚫️ INTERRUPTION ENDED: optionsValue = \(options.rawValue) playerStatus = \(self.playerStatus.debugDescription, privacy: .public)")
+                    self.logger.log("   interruptionDate = \(self.interruptionDate?.description, privacy: .public) lastRateChange = \(self.lastRateChange, privacy: .public)")
                     if options.contains(.shouldResume) {
                         // Interruption ended. Playback should resume.
                         self.logger.log("  Should resume playing.")
@@ -240,9 +253,9 @@ class AudioController: NSObject, ObservableObject {
 
             playerItem!.publisher(for: \.status)
                 .removeDuplicates()
-                .sink { [weak self] (status) in
+                .sink { [weak self] (status: AVPlayerItem.Status) in
                     guard let self = self else { return }
-                    self.logger.debug("🟢 New status set: \(String(describing: status), privacy: .public)")
+                    self.logger.debug("🟢 New status set: \(status.debugDescription, privacy: .public)")
                     if status == .readyToPlay {
                         let offsetFromLive = self.playerItem!.configuredTimeOffsetFromLive.seconds
                         self.startTime = Date().addingTimeInterval(-offsetFromLive)
@@ -313,7 +326,7 @@ class AudioController: NSObject, ObservableObject {
 
     func unfreezePlayer() {
         logger.log("⚫️⚫️⚫️ unfreezePlayer")
-        logger.log("  playerStatus=\(String(describing: self.playerStatus), privacy: .public) lastRateChange=\(self.lastRateChange.localizedTimeString, privacy: .public) (=\(self.lastRateChange.distance(to: Date())) seconds ago)")
+        logger.log("  playerStatus=\(self.playerStatus.debugDescription, privacy: .public) lastRateChange=\(self.lastRateChange.localizedTimeString, privacy: .public) (=\(self.lastRateChange.distance(to: Date())) seconds ago)")
 
         if lastRateChange.distance(to: Date()) > maxInterruptionDuration {
             logger.log("Paused for more than \(self.maxInterruptionDuration/60) minutes, ")
@@ -347,7 +360,7 @@ class AudioController: NSObject, ObservableObject {
 
     func dumpState(_ reasonString: String = "undef") {
         logger.debug("dumpState: \(reasonString, privacy: .public)")
-        logger.debug("playerStatus: \(String(describing: self.playerStatus), privacy: .public)")
+        logger.debug("playerStatus: \(self.playerStatus.debugDescription, privacy: .public)")
         logger.debug("playerItem: \(self.playerItem.debugDescription, privacy: .public)")
 
         guard let playerItem = playerItem else { return }
