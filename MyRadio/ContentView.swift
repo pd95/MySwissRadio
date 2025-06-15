@@ -34,7 +34,7 @@ struct ContentView: View {
             .refreshable {
                 await model.refreshContent()
             }
-            .listStyle(PlainListStyle())
+            .listStyle(.plain)
             .sheet(isPresented: $model.showSheet, content: {
                 model.currentlyPlaying.map {
                     PlayingSheet(stream: $0)
@@ -45,6 +45,7 @@ struct ContentView: View {
                 ToolbarItemGroup(placement: .bottomBar) {
                     model.currentlyPlaying.map {
                         WhatsPlayingToolbar(stream: $0)
+                            .contentShape(.rect)
                             .onTapGesture {
                                 model.showSheet = true
                             }

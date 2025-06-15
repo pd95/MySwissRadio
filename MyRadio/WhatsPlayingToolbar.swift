@@ -14,7 +14,7 @@ struct WhatsPlayingToolbar: View {
     let stream: Livestream
 
     var body: some View {
-        Group {
+        HStack(spacing: 0) {
             HStack(spacing: 0) {
                 if let uiImage = stream.thumbnailImage {
                     Image(uiImage: uiImage)
