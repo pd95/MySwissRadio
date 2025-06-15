@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -25,7 +25,7 @@
 		17591C0B253DC21C0017CD08 /* LivestreamStore+Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17591C0A253DC21C0017CD08 /* LivestreamStore+Networking.swift */; };
 		1759A55A253ECDC8000ADCEF /* TimeInterval+Formatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1759A559253ECDC8000ADCEF /* TimeInterval+Formatter.swift */; };
 		177783842530FF0E003D19A3 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177783832530FF0E003D19A3 /* IntentHandler.swift */; };
-		177783882530FF0E003D19A3 /* MyRadioIntentHandler.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 177783812530FF0E003D19A3 /* MyRadioIntentHandler.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		177783882530FF0E003D19A3 /* MyRadioIntentHandler.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 177783812530FF0E003D19A3 /* MyRadioIntentHandler.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1777838F2530FF39003D19A3 /* MyRadioWidgets.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 17C6DD522530CD2A003D603E /* MyRadioWidgets.intentdefinition */; };
 		1777839325310018003D19A3 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177A47B4252F3D21009A4EDB /* SettingsStore.swift */; };
 		1777839425310018003D19A3 /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177A47B7252F3D5B009A4EDB /* UserDefault.swift */; };
@@ -49,7 +49,7 @@
 		17C6DD542530CD2C003D603E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17C6DD532530CD2C003D603E /* Assets.xcassets */; };
 		17C6DD562530CD2C003D603E /* MyRadioWidgets.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 17C6DD522530CD2A003D603E /* MyRadioWidgets.intentdefinition */; };
 		17C6DD572530CD2C003D603E /* MyRadioWidgets.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 17C6DD522530CD2A003D603E /* MyRadioWidgets.intentdefinition */; };
-		17C6DD5A2530CD2C003D603E /* MyRadioWidgetsExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 17C6DD492530CD2A003D603E /* MyRadioWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		17C6DD5A2530CD2C003D603E /* MyRadioWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 17C6DD492530CD2A003D603E /* MyRadioWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		17C6DD612530D293003D603E /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177A47B4252F3D21009A4EDB /* SettingsStore.swift */; };
 		17C6DD622530D293003D603E /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177A47B7252F3D5B009A4EDB /* UserDefault.swift */; };
 		17C6DD632530D293003D603E /* BusinessUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17883586252CB9C3000279A1 /* BusinessUnit.swift */; };
@@ -92,16 +92,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		17C6DD5B2530CD2C003D603E /* Embed App Extensions */ = {
+		17C6DD5B2530CD2C003D603E /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				17C6DD5A2530CD2C003D603E /* MyRadioWidgetsExtension.appex in Embed App Extensions */,
-				177783882530FF0E003D19A3 /* MyRadioIntentHandler.appex in Embed App Extensions */,
+				17C6DD5A2530CD2C003D603E /* MyRadioWidgetsExtension.appex in Embed Foundation Extensions */,
+				177783882530FF0E003D19A3 /* MyRadioIntentHandler.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed App Extensions";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -350,6 +350,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				177F3EC62DFECA5200DDDA94 /* PBXTargetDependency */,
 			);
 			name = MyRadioIntentHandler;
 			productName = MyRadioIntentHandler;
@@ -367,6 +368,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				177F3EC42DFECA4100DDDA94 /* PBXTargetDependency */,
 			);
 			name = MyRadioWidgetsExtension;
 			productName = MyRadioWidgetsExtension;
@@ -380,12 +382,12 @@
 				17DA93CC252C56500076EBB2 /* Sources */,
 				17DA93CD252C56500076EBB2 /* Frameworks */,
 				17DA93CE252C56500076EBB2 /* Resources */,
-				17C6DD5B2530CD2C003D603E /* Embed App Extensions */,
-				17CCDEC527511C1F001380D9 /* SwiftLint */,
+				17C6DD5B2530CD2C003D603E /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				177F3EC22DFECA1800DDDA94 /* PBXTargetDependency */,
 				17C6DD592530CD2C003D603E /* PBXTargetDependency */,
 				177783872530FF0E003D19A3 /* PBXTargetDependency */,
 			);
@@ -400,8 +402,9 @@
 		17DA93C8252C56500076EBB2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1200;
-				LastUpgradeCheck = 1310;
+				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					177783802530FF0E003D19A3 = {
 						CreatedOnToolsVersion = 12.0;
@@ -423,6 +426,9 @@
 				Base,
 			);
 			mainGroup = 17DA93C7252C56500076EBB2;
+			packageReferences = (
+				177F3EC02DFEC9EC00DDDA94 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
+			);
 			productRefGroup = 17DA93D1252C56500076EBB2 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -463,27 +469,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		17CCDEC527511C1F001380D9 /* SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftLint;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if test -d \"/opt/homebrew/bin/\"; then\n  PATH=\"/opt/homebrew/bin/:${PATH}\"\nfi\n\nexport PATH\n\nwhich swiftlint\n\nif which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1777837D2530FF0E003D19A3 /* Sources */ = {
@@ -569,6 +554,18 @@
 			isa = PBXTargetDependency;
 			target = 177783802530FF0E003D19A3 /* MyRadioIntentHandler */;
 			targetProxy = 177783862530FF0E003D19A3 /* PBXContainerItemProxy */;
+		};
+		177F3EC22DFECA1800DDDA94 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 177F3EC12DFECA1800DDDA94 /* SwiftLintBuildToolPlugin */;
+		};
+		177F3EC42DFECA4100DDDA94 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 177F3EC32DFECA4100DDDA94 /* SwiftLintBuildToolPlugin */;
+		};
+		177F3EC62DFECA5200DDDA94 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 177F3EC52DFECA5200DDDA94 /* SwiftLintBuildToolPlugin */;
 		};
 		17C6DD592530CD2C003D603E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -700,6 +697,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -762,6 +760,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -783,7 +782,6 @@
 		17DA93E0252C56510076EBB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MyRadio/MyRadio.entitlements;
@@ -806,7 +804,6 @@
 		17DA93E1252C56510076EBB2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MyRadio/MyRadio.entitlements;
@@ -866,6 +863,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		177F3EC02DFEC9EC00DDDA94 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.59.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		177F3EC12DFECA1800DDDA94 /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 177F3EC02DFEC9EC00DDDA94 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
+		177F3EC32DFECA4100DDDA94 /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 177F3EC02DFEC9EC00DDDA94 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
+		177F3EC52DFECA5200DDDA94 /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 177F3EC02DFEC9EC00DDDA94 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 17DA93C8252C56500076EBB2 /* Project object */;
 }
