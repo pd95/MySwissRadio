@@ -36,26 +36,20 @@ enum SRGService {
     }
 
     static func livestreams(client: NetworkClient, bu: SRGService.BusinessUnit = .srf) async -> [Livestream] {
-        await  client.authenticatedDataRequest(for: .livestreams(bu: bu))
-            .decode(type: SRGService.GetLivestreamsResponse.self, decoder: SRGService.jsonDecoder)
-            .handleEvents(receiveCompletion: { (completion) in
-                switch completion {
-                case .failure(let error):
-                    SRGService.logger.error("🔴 getLivestreams(\(bu.rawValue)) Error: \(error.localizedDescription, privacy: .public)")
-                default:  break
-                }
-            })
-            .map({ (response: SRGService.GetLivestreamsResponse) -> [Livestream] in
-                let enumeratedMedia = response.mediaList.enumerated()
-
-                return enumeratedMedia.map({ (index, media) -> Livestream in
+        var liveStreams: [Livestream]?
+        do {
+            let data = try await client.authenticatedData(for: .livestreams(bu: bu))
+            let response = try jsonDecoder.decode(GetLivestreamsResponse.self, from: data)
+            liveStreams = response.mediaList.enumerated()
+                .map({ (index, media) -> Livestream in
                     Livestream(id: media.id, name: media.title, imageURL: media.channel.imageUrl,
                                bu: .init(from: media.vendor), sortOrder: index, streams: [])
                 })
-            })
-            .replaceError(with: [])
-            .values
-            .first(where: { _ in true }) ?? []
+        } catch {
+            logger.error("🔴 livestreams(\(bu.rawValue)) failed with error: \(error.localizedDescription, privacy: .public)")
+        }
+
+        return liveStreams ?? []
     }
 
     static func mediaResource(
