@@ -5,10 +5,10 @@
 //  Created by Philipp on 07.10.20.
 //
 
-import Foundation
 import AVKit
-import MediaPlayer
 import Combine
+import Foundation
+import MediaPlayer
 import os.log
 
 class AudioController: NSObject, ObservableObject {

@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import os.log
 import Intents
+import os.log
 
 extension MyRadioModel: INPlayMediaIntentHandling {
 

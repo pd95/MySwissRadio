@@ -5,8 +5,8 @@
 //  Created by Philipp on 26.11.21.
 //
 
-import Foundation
 import CoreSpotlight
+import Foundation
 import os.log
 
 extension LivestreamStore {

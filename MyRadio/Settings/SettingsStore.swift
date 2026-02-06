@@ -5,10 +5,10 @@
 //  Created by Philipp on 08.10.20.
 //
 
-import Foundation
 import Combine
-import os.log
 import CoreSpotlight
+import Foundation
+import os.log
 
 class SettingsStore: ObservableObject {
 

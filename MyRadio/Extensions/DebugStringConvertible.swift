@@ -5,8 +5,8 @@
 //  Created by Philipp on 15.06.2025.
 //
 
-import Foundation
 import AVFoundation
+import Foundation
 
 extension Optional: @retroactive CustomStringConvertible where Wrapped: CustomStringConvertible {
     public var description: String {

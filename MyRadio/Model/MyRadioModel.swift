@@ -5,13 +5,13 @@
 //  Created by Philipp on 06.10.20.
 //
 
-import Foundation
 import Combine
-import os.log
-import UIKit
-import Intents
 import CoreSpotlight
+import Foundation
+import Intents
 import WidgetKit
+import UIKit
+import os.log
 
 @MainActor
 class MyRadioModel: NSObject, ObservableObject {

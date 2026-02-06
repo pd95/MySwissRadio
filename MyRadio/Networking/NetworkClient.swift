@@ -5,10 +5,10 @@
 //  Created by Philipp on 06.10.20.
 //
 
-import Foundation
 import Combine
-import os.log
+import Foundation
 import UIKit
+import os.log
 
 struct NetworkClient {
 

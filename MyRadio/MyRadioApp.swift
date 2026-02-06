@@ -5,10 +5,10 @@
 //  Created by Philipp on 06.10.20.
 //
 
+import CoreSpotlight
+import Intents
 import SwiftUI
 import os.log
-import Intents
-import CoreSpotlight
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     let logger = Logger(subsystem: "MyRadio", category: "AppDelegate")
