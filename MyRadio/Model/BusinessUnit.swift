@@ -8,7 +8,10 @@
 import Foundation
 
 enum BusinessUnit: String, CustomStringConvertible, CaseIterable, Codable {
-    case srf = "SRF", rts = "RTS", rsi = "RSI", rtr = "RTR"
+    case srf = "SRF"
+    case rts = "RTS"
+    case rsi = "RSI"
+    case rtr = "RTR"
 
     var description: String {
         rawValue

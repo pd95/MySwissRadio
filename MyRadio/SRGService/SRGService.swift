@@ -89,8 +89,11 @@ enum SRGService {
 extension SRGService {
 
     enum BusinessUnit: String, Decodable, CaseIterable {
-        case srf = "SRF", rsi = "RSI", rtr = "RTR", rts = "RTS", swi = "SWI"
-
+        case srf = "SRF"
+        case rsi = "RSI"
+        case rtr = "RTR"
+        case rts = "RTS"
+        case swi = "SWI"
         var parameterValue: String { self.rawValue.lowercased() }
     }
 
