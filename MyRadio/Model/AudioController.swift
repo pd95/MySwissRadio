@@ -75,7 +75,7 @@ class AudioController: NSObject, ObservableObject {
 
     var interruptionDate: Date? {
         didSet {
-            logger.debug("🔺🔺🔺 interruptionDate set to \(self.interruptionDate?.description, privacy: .public)")
+            logger.debug("🔺🔺🔺 interruptionDate set to \(self.interruptionDate?.description ?? "", privacy: .public)")
         }
     }
 
@@ -110,7 +110,7 @@ class AudioController: NSObject, ObservableObject {
                     let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
                     logger.log("⚫️ INTERRUPTION ENDED: options = \(options.rawValue)")
                     logger.log("   playerStatus = \(self.playerStatus.debugDescription, privacy: .public)")
-                    logger.log("   interruptionDate = \(self.interruptionDate?.description, privacy: .public)")
+                    logger.log("   interruptionDate = \(self.interruptionDate.descriptionOrNil, privacy: .public)")
                     logger.log("   lastRateChange = \(self.lastRateChange, privacy: .public)")
                     if options.contains(.shouldResume) {
                         // Interruption ended. Playback should resume.
@@ -263,7 +263,7 @@ class AudioController: NSObject, ObservableObject {
                 .removeDuplicates()
                 .sink { [weak self, logger] (status: AVPlayerItem.Status) in
                     guard let self = self else { return }
-                    logger.debug("🟢 New status set: \(status.debugDescription, privacy: .public)")
+                    logger.debug("🟢 New status set: \(status.debugString, privacy: .public)")
                     if status == .readyToPlay {
                         let offsetFromLive = self.playerItem!.configuredTimeOffsetFromLive.seconds
                         self.startTime = Date().addingTimeInterval(-offsetFromLive)

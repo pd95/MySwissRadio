@@ -50,7 +50,7 @@ class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
                 // Split media name into words and collect all stream IDs which have one of them
                 let mediaNameWords = mediaName.lowercased().matches(regex: "[[:alpha:]]+|\\d+")
                 var matchingStreamMap = [Livestream.ID: Int]()
-                mediaNameWords.forEach { (word) in
+                for word in mediaNameWords {
                     let lookupWord: String
                     if let numberWord = numberFormatter.number(from: word)?.stringValue {
                         lookupWord = numberWord
@@ -58,7 +58,7 @@ class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
                         lookupWord = word
                     }
                     if let streamIDs = wordToStreamsMap[lookupWord] {
-                        streamIDs.forEach { (streamID) in
+                        for streamID in streamIDs {
                             logger.log("\(lookupWord, privacy: .public) matches \(streamID, privacy: .public)")
                             matchingStreamMap[streamID, default: 0] += 1
                         }

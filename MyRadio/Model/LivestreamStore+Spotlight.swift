@@ -16,11 +16,11 @@ extension LivestreamStore {
     }
 
     private func updateIndex(with items: [CSSearchableItem]) {
-        CSSearchableIndex.default().indexSearchableItems(items) { (error) in
+        CSSearchableIndex.default().indexSearchableItems(items) { [logger] (error) in
             if let error = error {
-                self.logger.error("Error while adding items to index: \(error.localizedDescription, privacy: .public)")
+                logger.error("Error while adding items to index: \(error.localizedDescription, privacy: .public)")
             } else {
-                self.logger.log("Successfully updated Spotlight")
+                logger.log("Successfully updated Spotlight")
             }
         }
     }

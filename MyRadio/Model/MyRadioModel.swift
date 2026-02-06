@@ -8,7 +8,7 @@
 import Combine
 import CoreSpotlight
 import Foundation
-import Intents
+@preconcurrency import Intents
 import UIKit
 import WidgetKit
 import os.log
@@ -285,7 +285,7 @@ class MyRadioModel: NSObject, ObservableObject {
             } else {
                 let searchableItemIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String
                 logger.error(
-                    "Invalid spotlight item: \(searchableItemIdentifier, privacy: .public)"
+                    "Invalid spotlight item: \(searchableItemIdentifier ?? "", privacy: .public)"
                 )
             }
         } else {

@@ -8,14 +8,14 @@
 import AVFoundation
 import Foundation
 
-extension Optional: @retroactive CustomStringConvertible where Wrapped: CustomStringConvertible {
-    public var description: String {
+extension Optional where Wrapped: CustomStringConvertible {
+    var descriptionOrNil: String {
         map(\.description) ?? "nil"
     }
 }
 
-extension AVPlayerItem.Status: @retroactive CustomDebugStringConvertible {
-    public var debugDescription: String {
+extension AVPlayerItem.Status {
+    var debugString: String {
         switch self {
         case .readyToPlay:
             return "readyToPlay"

@@ -29,7 +29,7 @@ extension MyRadioModel: INPlayMediaIntentHandling {
             searchWords.append(stream.bu.description)
 
             // Add all those words to the mapping
-            searchWords.forEach { (word) in
+            for word in searchWords {
                 let lowercasedWord = word.lowercased()
                 let streamArray = wordToStreamsMap[lowercasedWord, default: []]
                 if !streamArray.contains(stream.id) {
