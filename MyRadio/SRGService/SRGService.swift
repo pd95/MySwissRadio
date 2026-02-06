@@ -69,8 +69,7 @@ enum SRGService {
                 .map({ (chapter: SRGService.Chapter) -> [URL] in
                     let urls = chapter.resourceList.filter({ $0.streaming == "HLS" })
                         .sorted(by: { (lhs: SRGService.Resource, rhs: SRGService.Resource) -> Bool in
-                            lhs.quality != rhs.quality &&
-                                lhs.quality != "SD"
+                            lhs.quality != rhs.quality && lhs.quality != "SD"
                         })
                         .map(\.url)
                     return urls

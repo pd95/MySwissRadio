@@ -15,7 +15,8 @@ extension Bundle {
     static let appGroupIdentifier: String = {
         let identifier: String
         if let infoPlist = Bundle.main.object(forInfoDictionaryKey: "APP_GROUP_IDENTIFIER") as? String,
-           infoPlist.isEmpty == false {
+            infoPlist.isEmpty == false
+        {
             identifier = infoPlist
             Logger().info("Populated appGroupIdentifier \(identifier, privacy: .public) from Info.plist")
         } else {

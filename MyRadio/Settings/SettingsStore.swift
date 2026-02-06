@@ -21,7 +21,7 @@ class SettingsStore: ObservableObject {
     private init() {
         anyCancellable = NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
             .debounce(for: .seconds(0.3), scheduler: RunLoop.main)
-            .sink { [weak self](notification) in
+            .sink { [weak self] (notification) in
                 self?.logger.log("UserDefaults.didChangeNotification \(notification.description, privacy: .public)")
                 self?.checkAndSetVersionAndBuildNumber()
             }
@@ -55,7 +55,7 @@ class SettingsStore: ObservableObject {
             resetAll()
         }
         guard let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-              let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
+            let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
         else {
             fatalError("CFBundleVersion and CFBundleShortVersionString missing")
         }

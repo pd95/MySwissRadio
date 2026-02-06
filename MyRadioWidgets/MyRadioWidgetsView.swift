@@ -37,7 +37,7 @@ struct MyRadioWidgetsView: View {
         }
         .background(
             Image(uiImage: image)
-                .blur(radius: image.size.width/10)
+                .blur(radius: image.size.width / 10)
         )
     }
 }
@@ -45,11 +45,6 @@ struct MyRadioWidgetsView: View {
 struct MyRadioWidgetsView_Previews: PreviewProvider {
     static var images: [UIImage] = [
         UIImage(named: "Placeholder")!
-//        UIImage(named: "SRF1")!, UIImage(named: "SRF2")!, UIImage(named: "SRF3")!,
-//        UIImage(named: "SRFInfo")!, UIImage(named: "SRFVirus")!, UIImage(named: "SRFMusikwelle")!,
-//        UIImage(named: "RTS1")!, UIImage(named: "RTS2")!, UIImage(named: "RTS3")!, UIImage(named: "RTS4")!,
-//        UIImage(named: "RSI1")!, UIImage(named: "RSI2")!, UIImage(named: "RSI3")!,
-//        UIImage(named: "RTR")!
     ]
 
     static var previews: some View {

@@ -22,15 +22,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         )
 
         #if DEBUG
-        backupSettings()
+            backupSettings()
         // authconfigapplySettings()
         #endif
 
-// It is unclear whether we really have to request Siri authorization. Everything works fine so far without it!?
-//        INPreferences.requestSiriAuthorization { (authStatus: INSiriAuthorizationStatus) in
-//            self.logger.log("SiriAutorization: \(String(describing: authStatus), privacy: .public)")
-//        }
-//
+        // It is unclear whether we really have to request Siri authorization. Everything works fine so far without it!?
+        // INPreferences.requestSiriAuthorization { (authStatus: INSiriAuthorizationStatus) in
+        //     self.logger.log("SiriAutorization: \(String(describing: authStatus), privacy: .public)")
+        // }
+
         return true
     }
 
@@ -38,47 +38,49 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         logger.log("AppDelegate handlerFor intent: \(intent, privacy: .public)")
         return MyRadioModel.main
     }
+}
 
 #if DEBUG
-    private func backupSettings() {
-        let date = ISO8601DateFormatter().string(from: Date())
-            .replacingOccurrences(of: ":", with: "")
-        dumpUserDefaults(UserDefaults.standard, filename: "userdefaults-standard-\(date)")
-        dumpUserDefaults(UserDefaults.shared, filename: "userdefaults-shared-\(date)")
-        dumpUserDefaults(UserDefaults(suiteName: "")!, filename: "userdefaults-authconfig-\(date)")
-    }
+    extension AppDelegate {
+        private func backupSettings() {
+            let date = ISO8601DateFormatter().string(from: Date())
+                .replacingOccurrences(of: ":", with: "")
+            dumpUserDefaults(UserDefaults.standard, filename: "userdefaults-standard-\(date)")
+            dumpUserDefaults(UserDefaults.shared, filename: "userdefaults-shared-\(date)")
+            dumpUserDefaults(UserDefaults(suiteName: "")!, filename: "userdefaults-authconfig-\(date)")
+        }
 
-    private func applySettings() {
-        SettingsStore.shared.lastLivestreamRefreshDate = Date().addingTimeInterval(-31*24*60*60)  // expired!
+        private func applySettings() {
+            SettingsStore.shared.lastLivestreamRefreshDate = Date().addingTimeInterval(-31 * 24 * 60 * 60)  // expired!
 
-        let response = OAuthenticator.AccessTokenResponse(
-            accessToken: "ThisIsAnInvalidToken",
-            tokenType: "Bearer",
-            expiresIn: nil,
-            refreshToken: nil,
-            scope: nil
-        )
-        let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
-        let data = try? encoder.encode(response)
-        UserDefaults(suiteName: "")!.set(data ?? Data(), forKey: "AuthData")
-    }
+            let response = OAuthenticator.AccessTokenResponse(
+                accessToken: "ThisIsAnInvalidToken",
+                tokenType: "Bearer",
+                expiresIn: nil,
+                refreshToken: nil,
+                scope: nil
+            )
+            let encoder = JSONEncoder()
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+            let data = try? encoder.encode(response)
+            UserDefaults(suiteName: "")!.set(data ?? Data(), forKey: "AuthData")
+        }
 
-    private func dumpUserDefaults(_ defaults: UserDefaults, filename: String) {
-        do {
-            let dict = defaults.dictionaryRepresentation()
-            if let data = try? PropertyListSerialization.data(fromPropertyList: dict, format: .xml, options: 0) {
-                let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-                    .appendingPathComponent("\(filename).plist")
-                try data.write(to: url)
-                logger.log("dumpUserDefaults: \(url, privacy: .public)")
+        private func dumpUserDefaults(_ defaults: UserDefaults, filename: String) {
+            do {
+                let dict = defaults.dictionaryRepresentation()
+                if let data = try? PropertyListSerialization.data(fromPropertyList: dict, format: .xml, options: 0) {
+                    let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                        .appendingPathComponent("\(filename).plist")
+                    try data.write(to: url)
+                    logger.log("dumpUserDefaults: \(url, privacy: .public)")
+                }
+            } catch {
+                logger.log("dumpUserDefaults: \(error.localizedDescription, privacy: .public)")
             }
-        } catch {
-            logger.log("dumpUserDefaults: \(error.localizedDescription, privacy: .public)")
         }
     }
 #endif
-}
 
 @main
 struct MyRadioApp: App {

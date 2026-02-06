@@ -121,7 +121,7 @@ struct NetworkClient {
                     logger.debug("no valid bearer token refreshing token (count \(refreshFailure))")
                     // Maximum retry "logic" with exponential delay increase
                     if refreshFailure <= maxFailureCount {
-                        let delay = refreshFailure > 1 ? TimeInterval(min(1<<refreshFailure - 1, 5 * 60)) : 0.0
+                        let delay = refreshFailure > 1 ? TimeInterval(min(1 << refreshFailure - 1, 5 * 60)) : 0.0
                         authenticator.refreshToken(delay: delay)
                     }
                     logger.debug("refreshing token triggered, sending Empty()")
@@ -146,7 +146,7 @@ struct NetworkClient {
                             refreshFailure += 1
                             if refreshFailure <= maxFailureCount {
                                 authenticator.refreshToken(
-                                    delay: TimeInterval(min(1<<refreshFailure - 1, 5 * 60)),
+                                    delay: TimeInterval(min(1 << refreshFailure - 1, 5 * 60)),
                                     oldTokenValue: bearerToken
                                 )
                             }

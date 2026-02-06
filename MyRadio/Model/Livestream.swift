@@ -28,8 +28,10 @@ struct Livestream: Identifiable, Codable, Hashable {
         )!,
         bu: .srf,
         sortOrder: 3,
-        streams: [URL(string: "https://lsaplus.swisstxt.ch/audio/drs3_96.stream/playlist.m3u8?DVR")!,
-                  URL(string: "https://lsaplus.swisstxt.ch/audio/drs3_96.stream/playlist.m3u8")!]
+        streams: [
+            URL(string: "https://lsaplus.swisstxt.ch/audio/drs3_96.stream/playlist.m3u8?DVR")!,
+            URL(string: "https://lsaplus.swisstxt.ch/audio/drs3_96.stream/playlist.m3u8")!,
+        ]
     )
 }
 

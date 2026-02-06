@@ -47,7 +47,8 @@ struct CodableUserDefault<Value> where Value: Codable {
     var wrappedValue: Value {
         get {
             guard let data: Data = storage[key],
-                  let value = try? JSONDecoder().decode(Value.self, from: data) else {
+                let value = try? JSONDecoder().decode(Value.self, from: data)
+            else {
                 return defaultValue
             }
             return value

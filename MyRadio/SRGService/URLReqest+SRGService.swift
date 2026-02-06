@@ -13,7 +13,7 @@ extension URLRequest {
 
     private static func initBaseURL() -> URL {
         guard let baseURLString = Bundle.main.object(forInfoDictionaryKey: "SRG_BASE_URL") as? String,
-              !baseURLString.isEmpty
+            !baseURLString.isEmpty
         else {
             let validBaseURLString = Bundle.main.object(forInfoDictionaryKey: "SRG_BASE_URL") as? String ?? "(none set)"
             preconditionFailure(

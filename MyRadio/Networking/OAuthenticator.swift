@@ -95,7 +95,7 @@ struct OAuthConfiguration: Codable {
     ///
     public init(fromBundle bundle: Bundle = .main, prefix: String = "") {
         guard let clientKey = bundle.object(forInfoDictionaryKey: "\(prefix)AUTH_KEY") as? String,
-              let clientSecret = bundle.object(forInfoDictionaryKey: "\(prefix)AUTH_SECRET") as? String
+            let clientSecret = bundle.object(forInfoDictionaryKey: "\(prefix)AUTH_SECRET") as? String
         else {
             fatalError("\(prefix)AUTH_KEY and \(prefix)AUTH_SECRET must be configured in bundle \(bundle.bundlePath)")
         }
@@ -105,14 +105,20 @@ struct OAuthConfiguration: Codable {
         let authorizationURL: URL
         if let authUrlString = bundle.object(forInfoDictionaryKey: "\(prefix)AUTH_URL") as? String,
             authUrlString.isEmpty == false,
-           let authUrl = URL(string: authUrlString.hasPrefix("https://") ? authUrlString : "https://\(authUrlString)") {
-                authorizationURL = authUrl
+            let authUrl = URL(string: authUrlString.hasPrefix("https://") ? authUrlString : "https://\(authUrlString)")
+        {
+            authorizationURL = authUrl
         } else {
             fatalError("\(prefix)AUTH_URL configuration missing in bundle \(bundle.bundlePath)")
         }
 
-        self.init(authorizationURL: authorizationURL, clientKey: clientKey, clientSecret: clientSecret,
-                  userDefaultsKey: userDefaultsKey, userDefaultsSuiteName: userDefaultsSuiteName)
+        self.init(
+            authorizationURL: authorizationURL,
+            clientKey: clientKey,
+            clientSecret: clientSecret,
+            userDefaultsKey: userDefaultsKey,
+            userDefaultsSuiteName: userDefaultsSuiteName
+        )
     }
 
     fileprivate var persistedData: Data? {
@@ -224,26 +230,29 @@ final class OAuthenticator {
             } else if refreshCancellable == nil {
                 refreshCancellable = performRefresh(delay: delay)
                     .receive(on: serialQueue)
-                    .sink(receiveCompletion: { [weak self] (completion) in
-                        self?.refreshCancellable = nil
-                        switch completion {
+                    .sink(
+                        receiveCompletion: { [weak self] (completion) in
+                            self?.refreshCancellable = nil
+                            switch completion {
 
-                        // This case should never happen because we "catch" the errors and convert them just above
-                        case .failure(let error):
-                            self?.logger.error(
-                                "performRefresh: error occured: \(error.localizedDescription, privacy: .public)"
-                            )
+                            case .failure(let error):
+                                // This case should never happen because we "catch" the errors and convert them just above
+                                self?.logger.error(
+                                    "performRefresh: error occurred: \(error.localizedDescription, privacy: .public)"
+                                )
 
-                        case .finished:
-                            self?.logger.debug("performRefresh: done")
+                            case .finished:
+                                self?.logger.debug("performRefresh: done")
+                            }
+                        },
+                        receiveValue: { [weak self] (token) in
+                            guard let self = self else { return }
+
+                            // Store current token and trigger the given subject
+                            self.logger.debug("performRefresh: sending new token \(token, privacy: .public)")
+                            self.currentToken = token
                         }
-                    }, receiveValue: { [weak self](token) in
-                        guard let self = self else { return }
-
-                        // Store current token and trigger the given subject
-                        self.logger.debug("performRefresh: sending new token \(token, privacy: .public)")
-                        self.currentToken = token
-                    })
+                    )
             } else {
                 logger.debug("refreshToken: skipping refresh as there is already one ongoing")
             }
@@ -257,9 +266,11 @@ final class OAuthenticator {
         logger.log("performRefresh: performing network request 🟡")
 
         // Prepare the authorization request with the client credentials in the header
-        var request = URLRequest(url: configuration.authorizationURL,
-                                 cachePolicy: .reloadIgnoringLocalAndRemoteCacheData,
-                                 timeoutInterval: TimeInterval(10))
+        var request = URLRequest(
+            url: configuration.authorizationURL,
+            cachePolicy: .reloadIgnoringLocalAndRemoteCacheData,
+            timeoutInterval: TimeInterval(10)
+        )
 
         let credentials = "\(configuration.clientKey):\(configuration.clientSecret)"
             .data(using: .ascii)!
@@ -286,29 +297,31 @@ final class OAuthenticator {
                 }
                 self?.logger.debug("performRefresh: response code \(httpResponse.statusCode)")
                 if !(200..<400).contains(httpResponse.statusCode) {
-                    
+
                     // Try to extract the error code from the response body
                     let errorResponseArray = try? jsonDecoder.decode([String: String].self, from: data)
                     self?.logger.error(
                         "performRefresh: responseArray: \(errorResponseArray?.description ?? "-", privacy: .public)"
                     )
-                    
-                    let errorCode = errorResponseArray?["ErrorCode"] ??
-                    errorResponseArray?["errorCode"] ??
-                    errorResponseArray?["error_code"]
-                    
-                    let errorDescription = (errorResponseArray?["ErrorDescription"] ??
-                                            errorResponseArray?["errorDescription"] ??
-                                            errorResponseArray?["error_description"] ??
-                                            errorResponseArray?["Error"] ??
-                                            errorResponseArray?["error"])
-                    
+
+                    let errorCode =
+                        (errorResponseArray?["ErrorCode"]
+                            ?? errorResponseArray?["errorCode"]
+                            ?? errorResponseArray?["error_code"])
+
+                    let errorDescription =
+                        (errorResponseArray?["ErrorDescription"]
+                            ?? errorResponseArray?["errorDescription"]
+                            ?? errorResponseArray?["error_description"]
+                            ?? errorResponseArray?["Error"]
+                            ?? errorResponseArray?["error"])
+
                     let error = errorCode ?? "-"
                     let description = errorDescription ?? "-"
                     self?.logger.error(
                         "performRefresh: error = \(error) description = \(description, privacy: .public)"
                     )
-                    
+
                     throw AuthError.unexpectedHttpStatus(
                         httpStatus: httpResponse.statusCode,
                         error: errorDescription ?? errorCode ?? "n/a"

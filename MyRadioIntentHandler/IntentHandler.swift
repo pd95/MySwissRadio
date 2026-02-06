@@ -21,8 +21,10 @@ class IntentHandler: INExtension, ConfigurationIntentHandling {
         }
     }
 
-    func provideStationOptionsCollection(for intent: ConfigurationIntent,
-                                         with completion: @escaping (INObjectCollection<Station>?, Error?) -> Void) {
+    func provideStationOptionsCollection(
+        for intent: ConfigurationIntent,
+        with completion: @escaping (INObjectCollection<Station>?, Error?) -> Void
+    ) {
         var stations = allStations
         stations.insert(lastPlayedStation, at: 0)
 
@@ -34,8 +36,10 @@ class IntentHandler: INExtension, ConfigurationIntentHandling {
         return lastPlayedStation
     }
 
-    func resolveStation(for intent: ConfigurationIntent,
-                        with completion: @escaping (StationResolutionResult) -> Void) {
+    func resolveStation(
+        for intent: ConfigurationIntent,
+        with completion: @escaping (StationResolutionResult) -> Void
+    ) {
         let result: StationResolutionResult
         if let station = intent.station {
             result = .success(with: station)

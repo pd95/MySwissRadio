@@ -32,9 +32,9 @@ class AudioController: NSObject, ObservableObject {
 
     var playerStatus: Status {
         guard let playerItem = playerItem,
-              playerItem.status == .readyToPlay,
-              let seekRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first,
-              seekRange.isValid && !seekRange.isEmpty
+            playerItem.status == .readyToPlay,
+            let seekRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first,
+            seekRange.isValid && !seekRange.isEmpty
         else {
             logger.debug("🔴 undefined playerStatus")
             return .undefined
@@ -88,9 +88,9 @@ class AudioController: NSObject, ObservableObject {
             .publisher(for: AVAudioSession.interruptionNotification)
             .sink { [weak self, logger] (notification) in
                 guard let userInfo = notification.userInfo,
-                      let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
-                      let type = AVAudioSession.InterruptionType(rawValue: typeValue),
-                      let self = self
+                    let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+                    let type = AVAudioSession.InterruptionType(rawValue: typeValue),
+                    let self = self
                 else {
                     return
                 }
@@ -287,7 +287,7 @@ class AudioController: NSObject, ObservableObject {
                 .sink { [weak self, logger] (seekableTimeRanges) in
                     guard let self = self else { return }
                     logger.debug("🟢 New seekableTimeRanges set: \(seekableTimeRanges, privacy: .public)")
-                    if let firstRange = seekableTimeRanges.map({$0.timeRangeValue}).first {
+                    if let firstRange = seekableTimeRanges.map({ $0.timeRangeValue }).first {
                         logger.debug("   start:    \(firstRange.start.seconds)")
                         logger.debug("   duration: \(firstRange.duration.seconds)")
 
@@ -371,8 +371,8 @@ class AudioController: NSObject, ObservableObject {
         if let currentItem = playerItem {
             let range = seekRange
             enrichNowPlaying(
-                duration: range.upperBound-range.lowerBound,
-                position: currentItem.currentTime().seconds-range.lowerBound,
+                duration: range.upperBound - range.lowerBound,
+                position: currentItem.currentTime().seconds - range.lowerBound,
                 rate: player.rate
             )
         } else {
@@ -398,7 +398,8 @@ class AudioController: NSObject, ObservableObject {
         logger.debug("🟡 currentTime.seconds: \(currentTime.seconds) \(cDateString, privacy: .public)")
 
         if let seekableTimeRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first,
-           let loadedTimeRange = playerItem.loadedTimeRanges.map({ $0.timeRangeValue }).first {
+            let loadedTimeRange = playerItem.loadedTimeRanges.map({ $0.timeRangeValue }).first
+        {
             let seekableStart = seekableTimeRange.start.seconds
             let seekableEnd = seekableTimeRange.end.seconds
             let seekableDuration = seekableTimeRange.duration.seconds
@@ -424,7 +425,7 @@ class AudioController: NSObject, ObservableObject {
 
     func seek(to position: Double) {
         guard let playerItem = playerItem,
-              let seekableTimeRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first
+            let seekableTimeRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first
         else {
             return
         }
@@ -434,10 +435,13 @@ class AudioController: NSObject, ObservableObject {
         )
         logger.debug("🟣 Seek to \(position) => newTime = \(newTime.seconds)")
         playerItem.cancelPendingSeeks()
-        playerItem.seek(to: newTime, completionHandler: { _ in
-            self.logger.debug(" >>> 🟣 Seek finished: Now at \(playerItem.currentTime().seconds)")
-            self.statusChanged("seek finished")
-        })
+        playerItem.seek(
+            to: newTime,
+            completionHandler: { _ in
+                self.logger.debug(" >>> 🟣 Seek finished: Now at \(playerItem.currentTime().seconds)")
+                self.statusChanged("seek finished")
+            }
+        )
     }
 
     func seek(toOffsetFromStart: Double) {
@@ -475,7 +479,7 @@ class AudioController: NSObject, ObservableObject {
 
     var seekRange: ClosedRange<Double> {
         guard let playerItem = playerItem,
-              let seekableTimeRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first
+            let seekableTimeRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first
         else {
             return 0...0
         }

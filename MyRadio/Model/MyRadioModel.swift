@@ -9,8 +9,8 @@ import Combine
 import CoreSpotlight
 import Foundation
 import Intents
-import WidgetKit
 import UIKit
+import WidgetKit
 import os.log
 
 @MainActor
@@ -25,8 +25,9 @@ class MyRadioModel: NSObject, ObservableObject {
         super.init()
 
         if currentlyPlaying == nil,
-           let lastPlayedStreamID = SettingsStore.shared.lastPlayedStreamId,
-           let stream = streamStore.stream(withID: lastPlayedStreamID) {
+            let lastPlayedStreamID = SettingsStore.shared.lastPlayedStreamId,
+            let stream = streamStore.stream(withID: lastPlayedStreamID)
+        {
             logger.log("Last played stream \(stream.name, privacy: .public): prepare UI in paused mode")
             play(stream, initiallyPaused: true)
             showSheet = true
@@ -87,7 +88,7 @@ class MyRadioModel: NSObject, ObservableObject {
         let lastRefresh = SettingsStore.shared.lastLivestreamRefreshDate
         let timeSinceLastRefresh = lastRefresh.distance(to: Date())
         logger.log("Last refresh \(lastRefresh, privacy: .public) => \(timeSinceLastRefresh)s ago")
-        if SettingsStore.shared.streams.isEmpty || timeSinceLastRefresh > 30*24*60*60 {
+        if SettingsStore.shared.streams.isEmpty || timeSinceLastRefresh > 30 * 24 * 60 * 60 {
             Task {
                 await refreshContent()
             }
@@ -277,7 +278,8 @@ class MyRadioModel: NSObject, ObservableObject {
         } else if userActivity.activityType == CSSearchableItemActionType {
             // Based on Spotlight search result: toggle playing of selected stream
             if let itemIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
-               let stream = streamStore.stream(withID: itemIdentifier) {
+                let stream = streamStore.stream(withID: itemIdentifier)
+            {
                 logger.debug("handleActivity: spotlight selected \(stream, privacy: .public)")
                 togglePlay(stream)
             } else {

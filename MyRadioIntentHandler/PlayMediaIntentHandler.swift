@@ -67,12 +67,12 @@ class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
 
                 // Find good matches which contain all the words we were looking for
                 let wordCount = mediaNameWords.count
-                var bestMatches = matchingStreamMap.map({$0}).filter({ $0.value == wordCount })
+                var bestMatches = matchingStreamMap.map({ $0 }).filter({ $0.value == wordCount })
                 logger.log("  found \(bestMatches.count) good matches: \(bestMatches, privacy: .public)")
 
                 // If there was no good match, get a sorted list of matching streams
                 if bestMatches.isEmpty {
-                    let sortedStreamIds = matchingStreamMap.map {$0}
+                    let sortedStreamIds = matchingStreamMap.map { $0 }
                         .sorted { $0.value > $1.value }
                     bestMatches = sortedStreamIds
                     logger.log("  found \(bestMatches.count) ok matches: \(bestMatches, privacy: .public)")
@@ -81,18 +81,21 @@ class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
                 matchingStreams = bestMatches.compactMap { (element) -> Livestream? in
                     streams.first { $0.id == element.key }
                 }
-                logger.log("  found \(matchingStreams.count) matches based on word list: \(matchingStreams, privacy: .public)")
+                logger.log(
+                    "  found \(matchingStreams.count) matches based on word list: \(matchingStreams, privacy: .public)")
             }
 
             let mediaItems = matchingStreams.map(\.mediaItem)
             completion(mediaItems)
 
         default:
-                completion(nil)
+            completion(nil)
         }
     }
 
-    func resolveMediaItems(for intent: INPlayMediaIntent, with completion: @escaping ([INPlayMediaMediaItemResolutionResult]) -> Void) {
+    func resolveMediaItems(
+        for intent: INPlayMediaIntent, with completion: @escaping ([INPlayMediaMediaItemResolutionResult]) -> Void
+    ) {
         logger.log("resolveMediaItems: mediaItems = \(intent.mediaItems ?? [], privacy: .public)")
 
         if let mediaItems = intent.mediaItems {

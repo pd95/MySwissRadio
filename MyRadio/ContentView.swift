@@ -35,12 +35,15 @@ struct ContentView: View {
                 await model.refreshContent()
             }
             .listStyle(.plain)
-            .sheet(isPresented: $model.showSheet, content: {
-                model.currentlyPlaying.map {
-                    PlayingSheet(stream: $0)
-                        .environmentObject(model)
+            .sheet(
+                isPresented: $model.showSheet,
+                content: {
+                    model.currentlyPlaying.map {
+                        PlayingSheet(stream: $0)
+                            .environmentObject(model)
+                    }
                 }
-            })
+            )
             .toolbar(content: {
                 ToolbarItemGroup(placement: .bottomBar) {
                     model.currentlyPlaying.map {

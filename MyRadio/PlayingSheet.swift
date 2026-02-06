@@ -47,9 +47,11 @@ struct PlayingSheet: View {
                 .foregroundColor(.red)
                 .frame(maxWidth: .infinity, alignment: .trailing)
 
-                Slider(value: $model.currentPosition, in: model.seekRange,
-                       onEditingChanged: sliderModeChanged,
-                       label: { Text("Progress") }
+                Slider(
+                    value: $model.currentPosition,
+                    in: model.seekRange,
+                    onEditingChanged: sliderModeChanged,
+                    label: { Text("Progress") }
                 )
 
                 ZStack {

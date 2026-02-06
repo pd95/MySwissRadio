@@ -18,7 +18,7 @@ extension String {
     /// - Returns: Array with all matches and regex groups
     func matches(regex: String, options: NSRegularExpression.Options = []) -> [String] {
         guard let regex = try? NSRegularExpression(pattern: regex, options: options) else { return [] }
-        let matches  = regex.matches(in: self, options: [], range: NSRange(self.startIndex..., in: self))
+        let matches = regex.matches(in: self, options: [], range: NSRange(self.startIndex..., in: self))
         return matches.reduce([]) { res, match in
             var newRes = res
             for index in 0..<match.numberOfRanges {

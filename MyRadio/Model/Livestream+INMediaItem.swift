@@ -13,7 +13,8 @@ extension Livestream {
     var mediaItem: INMediaItem {
         var image: INImage?
         if let thumbnail = thumbnailImage,
-           let imageData = thumbnail.pngData() {
+            let imageData = thumbnail.pngData()
+        {
             image = INImage(imageData: imageData)
         }
         let media = INMediaItem(identifier: id, title: name, type: .radioStation, artwork: image)
@@ -24,7 +25,7 @@ extension Livestream {
         var nowPlayingInfo: [String: Any] = [
             MPMediaItemPropertyTitle: name,
             MPMediaItemPropertyMediaType: MPMediaType.anyAudio.rawValue,
-            MPNowPlayingInfoCollectionIdentifier: bu.description
+            MPNowPlayingInfoCollectionIdentifier: bu.description,
         ]
 
         if let image = thumbnailImage {

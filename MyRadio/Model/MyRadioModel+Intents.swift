@@ -61,7 +61,8 @@ extension MyRadioModel: INPlayMediaIntentHandling {
         // Handle INPlayMediaIntent coming from Siri & Shortcuts
         if let intent = intent as? INPlayMediaIntent {
             if let item = intent.mediaItems?.first,
-               let itemID = item.identifier {
+                let itemID = item.identifier
+            {
                 if let stream = streamStore.stream(withID: itemID) {
                     play(stream)
                     return stream.nowPlayingInfo
@@ -77,7 +78,8 @@ extension MyRadioModel: INPlayMediaIntentHandling {
         // Handle ConfigurationIntent coming from Widget
         else if let intent = intent as? ConfigurationIntent {
             if let station = intent.station,
-               let stationID = station.identifier ?? SettingsStore.shared.lastPlayedStreamId {
+                let stationID = station.identifier ?? SettingsStore.shared.lastPlayedStreamId
+            {
                 if let stream = streamStore.stream(withID: stationID) {
                     play(stream)
                     showSheet = true
