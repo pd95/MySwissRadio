@@ -62,7 +62,6 @@
 		17C6DD6A2530D2A7003D603E /* FileManager+Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F58D42530831200072EF5 /* FileManager+Sharing.swift */; };
 		17CCDEC42750EC18001380D9 /* LivestreamStore+Spotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CCDEC32750EC18001380D9 /* LivestreamStore+Spotlight.swift */; };
 		17CCDEC827513978001380D9 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 17CCDEC627513978001380D9 /* .gitignore */; };
-		17CCDEC927513978001380D9 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 17CCDEC727513978001380D9 /* .swiftlint.yml */; };
 		17D8F7642533ABE500041715 /* Livestream+INMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */; };
 		17D8F7682533AC7800041715 /* Livestream+INMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */; };
 		17D8F76C2533ACB900041715 /* Livestream+ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B63A22530BAB500D0881E /* Livestream+ImageCache.swift */; };
@@ -151,7 +150,6 @@
 		17C6DD552530CD2C003D603E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		17CCDEC32750EC18001380D9 /* LivestreamStore+Spotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LivestreamStore+Spotlight.swift"; sourceTree = "<group>"; };
 		17CCDEC627513978001380D9 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		17CCDEC727513978001380D9 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		17D8F7632533ABE500041715 /* Livestream+INMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Livestream+INMediaItem.swift"; sourceTree = "<group>"; };
 		17D8F77D2533BD7100041715 /* MyRadioExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyRadioExtension.entitlements; sourceTree = "<group>"; };
 		17DA93D0252C56500076EBB2 /* MyRadio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyRadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -164,6 +162,7 @@
 		17DB7BDB252CC6FA004C4BF8 /* LivestreamRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivestreamRow.swift; sourceTree = "<group>"; };
 		17EC1A87252F9A0900F8AFCF /* BusinessUnit+SRGService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BusinessUnit+SRGService.swift"; sourceTree = "<group>"; };
 		17EC1A8E252F9EF500F8AFCF /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		84A289B22F36012B00680D79 /* .swift-format.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ".swift-format.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -282,7 +281,7 @@
 				1750E225252C605D00CB2D4B /* Config.xcconfig */,
 				1750E233252C723500CB2D4B /* LocalConfig.xcconfig */,
 				17CCDEC627513978001380D9 /* .gitignore */,
-				17CCDEC727513978001380D9 /* .swiftlint.yml */,
+				84A289B22F36012B00680D79 /* .swift-format.json */,
 				17DA93D2252C56500076EBB2 /* MyRadio */,
 				17C6DD4F2530CD2A003D603E /* MyRadioWidgets */,
 				177783822530FF0E003D19A3 /* MyRadioIntentHandler */,
@@ -382,6 +381,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 17DA93DF252C56510076EBB2 /* Build configuration list for PBXNativeTarget "MyRadio" */;
 			buildPhases = (
+				84A289B12F35F1E300680D79 /* Linting sources */,
 				17DA93CC252C56500076EBB2 /* Sources */,
 				17DA93CD252C56500076EBB2 /* Frameworks */,
 				17DA93CE252C56500076EBB2 /* Resources */,
@@ -390,7 +390,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				177F3EC22DFECA1800DDDA94 /* PBXTargetDependency */,
 				17C6DD592530CD2C003D603E /* PBXTargetDependency */,
 				177783872530FF0E003D19A3 /* PBXTargetDependency */,
 			);
@@ -430,7 +429,6 @@
 			);
 			mainGroup = 17DA93C7252C56500076EBB2;
 			packageReferences = (
-				177F3EC02DFEC9EC00DDDA94 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 			);
 			productRefGroup = 17DA93D1252C56500076EBB2 /* Products */;
 			projectDirPath = "";
@@ -463,7 +461,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				17CCDEC927513978001380D9 /* .swiftlint.yml in Resources */,
 				17CCDEC827513978001380D9 /* .gitignore in Resources */,
 				17DA93DB252C56510076EBB2 /* Preview Assets.xcassets in Resources */,
 				1703F8E6252F48C800F01ECD /* Settings.bundle in Resources */,
@@ -472,6 +469,32 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		84A289B12F35F1E300680D79 /* Linting sources */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/MyRadio",
+				"$(SRCROOT)/.swift-format.json",
+			);
+			name = "Linting sources";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/swift​-format​-lint​.stamp",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nINPUT_DIR=\"$SCRIPT_INPUT_FILE_0\"\nCONFIG_FILE=\"$SCRIPT_INPUT_FILE_1\"\n\nSTAMP=\"$SCRIPT_OUTPUT_FILE_0\"\n\nset -x\nswift format lint --configuration \"$CONFIG_FILE\" -r \"$INPUT_DIR\" && touch \"$STAMP\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1777837D2530FF0E003D19A3 /* Sources */ = {
@@ -560,10 +583,6 @@
 			isa = PBXTargetDependency;
 			target = 177783802530FF0E003D19A3 /* MyRadioIntentHandler */;
 			targetProxy = 177783862530FF0E003D19A3 /* PBXContainerItemProxy */;
-		};
-		177F3EC22DFECA1800DDDA94 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 177F3EC12DFECA1800DDDA94 /* SwiftLintBuildToolPlugin */;
 		};
 		17C6DD592530CD2C003D603E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -787,6 +806,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"MyRadio/Preview Content\"";
 				DEVELOPMENT_TEAM = P8CC95REUG;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = MyRadio/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -809,6 +829,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"MyRadio/Preview Content\"";
 				DEVELOPMENT_TEAM = P8CC95REUG;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = MyRadio/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -861,25 +882,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		177F3EC02DFEC9EC00DDDA94 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.59.1;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		177F3EC12DFECA1800DDDA94 /* SwiftLintBuildToolPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 177F3EC02DFEC9EC00DDDA94 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
-			productName = "plugin:SwiftLintBuildToolPlugin";
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 17DA93C8252C56500076EBB2 /* Project object */;
 }
