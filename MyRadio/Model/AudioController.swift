@@ -67,7 +67,9 @@ class AudioController: NSObject, ObservableObject {
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, policy: .longFormAudio)
         } catch {
-            logger.error("Failed to set audio session route sharing policy: \(error.localizedDescription, privacy: .public)")
+            logger.error(
+                "Failed to set audio session route sharing policy: \(error.localizedDescription, privacy: .public)"
+            )
         }
     }
 
@@ -84,7 +86,7 @@ class AudioController: NSObject, ObservableObject {
 
         notificationCenter
             .publisher(for: AVAudioSession.interruptionNotification)
-            .sink { [weak self] (notification) in
+            .sink { [weak self, logger] (notification) in
                 guard let userInfo = notification.userInfo,
                       let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
                       let type = AVAudioSession.InterruptionType(rawValue: typeValue),
@@ -98,23 +100,26 @@ class AudioController: NSObject, ObservableObject {
 
                 // An interruption began. Update the UI as needed.
                 case .began:
-                    self.logger.log("⚫️ INTERRUPTION BEGAN")
+                    logger.log("⚫️ INTERRUPTION BEGAN")
                     self.interruptionDate = .now
 
                 // An interruption ended. Resume playback, if appropriate.
                 case .ended:
                     guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
+
                     let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
-                    self.logger.log("⚫️ INTERRUPTION ENDED: optionsValue = \(options.rawValue) playerStatus = \(self.playerStatus.debugDescription, privacy: .public)")
-                    self.logger.log("   interruptionDate = \(self.interruptionDate?.description, privacy: .public) lastRateChange = \(self.lastRateChange, privacy: .public)")
+                    logger.log("⚫️ INTERRUPTION ENDED: options = \(options.rawValue)")
+                    logger.log("   playerStatus = \(self.playerStatus.debugDescription, privacy: .public)")
+                    logger.log("   interruptionDate = \(self.interruptionDate?.description, privacy: .public)")
+                    logger.log("   lastRateChange = \(self.lastRateChange, privacy: .public)")
                     if options.contains(.shouldResume) {
                         // Interruption ended. Playback should resume.
-                        self.logger.log("  Should resume playing.")
+                        logger.log("  Should resume playing.")
                         self.play()
 
                     } else {
                         // Interruption ended. Playback should not resume.
-                        self.logger.log("  Should not resume.")
+                        logger.log("  Should not resume.")
                     }
 
                 // We do not know whether Apple will introduce new interruptions in the future
@@ -223,7 +228,9 @@ class AudioController: NSObject, ObservableObject {
     private var playerItemCancellables = Set<AnyCancellable>()
     private var startTime: Date = .distantPast {
         didSet {
-            logger.debug("🔴 startTime: \(DateFormatter.localizedString(from: self.startTime, dateStyle: .short, timeStyle: .full), privacy: .public)")
+            logger.debug(
+                "🔴 startTime: \( self.startTime.formatted(date: .numeric, time: .complete), privacy: .public)"
+            )
         }
     }
     private var lastRateChange: Date = .distantPast
@@ -254,33 +261,35 @@ class AudioController: NSObject, ObservableObject {
 
             playerItem!.publisher(for: \.status)
                 .removeDuplicates()
-                .sink { [weak self] (status: AVPlayerItem.Status) in
+                .sink { [weak self, logger] (status: AVPlayerItem.Status) in
                     guard let self = self else { return }
-                    self.logger.debug("🟢 New status set: \(status.debugDescription, privacy: .public)")
+                    logger.debug("🟢 New status set: \(status.debugDescription, privacy: .public)")
                     if status == .readyToPlay {
                         let offsetFromLive = self.playerItem!.configuredTimeOffsetFromLive.seconds
                         self.startTime = Date().addingTimeInterval(-offsetFromLive)
-                        self.logger.debug("   startTime = \(self.startTime, privacy: .public)")
-                        self.logger.debug("   timebase  = \(self.playerItem?.timebase?.time.seconds ?? -1)")
+                        logger.debug("   startTime = \(self.startTime, privacy: .public)")
+                        logger.debug("   timebase  = \(self.playerItem?.timebase?.time.seconds ?? -1)")
                         let newRate: Float = initiallyPaused ? 0.0 : 1.0
                         logger.log("setting rate \(newRate)")
                         self.player.rate = newRate
 
                         self.statusChanged("status")
                     } else if status == .failed, let error = self.playerItem?.error {
-                        self.logger.debug("playerItem.status failed with error \(error.localizedDescription, privacy: .public)")
+                        logger.debug(
+                            "playerItem.status failed with error \(error.localizedDescription, privacy: .public)"
+                        )
                     }
                 }
                 .store(in: &playerItemCancellables)
 
             playerItem!.publisher(for: \.seekableTimeRanges)
                 .removeDuplicates()
-                .sink { [weak self] (seekableTimeRanges) in
+                .sink { [weak self, logger] (seekableTimeRanges) in
                     guard let self = self else { return }
-                    self.logger.debug("🟢 New seekableTimeRanges set: \(seekableTimeRanges, privacy: .public)")
+                    logger.debug("🟢 New seekableTimeRanges set: \(seekableTimeRanges, privacy: .public)")
                     if let firstRange = seekableTimeRanges.map({$0.timeRangeValue}).first {
-                        self.logger.debug("   start:    \(firstRange.start.seconds)")
-                        self.logger.debug("   duration: \(firstRange.duration.seconds)")
+                        logger.debug("   start:    \(firstRange.start.seconds)")
+                        logger.debug("   duration: \(firstRange.duration.seconds)")
 
                         self.statusChanged("seekableTimeRanges")
                     }
@@ -311,7 +320,9 @@ class AudioController: NSObject, ObservableObject {
             let delta = changeDate.distance(to: Date())
             logger.log("changeDate: \(changeDate, privacy: .public) (\(delta) seconds ago)")
             if delta > maxInterruptionDuration {
-                logger.log("change is more than \(self.maxInterruptionDuration/60) minutes in the past! Restarting stream")
+                logger.log(
+                    "change is more than \(self.maxInterruptionDuration/60) minutes in the past! Restarting stream"
+                )
                 restartPlayer(initiallyPaused: initiallyPaused)
             } else if delta > maxPausedDuration {
                 logger.log("interruption is more than \(self.maxPausedDuration/60) minutes in the past!")
@@ -333,7 +344,9 @@ class AudioController: NSObject, ObservableObject {
 
     func unfreezePlayer() {
         logger.log("⚫️⚫️⚫️ unfreezePlayer")
-        logger.log("  playerStatus=\(self.playerStatus.debugDescription, privacy: .public) lastRateChange=\(self.lastRateChange.localizedTimeString, privacy: .public) (=\(self.lastRateChange.distance(to: Date())) seconds ago)")
+        logger.log("  playerStatus=\(self.playerStatus.debugDescription, privacy: .public)")
+        logger.log("  lastRateChange=\(self.lastRateChange.localizedTimeString, privacy: .public)")
+        logger.log("  (=\(self.lastRateChange.distance(to: Date())) seconds ago)")
 
         if lastRateChange.distance(to: Date()) > maxInterruptionDuration {
             logger.log("Paused for more than \(self.maxInterruptionDuration/60) minutes, ")
@@ -357,8 +370,11 @@ class AudioController: NSObject, ObservableObject {
 
         if let currentItem = playerItem {
             let range = seekRange
-            enrichNowPlaying(duration: range.upperBound-range.lowerBound,
-                             position: currentItem.currentTime().seconds-range.lowerBound, rate: player.rate)
+            enrichNowPlaying(
+                duration: range.upperBound-range.lowerBound,
+                position: currentItem.currentTime().seconds-range.lowerBound,
+                rate: player.rate
+            )
         } else {
             removeNowPlaying()
         }
@@ -378,24 +394,31 @@ class AudioController: NSObject, ObservableObject {
 
         let currentTime = playerItem.currentTime()
         let currentDate = playerItem.currentDate()
-        logger.debug("🟡 currentTime.seconds: \(currentTime.seconds) \(currentDate != nil ? currentDate!.localizedTimeString : "nil", privacy: .public)")
+        let cDateString = currentDate != nil ? currentDate!.localizedTimeString : "nil"
+        logger.debug("🟡 currentTime.seconds: \(currentTime.seconds) \(cDateString, privacy: .public)")
 
         if let seekableTimeRange = playerItem.seekableTimeRanges.map({ $0.timeRangeValue }).first,
            let loadedTimeRange = playerItem.loadedTimeRanges.map({ $0.timeRangeValue }).first {
-            logger.debug("🟡 seekableTimeRange: start \(seekableTimeRange.start.seconds) end \(seekableTimeRange.end.seconds) duration \(seekableTimeRange.duration.seconds)")
-            logger.debug("   loadedTimeRange:   start \(loadedTimeRange.start.seconds) end \(loadedTimeRange.end.seconds) duration \(loadedTimeRange.duration.seconds)")
+            let seekableStart = seekableTimeRange.start.seconds
+            let seekableEnd = seekableTimeRange.end.seconds
+            let seekableDuration = seekableTimeRange.duration.seconds
+            let loadedStart = loadedTimeRange.start.seconds
+            let loadedEnd = loadedTimeRange.end.seconds
+            let loadedDuration = loadedTimeRange.duration.seconds
 
-            let earliestPosition = startTime.addingTimeInterval(seekableTimeRange.start.seconds
-                                                                - seekableTimeRange.duration.seconds)
+            logger.debug("🟡 seekableTimeRange: start \(seekableStart) end \(seekableEnd) duration \(seekableDuration)")
+            logger.debug("   loadedTimeRange:   start \(loadedStart) end \(loadedEnd) duration \(loadedDuration)")
+
+            let earliestPosition = startTime.addingTimeInterval(seekableStart - seekableDuration)
             logger.debug("   earliestPosition: \(earliestPosition.localizedTimeString, privacy: .public)")
-            let newestPosition = startTime.addingTimeInterval(seekableTimeRange.end.seconds
-                                                              - seekableTimeRange.duration.seconds)
+            let newestPosition = startTime.addingTimeInterval(seekableEnd - seekableDuration)
             logger.debug("   newestPosition: \(newestPosition.localizedTimeString, privacy: .public)")
-            let currentPosition = startTime.addingTimeInterval(currentTime.seconds - seekableTimeRange.duration.seconds)
+            let currentPosition = startTime.addingTimeInterval(currentTime.seconds - seekableDuration)
             logger.debug("   currentPosition: \(currentPosition.localizedTimeString, privacy: .public)")
 
-            logger.debug("   [\(seekableTimeRange.start.seconds) \(currentTime.seconds) \(seekableTimeRange.end.seconds)] \(currentTime.seconds > seekableTimeRange.end.seconds ? "🔴" : "", privacy: .public)")
-            logger.debug("   [\(loadedTimeRange.start.seconds) \(currentTime.seconds) \(loadedTimeRange.end.seconds)] \(loadedTimeRange.end.seconds - currentTime.seconds)")
+            let seekWarn = currentTime.seconds > seekableEnd ? "🔴" : ""
+            logger.debug("   [\(seekableStart) \(currentTime.seconds) \(seekableEnd)] \(seekWarn, privacy: .public)")
+            logger.debug("   [\(loadedStart) \(currentTime.seconds) \(loadedEnd)] \(loadedEnd - currentTime.seconds)")
         }
     }
 

@@ -42,11 +42,15 @@ enum SRGService {
             let response = try jsonDecoder.decode(GetLivestreamsResponse.self, from: data)
             liveStreams = response.mediaList.enumerated()
                 .map({ (index, media) -> Livestream in
-                    Livestream(id: media.id, name: media.title, imageURL: media.channel.imageUrl,
-                               bu: .init(from: media.vendor), sortOrder: index, streams: [])
+                    Livestream(
+                        id: media.id, name: media.title, imageURL: media.channel.imageUrl,
+                        bu: .init(from: media.vendor), sortOrder: index, streams: []
+                    )
                 })
         } catch {
-            logger.error("🔴 livestreams(\(bu.rawValue)) failed with error: \(error.localizedDescription, privacy: .public)")
+            logger.error(
+                "🔴 livestreams(\(bu.rawValue)) failed with error: \(error.localizedDescription, privacy: .public)"
+            )
         }
 
         return liveStreams ?? []
@@ -72,7 +76,9 @@ enum SRGService {
                     return urls
                 })
         } catch {
-            logger.error("🔴 mediaResource(\(mediaID, privacy: .public), \(bu.rawValue)) failed with error: \(error.localizedDescription, privacy: .public)")
+            logger.error(
+                "🔴 mediaResource(\(mediaID, privacy: .public), \(bu.rawValue)) failed with error: \(error)"
+            )
         }
 
         return mediaURLs ?? []

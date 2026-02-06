@@ -47,19 +47,30 @@ struct NetworkClient {
     /// status code for a valid server response and returning an appropriate error.
     /// - Parameter result: `result` coming as an output from a `DataTaskPublisher`
     /// - Returns: publisher of the raw data
-    private func handleDataTaskPublisherResponse(_ result: URLSession.DataTaskPublisher.Output) -> AnyPublisher<Data, NetworkClientError> {
+    private func handleDataTaskPublisherResponse(
+        _ result: URLSession.DataTaskPublisher.Output
+    ) -> AnyPublisher<Data, NetworkClientError> {
         guard let httpResponse = result.response as? HTTPURLResponse else {
-            fatalError("Invalid response for \(result.response.url?.absoluteString ?? ""): \(result.response) with data \(result.data)")
+            let urlString = result.response.url?.absoluteString ?? ""
+            fatalError(
+                "Invalid response for \(urlString): \(result.response) with data \(result.data)"
+            )
         }
 
         // Handle request and server errors
         if !(200...399 ~= httpResponse.statusCode) {
-            logger.error("received \(httpResponse.statusCode): error \(String(data: result.data, encoding: .utf8) ?? "-", privacy: .public)")
+            let dataString = String(data: result.data, encoding: .utf8) ?? "-"
+            logger.error(
+                "received \(httpResponse.statusCode): error \(dataString, privacy: .public)"
+            )
             return Fail<Data, NetworkClientError>(error: .httpError(httpResponse.statusCode))
                 .eraseToAnyPublisher()
         }
 
-        logger.debug("successful data task for \(result.response.url!, privacy: .public), propagating data \(result.data, privacy: .public)")
+        let url = result.response.url!
+        logger.debug(
+            "successful data task for \(url, privacy: .public), propagating data \(result.data, privacy: .public)"
+        )
         return Just(result.data)
             .setFailureType(to: NetworkClientError.self)
             .eraseToAnyPublisher()
@@ -94,7 +105,7 @@ struct NetworkClient {
         }
 
         let maxFailureCount = 5
-        var refreshFailureCount = 0
+        var refreshFailure = 0
 
         // Prepare request with bearer token
         var urlRequest = request
@@ -106,13 +117,12 @@ struct NetworkClient {
 
                 // Valid access token? Otherwise trigger a token refresh
                 guard case .valid(let bearerToken, _) = token else {
-                    refreshFailureCount += 1
-                    logger.debug("no valid bearer token refreshing token (count \(refreshFailureCount))")
+                    refreshFailure += 1
+                    logger.debug("no valid bearer token refreshing token (count \(refreshFailure))")
                     // Maximum retry "logic" with exponential delay increase
-                    if refreshFailureCount <= maxFailureCount {
-                        authenticator.refreshToken(
-                            delay: refreshFailureCount > 1 ? TimeInterval(min(1<<refreshFailureCount - 1, 5 * 60)) : 0.0
-                        )
+                    if refreshFailure <= maxFailureCount {
+                        let delay = refreshFailure > 1 ? TimeInterval(min(1<<refreshFailure - 1, 5 * 60)) : 0.0
+                        authenticator.refreshToken(delay: delay)
                     }
                     logger.debug("refreshing token triggered, sending Empty()")
                     return Empty()
@@ -122,19 +132,21 @@ struct NetworkClient {
                 urlRequest.setValue("Bearer \(bearerToken)", forHTTPHeaderField: "Authorization")
 
                 // Execute request
-                logger.debug("running data task for: \(urlRequest.url!, privacy: .public) using \(bearerToken, privacy: .public)")
+                logger.debug(
+                    "running data task for: \(urlRequest.url!, privacy: .public) using \(bearerToken, privacy: .public)"
+                )
                 return urlSession.dataTaskPublisher(for: urlRequest)
                     .mapError({ NetworkClientError.urlError($0) })
                     .flatMap({ result -> AnyPublisher<Data, NetworkClientError> in
                         // Handle access denied/forbidden by triggering a access token refresh
                         guard let httpResponse = result.response as? HTTPURLResponse,
-                              httpResponse.statusCode != 401 && httpResponse.statusCode != 403
+                            httpResponse.statusCode != 401 && httpResponse.statusCode != 403
                         else {
                             logger.debug("received HTTP 401/403: refreshing access token")
-                            refreshFailureCount += 1
-                            if refreshFailureCount <= maxFailureCount {
+                            refreshFailure += 1
+                            if refreshFailure <= maxFailureCount {
                                 authenticator.refreshToken(
-                                    delay: TimeInterval(min(1<<refreshFailureCount - 1, 5 * 60)),
+                                    delay: TimeInterval(min(1<<refreshFailure - 1, 5 * 60)),
                                     oldTokenValue: bearerToken
                                 )
                             }

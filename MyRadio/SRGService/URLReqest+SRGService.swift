@@ -15,7 +15,9 @@ extension URLRequest {
         guard let baseURLString = Bundle.main.object(forInfoDictionaryKey: "SRG_BASE_URL") as? String,
               !baseURLString.isEmpty
         else {
-            preconditionFailure("SRG_BASE_URL not properly configured: \(Bundle.main.object(forInfoDictionaryKey: "SRG_BASE_URL") as? String ?? "(none set)")")
+            let validBaseURLString = Bundle.main.object(forInfoDictionaryKey: "SRG_BASE_URL") as? String ?? "(none set)"
+            preconditionFailure(
+                "SRG_BASE_URL not properly configured: \(validBaseURLString)")
         }
         return URL(string: baseURLString.hasPrefix("https://") ? baseURLString : "https://\(baseURLString)")!
     }

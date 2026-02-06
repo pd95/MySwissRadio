@@ -38,7 +38,13 @@ struct OAuthConfiguration: Codable {
     ///   - clientKey: The client key, known to the authorization end point
     ///   - clientSecret: The client secret known to the authorization end point
     ///   - userDefaultsKey: a key used to store (and fetch upon reinitialisation) the last authorization response from `UserDefaults`
-    public init(authorizationURL: URL, clientKey: String, clientSecret: String, userDefaultsKey: String? = nil, userDefaultsSuiteName: String? = nil) {
+    public init(
+        authorizationURL: URL,
+        clientKey: String,
+        clientSecret: String,
+        userDefaultsKey: String? = nil,
+        userDefaultsSuiteName: String? = nil
+    ) {
         self.authorizationURL = authorizationURL
         self.clientKey = clientKey
         self.clientSecret = clientSecret
@@ -212,7 +218,9 @@ final class OAuthenticator {
         serialQueue.sync {
             logger.debug("refreshToken: entered critical section")
             if case TokenState.valid(let value, _) = self.currentToken, value != oldTokenValue {
-                logger.debug("refreshToken: skipped, token is valid. Should receive token (\(self.currentToken, privacy: .public)) soon.")
+                logger.debug(
+                    "refreshToken: skipped, token is valid. Should receive (\(self.currentToken, privacy: .public))."
+                )
             } else if refreshCancellable == nil {
                 refreshCancellable = performRefresh(delay: delay)
                     .receive(on: serialQueue)
@@ -222,7 +230,9 @@ final class OAuthenticator {
 
                         // This case should never happen because we "catch" the errors and convert them just above
                         case .failure(let error):
-                            self?.logger.error("performRefresh: error occured: \(error.localizedDescription, privacy: .public)")
+                            self?.logger.error(
+                                "performRefresh: error occured: \(error.localizedDescription, privacy: .public)"
+                            )
 
                         case .finished:
                             self?.logger.debug("performRefresh: done")
@@ -276,30 +286,41 @@ final class OAuthenticator {
                 }
                 self?.logger.debug("performRefresh: response code \(httpResponse.statusCode)")
                 if !(200..<400).contains(httpResponse.statusCode) {
-
+                    
                     // Try to extract the error code from the response body
                     let errorResponseArray = try? jsonDecoder.decode([String: String].self, from: data)
-                    self?.logger.error("performRefresh: responseArray: \(errorResponseArray?.description ?? "-", privacy: .public)")
-
+                    self?.logger.error(
+                        "performRefresh: responseArray: \(errorResponseArray?.description ?? "-", privacy: .public)"
+                    )
+                    
                     let errorCode = errorResponseArray?["ErrorCode"] ??
-                        errorResponseArray?["errorCode"] ??
-                        errorResponseArray?["error_code"]
-
+                    errorResponseArray?["errorCode"] ??
+                    errorResponseArray?["error_code"]
+                    
                     let errorDescription = (errorResponseArray?["ErrorDescription"] ??
                                             errorResponseArray?["errorDescription"] ??
                                             errorResponseArray?["error_description"] ??
                                             errorResponseArray?["Error"] ??
                                             errorResponseArray?["error"])
-
-                    self?.logger.error("performRefresh: errorCode = \(errorCode ?? "-") errorDescription = \(errorDescription ?? "-", privacy: .public)")
-
-                    throw AuthError.unexpectedHttpStatus(httpStatus: httpResponse.statusCode,
-                                                         error: errorDescription ?? errorCode ?? "n/a")
+                    
+                    let error = errorCode ?? "-"
+                    let description = errorDescription ?? "-"
+                    self?.logger.error(
+                        "performRefresh: error = \(error) description = \(description, privacy: .public)"
+                    )
+                    
+                    throw AuthError.unexpectedHttpStatus(
+                        httpStatus: httpResponse.statusCode,
+                        error: errorDescription ?? errorCode ?? "n/a"
+                    )
                 }
 
                 // Store response if requested
                 if data.count > 0 {
-                    self?.logger.debug("performRefresh: storing raw accessTokenResponse 🟢 \(String(data: data, encoding: .utf8) ?? "-", privacy: .public)")
+                    let dataString = String(data: data, encoding: .utf8) ?? "-"
+                    self?.logger.debug(
+                        "performRefresh: storing raw accessTokenResponse 🟢 \(dataString, privacy: .public)"
+                    )
                     self?.configuration.persist(data: data)
                 }
                 return data
@@ -309,7 +330,9 @@ final class OAuthenticator {
                 TokenState.valid(value: response.accessToken, lastResponse: response)
             }
             .catch({ (error: Error) -> AnyPublisher<TokenState, Never> in
-                self.logger.debug("performRefresh: retryFailed with error \(error.localizedDescription, privacy: .public)")
+                self.logger.debug(
+                    "performRefresh: retryFailed with error \(error.localizedDescription, privacy: .public)"
+                )
                 return Just(TokenState.refreshFailed(error: error))
                     .eraseToAnyPublisher()
             })

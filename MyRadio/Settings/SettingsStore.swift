@@ -66,7 +66,10 @@ class SettingsStore: ObservableObject {
     }
 
     private func resetAll() {
-        logger.log("Resetting all settings for \(UserDefaults.sharedSuiteName, privacy: .public) and \(UserDefaults.currentSuiteName, privacy: .public)")
+        let sharedSuite = UserDefaults.sharedSuiteName
+        let currentSuite = UserDefaults.currentSuiteName
+        logger.log(
+            "Resetting all settings for \(sharedSuite, privacy: .public) and \(currentSuite, privacy: .public)")
         self.objectWillChange.send()
         UserDefaults.standard.removePersistentDomain(forName: UserDefaults.sharedSuiteName)
         UserDefaults.standard.removePersistentDomain(forName: UserDefaults.currentSuiteName)

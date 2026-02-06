@@ -13,8 +13,13 @@ import os.log
 class AppDelegate: NSObject, UIApplicationDelegate {
     let logger = Logger(subsystem: "MyRadio", category: "AppDelegate")
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        logger.log("ApplicationDelegate didFinishLaunchingWithOptions. \(String(describing: launchOptions?.keys), privacy: .public)")
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
+        logger.log(
+            "AppDelegate didFinishLaunchingWithOptions. \(String(describing: launchOptions?.keys), privacy: .public)"
+        )
 
         #if DEBUG
         backupSettings()
@@ -30,7 +35,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
-        logger.log("ApplicationDelegate handlerFor intent: \(intent, privacy: .public)")
+        logger.log("AppDelegate handlerFor intent: \(intent, privacy: .public)")
         return MyRadioModel.main
     }
 

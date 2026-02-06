@@ -56,7 +56,9 @@ class MyRadioModel: NSObject, ObservableObject {
         let logger = Logger(subsystem: "MyRadioModel", category: "refreshContent")
 
         let refreshStartDate = Date()
-        logger.log("starting to refresh (last refresh was \(SettingsStore.shared.lastLivestreamRefreshDate, privacy: .public))")
+        logger.log(
+            "starting to refresh (last refresh was \(SettingsStore.shared.lastLivestreamRefreshDate, privacy: .public))"
+        )
 
         let streams = await streamStore.refreshLivestreams()
 
@@ -253,7 +255,9 @@ class MyRadioModel: NSObject, ObservableObject {
         let interaction = INInteraction(intent: intent, response: nil)
         interaction.donate { (error) in
             if let error = error {
-                self.logger.error("Unable to donate \(intent, privacy: .public): \(error.localizedDescription, privacy: .public)")
+                self.logger.error(
+                    "Unable to donate \(intent, privacy: .public): \(error.localizedDescription, privacy: .public)"
+                )
             } else {
                 self.logger.debug("Successfully donated playActivity")
             }
@@ -277,7 +281,10 @@ class MyRadioModel: NSObject, ObservableObject {
                 logger.debug("handleActivity: spotlight selected \(stream, privacy: .public)")
                 togglePlay(stream)
             } else {
-                logger.error("Invalid spotlight item: \(userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String, privacy: .public)")
+                let searchableItemIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String
+                logger.error(
+                    "Invalid spotlight item: \(searchableItemIdentifier, privacy: .public)"
+                )
             }
         } else {
             logger.error("Invalid activity: \(userActivity, privacy: .public)")
