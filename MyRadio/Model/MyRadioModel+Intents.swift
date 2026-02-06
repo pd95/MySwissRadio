@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Intents
+@preconcurrency import Intents
 import os.log
 
 extension MyRadioModel: INPlayMediaIntentHandling {
@@ -44,16 +44,7 @@ extension MyRadioModel: INPlayMediaIntentHandling {
 
     // MARK: INPlayMediaIntentHandling implementation
     nonisolated func handle(intent: INPlayMediaIntent, completion: @escaping (INPlayMediaIntentResponse) -> Void) {
-        Task { @MainActor in
-            let result: INPlayMediaIntentResponse
-            if let nowPlaying = handlePlayIntent(intent) {
-                result = INPlayMediaIntentResponse(code: .success, userActivity: nil)
-                result.nowPlayingInfo = nowPlaying
-            } else {
-                result = INPlayMediaIntentResponse(code: .failure, userActivity: nil)
-            }
-            completion(result)
-        }
+        completion(INPlayMediaIntentResponse(code: .handleInApp, userActivity: nil))
     }
 
     // MARK: Helper to extract Livestream.ID from specific intent

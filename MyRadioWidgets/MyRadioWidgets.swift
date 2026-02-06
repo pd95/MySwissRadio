@@ -12,11 +12,10 @@ import WidgetKit
 
 struct Provider: IntentTimelineProvider {
 
-    static var streams = SettingsStore.shared.streams
-
     private func getStream(for station: Station?) -> Livestream? {
+        let streams = SettingsStore.shared.streams
         guard let selectedStationID = station?.identifier ?? SettingsStore.shared.lastPlayedStreamId,
-            let stream = Self.streams.first(where: { $0.id == selectedStationID })
+            let stream = streams.first(where: { $0.id == selectedStationID })
         else {
             return nil
         }

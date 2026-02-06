@@ -10,7 +10,7 @@ import CoreSpotlight
 import Foundation
 import os.log
 
-class SettingsStore: ObservableObject {
+final class SettingsStore: ObservableObject, @unchecked Sendable {
 
     static let shared = SettingsStore()
 
@@ -87,7 +87,7 @@ class SettingsStore: ObservableObject {
 extension UserDefaults {
     static let currentSuiteName = Bundle.main.bundleIdentifier!
     static let sharedSuiteName = Bundle.appGroupIdentifier
-    static let shared = UserDefaults(suiteName: sharedSuiteName)!
+    nonisolated(unsafe) static let shared = UserDefaults(suiteName: sharedSuiteName)!
 
     enum SettingsKey: String, CaseIterable {
         case reset

@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class ImageCache {
+final class ImageCache: @unchecked Sendable {
 
     static let shared = ImageCache()
 

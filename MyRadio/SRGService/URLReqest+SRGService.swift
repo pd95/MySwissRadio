@@ -9,7 +9,7 @@ import Foundation
 
 extension URLRequest {
 
-    private static var baseURL: URL = initBaseURL()
+    private static let baseURL: URL = initBaseURL()
 
     private static func initBaseURL() -> URL {
         guard let baseURLString = Bundle.main.object(forInfoDictionaryKey: "SRG_BASE_URL") as? String,

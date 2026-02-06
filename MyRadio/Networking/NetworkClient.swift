@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import os.log
 
-struct NetworkClient {
+struct NetworkClient: @unchecked Sendable {
 
     /// This is the main apps shared instance of the `NetworkClient`: It has OAuth configured and therefore can use `authenticatedDataRequest`
     /// For extensions which simply need to fetch resources, you can still create a `NetworkClient` without oauthConfig
