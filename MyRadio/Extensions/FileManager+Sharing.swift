@@ -9,14 +9,23 @@ import Foundation
 
 extension FileManager {
 
-    static func sharedContainerURL() -> URL {
-        return FileManager.default.containerURL(
+    static func sharedContainerURL() -> URL? {
+        FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: Bundle.appGroupIdentifier
-        )!
+        )
     }
 
     static func sharedCacheLocation() -> URL {
-        let cache = sharedContainerURL().appendingPathComponent("Library/Caches/")
-        return cache
+        let url: URL
+        if let sharedContainer = sharedContainerURL() {
+            url = sharedContainer.appendingPathComponent("Library/Caches")
+        } else {
+            if #available(iOS 16.0, *) {
+                url = URL.cachesDirectory
+            } else {
+                url = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+            }
+        }
+        return url
     }
 }
