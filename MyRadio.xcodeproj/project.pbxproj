@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -162,8 +162,12 @@
 		17DB7BDB252CC6FA004C4BF8 /* LivestreamRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivestreamRow.swift; sourceTree = "<group>"; };
 		17EC1A87252F9A0900F8AFCF /* BusinessUnit+SRGService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BusinessUnit+SRGService.swift"; sourceTree = "<group>"; };
 		17EC1A8E252F9EF500F8AFCF /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
-		84A289B22F36012B00680D79 /* .swift-format.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ".swift-format.json"; sourceTree = "<group>"; };
+		84A289B22F36012B00680D79 /* .swift-format */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-format"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		177543102F363B1D00E44CA6 /* script */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = script; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		1777837E2530FF0E003D19A3 /* Frameworks */ = {
@@ -281,7 +285,8 @@
 				1750E225252C605D00CB2D4B /* Config.xcconfig */,
 				1750E233252C723500CB2D4B /* LocalConfig.xcconfig */,
 				17CCDEC627513978001380D9 /* .gitignore */,
-				84A289B22F36012B00680D79 /* .swift-format.json */,
+				84A289B22F36012B00680D79 /* .swift-format */,
+				177543102F363B1D00E44CA6 /* script */,
 				17DA93D2252C56500076EBB2 /* MyRadio */,
 				17C6DD4F2530CD2A003D603E /* MyRadioWidgets */,
 				177783822530FF0E003D19A3 /* MyRadioIntentHandler */,
@@ -381,7 +386,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 17DA93DF252C56510076EBB2 /* Build configuration list for PBXNativeTarget "MyRadio" */;
 			buildPhases = (
-				84A289B12F35F1E300680D79 /* Linting sources */,
+				84A289B12F35F1E300680D79 /* Format and Lint sources */,
 				17DA93CC252C56500076EBB2 /* Sources */,
 				17DA93CD252C56500076EBB2 /* Frameworks */,
 				17DA93CE252C56500076EBB2 /* Resources */,
@@ -471,7 +476,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		84A289B12F35F1E300680D79 /* Linting sources */ = {
+		84A289B12F35F1E300680D79 /* Format and Lint sources */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -480,18 +485,15 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/MyRadio",
-				"$(SRCROOT)/.swift-format.json",
 			);
-			name = "Linting sources";
+			name = "Format and Lint sources";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/swift​-format​-lint​.stamp",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\nINPUT_DIR=\"$SCRIPT_INPUT_FILE_0\"\nCONFIG_FILE=\"$SCRIPT_INPUT_FILE_1\"\n\nSTAMP=\"$SCRIPT_OUTPUT_FILE_0\"\n\nset -x\nswift format lint --configuration \"$CONFIG_FILE\" -r \"$INPUT_DIR\" && touch \"$STAMP\"\n";
+			shellScript = "\"$SRCROOT/script/format.sh\"\n\"$SRCROOT/script/lint.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
