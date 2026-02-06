@@ -11,7 +11,7 @@ import Foundation
 import MediaPlayer
 import os.log
 
-class AudioController: NSObject, ObservableObject {
+final class AudioController: NSObject, ObservableObject, @unchecked Sendable {
 
     enum Status: CustomDebugStringConvertible {
         case undefined, paused, playing, loading
@@ -195,7 +195,7 @@ class AudioController: NSObject, ObservableObject {
         let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
 
         var nowPlayingInfo = nowPlayingInfo
-        if let url = (playerItem?.asset as? AVURLAsset)?.url {
+        if let url = currentAssetURL() {
             nowPlayingInfo[MPNowPlayingInfoPropertyAssetURL] = url
         }
         nowPlayingInfo[MPMediaItemPropertyArtist] = "My radio"
@@ -221,6 +221,10 @@ class AudioController: NSObject, ObservableObject {
     private func removeNowPlaying() {
         let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
         nowPlayingInfoCenter.nowPlayingInfo?.removeAll()
+    }
+
+    private func currentAssetURL() -> URL? {
+        MainActor.assumeIsolated { (playerItem?.asset as? AVURLAsset)?.url }
     }
 
     private var player = AVPlayer()
@@ -250,7 +254,7 @@ class AudioController: NSObject, ObservableObject {
     }
 
     func play(url: URL? = nil, initiallyPaused: Bool = false) {
-        if let url = url, (playerItem?.asset as? AVURLAsset)?.url != url {
+        if let url = url, currentAssetURL() != url {
             logger.log("Setting AVPlayerItem to url=\(url)")
             let asset = AVURLAsset(url: url)
 
@@ -356,7 +360,7 @@ class AudioController: NSObject, ObservableObject {
 
     func restartPlayer(initiallyPaused: Bool) {
         logger.log("restartPlayer")
-        guard let url = (playerItem?.asset as? AVURLAsset)?.url else {
+        guard let url = currentAssetURL() else {
             logger.log("cannot restart when no URL has been playing")
             return
         }
@@ -387,10 +391,18 @@ class AudioController: NSObject, ObservableObject {
         logger.debug("playerItem: \(self.playerItem.debugDescription, privacy: .public)")
 
         guard let playerItem = playerItem else { return }
-        let asset = playerItem.asset
-        logger.debug("asset: \(asset.debugDescription, privacy: .public)")
-        logger.debug("  duration: \(asset.duration.seconds)  overallDurationHint: \(asset.overallDurationHint.seconds)")
-        logger.debug("  minimumTimeOffsetFromLive: \(asset.minimumTimeOffsetFromLive.seconds)")
+        let assetData = MainActor.assumeIsolated {
+            let asset = playerItem.asset
+            return (
+                debugDescription: asset.debugDescription,
+                duration: asset.duration.seconds,
+                overallDurationHint: asset.overallDurationHint.seconds,
+                minimumTimeOffsetFromLive: asset.minimumTimeOffsetFromLive.seconds
+            )
+        }
+        logger.debug("asset: \(assetData.debugDescription, privacy: .public)")
+        logger.debug("  duration: \(assetData.duration)  overallDurationHint: \(assetData.overallDurationHint)")
+        logger.debug("  minimumTimeOffsetFromLive: \(assetData.minimumTimeOffsetFromLive)")
 
         let currentTime = playerItem.currentTime()
         let currentDate = playerItem.currentDate()

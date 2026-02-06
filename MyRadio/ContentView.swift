@@ -11,53 +11,66 @@ struct ContentView: View {
     @EnvironmentObject var model: MyRadioModel
 
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(model.buSortOrder, id: \.self) { bu in
-                    Section(header: Text(bu.description)) {
-                        let streams = model.streamStore.streams(for: bu)
-                        if !streams.isEmpty {
-                            ForEach(streams) { stream in
-                                Button {
-                                    play(stream: stream)
-                                } label: {
-                                    LivestreamRow(stream: stream)
-                                }
-                            }
-                        } else {
-                            ProgressView()
-                                .frame(maxWidth: .infinity)
-                        }
-                    }
+        Group {
+            if #available(iOS 16.0, *) {
+                NavigationStack {
+                    content
                 }
+            } else {
+                NavigationView {
+                    content
+                }
+                .navigationViewStyle(.stack)
             }
-            .refreshable {
-                await model.refreshContent()
-            }
-            .listStyle(.plain)
-            .sheet(
-                isPresented: $model.showSheet,
-                content: {
-                    model.currentlyPlaying.map {
-                        PlayingSheet(stream: $0)
-                            .environmentObject(model)
-                    }
-                }
-            )
-            .toolbar(content: {
-                ToolbarItemGroup(placement: .bottomBar) {
-                    model.currentlyPlaying.map {
-                        WhatsPlayingToolbar(stream: $0)
-                            .contentShape(.rect)
-                            .onTapGesture {
-                                model.showSheet = true
-                            }
-                    }
-                }
-            })
-            .navigationTitle("My Swiss Radio")
         }
-        .navigationViewStyle(.stack)
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        List {
+            ForEach(model.buSortOrder, id: \.self) { bu in
+                Section(header: Text(bu.description)) {
+                    let streams = model.streamStore.streams(for: bu)
+                    if !streams.isEmpty {
+                        ForEach(streams) { stream in
+                            Button {
+                                play(stream: stream)
+                            } label: {
+                                LivestreamRow(stream: stream)
+                            }
+                        }
+                    } else {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+            }
+        }
+        .refreshable {
+            await model.refreshContent()
+        }
+        .listStyle(.plain)
+        .sheet(
+            isPresented: $model.showSheet,
+            content: {
+                model.currentlyPlaying.map {
+                    PlayingSheet(stream: $0)
+                        .environmentObject(model)
+                }
+            }
+        )
+        .toolbar(content: {
+            ToolbarItemGroup(placement: .bottomBar) {
+                model.currentlyPlaying.map {
+                    WhatsPlayingToolbar(stream: $0)
+                        .contentShape(.rect)
+                        .onTapGesture {
+                            model.showSheet = true
+                        }
+                }
+            }
+        })
+        .navigationTitle("My Swiss Radio")
     }
 
     func play(stream: Livestream) {

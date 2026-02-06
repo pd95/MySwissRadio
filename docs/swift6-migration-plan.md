@@ -5,7 +5,7 @@ This document tracks the migration from legacy Swift/SwiftUI settings to a moder
 ## Current Status
 
 - Date: 2026-02-06
-- Build baseline: `xcodebuild -project MyRadio.xcodeproj -scheme MyRadio -configuration Debug -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO -quiet build`
+- Build baseline: `xcodebuild -project MyRadio.xcodeproj -scheme MyRadio -configuration Debug -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO -quiet clean build`
 - Result: build succeeds under Swift 6 with strict concurrency set to `minimal`
 
 ## Completed
@@ -17,25 +17,23 @@ This document tracks the migration from legacy Swift/SwiftUI settings to a moder
 5. Updated singleton/shared-state declarations (`ImageCache`, `SettingsStore`, `NetworkClient`, `URLRequest` base URL) to pass Swift 6 checks.
 6. Updated widget provider to remove mutable static shared state.
 7. Updated app intent handling path for Swift 6 compatibility and restored green build.
+8. Removed remaining Swift 6 warnings in `MyRadio/Model/AudioController.swift` by isolating `AVPlayerItem.asset` reads via `MainActor.assumeIsolated` helper accessors.
+9. Modernized navigation with iOS 15.6 compatibility:
+   - `NavigationStack` for iOS 16+
+   - `NavigationView` fallback for iOS 15 in `ContentView` and preview-only `WhatsPlayingToolbar`.
 
 ## Next Steps (Recommended)
 
-1. Remove remaining Swift 6 warnings in `MyRadio/Model/AudioController.swift`.
-   - Add explicit actor isolation where required.
-   - Resolve non-Sendable capture in callback closures.
-2. Modernize SwiftUI navigation.
-   - Replace `NavigationView` with `NavigationStack` in `MyRadio/ContentView.swift`.
-   - Replace `NavigationView` in `MyRadio/WhatsPlayingToolbar.swift` preview.
-3. Modernize previews.
+1. Modernize previews.
    - Migrate `PreviewProvider` declarations to `#Preview` macros where practical.
-4. Revisit Siri `INPlayMediaIntentHandling` behavior.
+2. Revisit Siri `INPlayMediaIntentHandling` behavior.
    - Validate `.handleInApp` flow on device and with Siri/Shortcuts.
    - Decide whether to keep compatibility bridge or implement a stricter main-actor handoff.
-5. Tighten concurrency checks incrementally.
+3. Tighten concurrency checks incrementally.
    - Move from `minimal` to `targeted`.
    - Fix newly surfaced issues.
    - Move from `targeted` to `complete` once clean.
-6. Optional platform modernization.
+4. Optional platform modernization.
    - Evaluate raising deployment target from iOS 15.6 to iOS 16/17.
    - If raised, simplify compatibility code and adopt newer APIs more broadly.
 

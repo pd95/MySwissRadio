@@ -42,13 +42,26 @@ struct WhatsPlayingToolbar: View {
 
 struct WhatsPlayingToolbar_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            Text("")
-                .toolbar(content: {
-                    ToolbarItemGroup(placement: .bottomBar) {
-                        WhatsPlayingToolbar(stream: .example)
-                    }
-                })
+        Group {
+            if #available(iOS 16.0, *) {
+                NavigationStack {
+                    Text("")
+                        .toolbar(content: {
+                            ToolbarItemGroup(placement: .bottomBar) {
+                                WhatsPlayingToolbar(stream: .example)
+                            }
+                        })
+                }
+            } else {
+                NavigationView {
+                    Text("")
+                        .toolbar(content: {
+                            ToolbarItemGroup(placement: .bottomBar) {
+                                WhatsPlayingToolbar(stream: .example)
+                            }
+                        })
+                }
+            }
         }
         .environmentObject(MyRadioModel.main)
     }
